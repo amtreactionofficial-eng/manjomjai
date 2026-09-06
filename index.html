@@ -10,7 +10,7 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Poppins', 'Padauk', sans-serif; }
-        
+
         @keyframes float {
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-10px); }
@@ -23,10 +23,10 @@
             0% { background-position: -200% center; }
             100% { background-position: 200% center; }
         }
-        
+
         .float-animation { animation: float 4s ease-in-out infinite; }
         .live-glow { animation: pulse-glow 2s infinite; }
-        
+
         .gradient-text {
             background: linear-gradient(135deg, #f59e0b, #ef4444, #8b5cf6, #3b82f6);
             background-size: 300% 300%;
@@ -35,21 +35,21 @@
             background-clip: text;
             animation: shimmer 4s ease-in-out infinite;
         }
-        
+
         .hero-gradient {
             background: radial-gradient(ellipse at 20% 50%, rgba(139, 92, 246, 0.12), transparent 50%),
                         radial-gradient(ellipse at 80% 50%, rgba(239, 68, 68, 0.08), transparent 50%),
                         radial-gradient(ellipse at 50% 100%, rgba(59, 130, 246, 0.06), transparent 40%),
                         #0f172a;
         }
-        
+
         .card-gradient {
             background: linear-gradient(145deg, rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.92));
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.06);
         }
-        
+
         .glow-border {
             position: relative;
         }
@@ -69,17 +69,17 @@
             animation: shimmer 4s ease-in-out infinite;
         }
         .glow-border:hover::before { opacity: 0.7; }
-        
+
         .nav-blur {
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
         }
-        
+
         .theme-toggle {
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .theme-toggle:hover { transform: rotate(30deg) scale(1.12); }
-        
+
         .lang-select {
             background: rgba(30, 41, 59, 0.8);
             backdrop-filter: blur(8px);
@@ -96,7 +96,7 @@
         .lang-select:hover { border-color: rgba(251, 191, 36, 0.35); background: rgba(30, 41, 59, 0.95); }
         .lang-select:focus { outline: none; border-color: #f59e0b; box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15); }
         .lang-select option { background: #1e293b; }
-        
+
         .vip-btn {
             background: linear-gradient(135deg, #f59e0b, #ef4444);
             box-shadow: 0 4px 25px rgba(239, 68, 68, 0.3);
@@ -107,14 +107,14 @@
             box-shadow: 0 8px 40px rgba(239, 68, 68, 0.45);
         }
         .vip-btn:active { transform: scale(0.97); }
-        
+
         .footer-text {
             background: linear-gradient(135deg, #475569, #94a3b8);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-        
+
         .insight-card {
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             border-left: 3px solid transparent;
@@ -133,12 +133,45 @@
             flex-shrink: 0;
             font-size: 1.1rem;
         }
-        
+
+        /* Horizontal Scroll */
+        #cardContainer {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(245, 158, 11, 0.3) transparent;
+            -webkit-overflow-scrolling: touch;
+        }
+        #cardContainer::-webkit-scrollbar {
+            height: 4px;
+        }
+        #cardContainer::-webkit-scrollbar-track {
+            background: rgba(30, 41, 59, 0.3);
+            border-radius: 10px;
+        }
+        #cardContainer::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            border-radius: 10px;
+        }
+
+        .card-item {
+            flex-shrink: 0;
+            width: 280px;
+            scroll-snap-align: start;
+        }
+        @media (min-width: 640px) {
+            .card-item { width: 320px; }
+        }
+        @media (min-width: 768px) {
+            .card-item { width: 360px; }
+        }
+        @media (min-width: 1024px) {
+            .card-item { width: 400px; }
+        }
+
         /* Scrollbar styling */
         ::-webkit-scrollbar { width: 4px; height: 4px; }
         ::-webkit-scrollbar-track { background: rgba(30, 41, 59, 0.3); border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #f59e0b, #ef4444); border-radius: 10px; }
-        
+
         /* Light theme */
         body.light {
             background: #f0f4f8;
@@ -164,7 +197,9 @@
         body.light .insight-card:hover { border-left-color: #f59e0b; }
         body.light .footer-text { background: linear-gradient(135deg, #94a3b8, #64748b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
         body.light ::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); }
-        
+        body.light #cardContainer::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); }
+        body.light .card-item .bg-slate-800\/40 { background: rgba(241, 245, 249, 0.8); border-color: rgba(0,0,0,0.06); }
+
         /* Mobile optimizations */
         @media (max-width: 640px) {
             .hero-gradient { padding: 1.5rem !important; }
@@ -173,11 +208,13 @@
             .lang-select { padding: 5px 10px; font-size: 0.65rem; }
             .insight-card { padding: 0.75rem !important; }
             .insight-card .icon-circle { width: 32px; height: 32px; font-size: 0.9rem; }
+            .card-item { width: 240px; }
         }
         @media (max-width: 480px) {
             .gradient-text { font-size: 1.5rem !important; }
             .nav-blur .flex { gap: 0.5rem; }
             .nav-blur .space-x-3 { gap: 0.4rem; }
+            .card-item { width: 200px; }
         }
     </style>
 </head>
@@ -232,22 +269,58 @@
                         <span class="w-1.5 h-1.5 rounded-full bg-rose-500 mr-1.5 animate-ping"></span>
                         <span data-i18n="liveBadge">⚡ Live Predictions</span>
                     </div>
-                    
+
                     <!-- Title -->
                     <h1 class="text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-snug gradient-text">
                         <span data-i18n="heroTitle">စတော့ဈေးကွက်များကို နက်နက်နဲနဲ ခွဲခြမ်းစိတ်ဖြာပြီး အတိကျဆုံး ခန့်မှန်းချက်များကို ဖော်ပြပေးနေသော ပလပ်ဖောင်း</span>
                     </h1>
-                    
+
                     <!-- Description -->
                     <p class="text-slate-400 text-xs sm:text-sm leading-relaxed max-w-2xl mx-auto" data-i18n="heroDesc">
                         Manjomjai ဝဘ်ဆိုဒ်သည် ကမ္ဘာ့ထိပ်တန်း စတော့ဈေးကွက်များကို အချိန်နှင့်တပြေးညီ စောင့်ကြည့်စစ်ဆေးကာ ကိန်းဂဏန်းဆိုင်ရာ သမိုင်းကြောင်းအချက်အလက်များနှင့် တွက်ချက်မှုပုံစံများကို ပေါင်းစပ်၍ အသေချာဆုံး ကံစမ်းခန့်မှန်းကွက်များကို တိကျမှန်ကန်စွာ ထုတ်ပြန်ပေးနေပါသည်။
                     </p>
                 </div>
             </div>
-            
+
             <!-- Decorative floating elements -->
             <div class="absolute top-10 left-10 w-16 h-16 sm:w-24 sm:h-24 rounded-full bg-purple-500/5 blur-2xl"></div>
             <div class="absolute bottom-10 right-10 w-20 h-20 sm:w-32 sm:h-32 rounded-full bg-rose-500/5 blur-2xl"></div>
+        </section>
+
+        <!-- ========================================================== -->
+        <!-- CARDS SECTION - Admin ကတင်တဲ့ကဒ်တွေ -->
+        <!-- ========================================================== -->
+        <section class="space-y-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-1 h-8 bg-gradient-to-b from-amber-500 to-rose-500 rounded-full"></div>
+                    <h2 class="text-xl sm:text-2xl font-bold">📊 Thai Stock Cards</h2>
+                </div>
+                <span id="cardCount" class="text-xs text-slate-400 bg-slate-800/50 px-3 py-1 rounded-full border border-slate-700/30">
+                    0 ကဒ်
+                </span>
+            </div>
+
+            <!-- Horizontal Scroll Container -->
+            <div class="relative">
+                <div id="cardContainer" class="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scroll-smooth">
+                    <!-- Cards will be rendered here -->
+                </div>
+
+                <!-- Scroll Buttons -->
+                <button onclick="scrollCards('left')" class="absolute left-0 top-1/2 -translate-y-1/2 bg-slate-800/80 backdrop-blur-sm text-white p-2 rounded-full border border-slate-700/50 hover:bg-slate-700 transition-all hidden md:flex items-center justify-center w-8 h-8 z-10">
+                    <i class="fa-solid fa-chevron-left text-xs"></i>
+                </button>
+                <button onclick="scrollCards('right')" class="absolute right-0 top-1/2 -translate-y-1/2 bg-slate-800/80 backdrop-blur-sm text-white p-2 rounded-full border border-slate-700/50 hover:bg-slate-700 transition-all hidden md:flex items-center justify-center w-8 h-8 z-10">
+                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                </button>
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyCards" class="text-center py-8 text-slate-500 card-gradient rounded-2xl p-8">
+                <i class="fa-solid fa-images text-3xl mb-3 block opacity-30"></i>
+                <p>ကဒ်မရှိသေးပါ။ မကြာခင်လာပါမည်။</p>
+            </div>
         </section>
 
         <!-- ========================================================== -->
@@ -258,10 +331,10 @@
                 <div class="w-1 h-8 bg-gradient-to-b from-amber-500 to-rose-500 rounded-full"></div>
                 <h2 class="text-xl sm:text-2xl font-bold" data-i18n="insightsTitle">ထိုင်းစတော့နှင့် ကမ္ဘာ့စတော့ဈေးကွက်များဆိုင်ရာ အကြံပြုချက်များ</h2>
             </div>
-            
+
             <div class="card-gradient rounded-2xl p-5 sm:p-8 glow-border transition-colors duration-300">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    
+
                     <!-- Left Column -->
                     <div class="space-y-4">
                         <!-- Insight 1 -->
@@ -273,7 +346,7 @@
                                 <div>
                                     <h3 class="font-semibold text-sm sm:text-base" data-i18n="insight1Title">🇹🇭 ထိုင်းစတော့ဈေးကွက် (SET) ၏ လက်ရှိအခြေအနေ</h3>
                                     <p class="text-slate-400 text-xs sm:text-sm leading-relaxed mt-1" data-i18n="insight1Desc">
-                                        ထိုင်းနိုင်ငံ၏ စတော့ဈေးကွက်ဖြစ်သော SET (Stock Exchange of Thailand) သည် အရှေ့တောင်အာရှဒေသတွင် အကြီးဆုံးနှင့် အရည်အသွေးအမြင့်ဆုံး ဈေးကွက်များထဲမှ တစ်ခုဖြစ်ပါသည်။ လက်ရှိအချိန်တွင် SET ဈေးကွက်သည် ဒေသတွင်းစီးပွားရေးအခြေအနေ၊ ကမ္ဘာ့ငွေကြေးဈေးကွက်အပြောင်းအလဲများနှင့် နိုင်ငံရေးတည်ငြိမ်အေးချမ်းမှုတို့အပေါ် များစွာမူတည်လျက်ရှိပါသည်။ ထိုင်းနိုင်ငံ၏ ခရီးသွားလုပ်ငန်း၊ ပို့ကုန်လုပ်ငန်းနှင့် ကုန်ထုတ်လုပ်ငန်းများ၏ စွမ်းဆောင်ရည်သည် SET ဈေးကွက်၏ လှုပ်ရှားမှုကို တိုက်ရိုက်သက်ရောက်မှုရှိပါသည်။ 
+                                        ထိုင်းနိုင်ငံ၏ စတော့ဈေးကွက်ဖြစ်သော SET (Stock Exchange of Thailand) သည် အရှေ့တောင်အာရှဒေသတွင် အကြီးဆုံးနှင့် အရည်အသွေးအမြင့်ဆုံး ဈေးကွက်များထဲမှ တစ်ခုဖြစ်ပါသည်။ လက်ရှိအချိန်တွင် SET ဈေးကွက်သည် ဒေသတွင်းစီးပွားရေးအခြေအနေ၊ ကမ္ဘာ့ငွေကြေးဈေးကွက်အပြောင်းအလဲများနှင့် နိုင်ငံရေးတည်ငြိမ်အေးချမ်းမှုတို့အပေါ် များစွာမူတည်လျက်ရှိပါသည်။ ထိုင်းနိုင်ငံ၏ ခရီးသွားလုပ်ငန်း၊ ပို့ကုန်လုပ်ငန်းနှင့် ကုန်ထုတ်လုပ်ငန်းများ၏ စွမ်းဆောင်ရည်သည် SET ဈေးကွက်၏ လှုပ်ရှားမှုကို တိုက်ရိုက်သက်ရောက်မှုရှိပါသည်။
                                     </p>
                                     <p class="text-slate-400 text-xs sm:text-sm leading-relaxed mt-2" data-i18n="insight1Desc2">
                                         ထိုင်းစတော့ဈေးကွက်သည် နိုင်ငံခြားရင်းနှီးမြှုပ်နှံသူများအတွက် ဆွဲဆောင်မှုရှိသော ဈေးကွက်တစ်ခုဖြစ်ပြီး အထူးသဖြင့် စွမ်းအင်၊ ဘဏ်လုပ်ငန်း၊ ဆက်သွယ်ရေးနှင့် စားသုံးသူကုန်ပစ္စည်းကဏ္ဍများတွင် ရင်းနှီးမြှုပ်နှံမှုအခွင့်အလမ်းများ ပေါများလျက်ရှိပါသည်။ SET ဈေးကွက်၏ အဓိကညွှန်းကိန်းဖြစ်သော SET Index သည် ဈေးကွက်၏ အလုံးစုံစွမ်းဆောင်ရည်ကို တိုင်းတာသည့် အဓိကကိန်းဂဏန်းတစ်ခုဖြစ်ပြီး ရင်းနှီးမြှုပ်နှံသူများ၏ စိတ်ခံစားချက်ကို ထင်ဟပ်စေပါသည်။
@@ -552,17 +625,110 @@
         // ============================================================
         // MODAL
         // ============================================================
-        function openVipModal() { 
-            document.getElementById('vipModal').classList.remove('hidden'); 
+        function openVipModal() {
+            document.getElementById('vipModal').classList.remove('hidden');
             document.body.style.overflow = 'hidden';
         }
-        function closeVipModal() { 
+
+        function closeVipModal() {
             document.getElementById('vipModal').classList.add('hidden');
             document.body.style.overflow = '';
         }
         document.getElementById('vipModal').addEventListener('click', function(e) {
             if (e.target === this) closeVipModal();
         });
+
+        // ============================================================
+        // CARDS - Admin ကတင်တဲ့ကဒ်တွေကို ပြသရန်
+        // ============================================================
+        const STORAGE_KEY = 'manjomjai_cards';
+
+        function getCards() {
+            try {
+                return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            } catch {
+                return [];
+            }
+        }
+
+        function renderCards() {
+            const cards = getCards();
+            const container = document.getElementById('cardContainer');
+            const empty = document.getElementById('emptyCards');
+            const count = document.getElementById('cardCount');
+
+            count.textContent = `${cards.length} ကဒ်`;
+
+            if (cards.length === 0) {
+                container.innerHTML = '';
+                empty.style.display = 'block';
+                return;
+            }
+            empty.style.display = 'none';
+
+            container.innerHTML = cards.map(card => `
+                <div class="card-item snap-start">
+                    <div class="bg-slate-800/40 dark:bg-slate-800/40 rounded-2xl overflow-hidden border border-slate-700/30 hover:border-amber-500/30 transition-all duration-300 h-full">
+                        <div class="relative">
+                            <img src="${card.image}" alt="Stock Card" 
+                                 class="w-full h-auto object-contain bg-slate-900"
+                                 onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22600%22 height=%22338%22%3E%3Crect fill=%22%231e293b%22 width=%22600%22 height=%22338%22/%3E%3Ctext x=%22300%22 y=%22169%22 text-anchor=%22middle%22 fill=%22%2364748b%22 font-size=%2220%22 font-family=%22sans-serif%22%3ENo Image%3C/text%3E%3C/svg%3E'">
+                            <div class="absolute top-2 right-2 bg-black/60 backdrop-blur-sm px-2.5 py-1 rounded-lg text-[9px] text-amber-400 border border-amber-500/20">
+                                <i class="fa-solid fa-qrcode mr-1"></i> SCAN ME
+                            </div>
+                        </div>
+                        <div class="p-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] text-slate-400">
+                                    <i class="fa-regular fa-calendar mr-1"></i> ${new Date(card.createdAt).toLocaleDateString('my-MM', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+                                </span>
+                                <span class="text-[9px] text-slate-500">
+                                    <i class="fa-regular fa-clock mr-1"></i> ${new Date(card.createdAt).toLocaleTimeString('my-MM', { hour: '2-digit', minute: '2-digit' })}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ============================================================
+        // SCROLL CARDS
+        // ============================================================
+        function scrollCards(direction) {
+            const container = document.getElementById('cardContainer');
+            const firstCard = container.querySelector('.card-item');
+            if (!firstCard) return;
+            const scrollAmount = firstCard.offsetWidth + 16;
+            if (direction === 'left') {
+                container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+            } else {
+                container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            }
+        }
+
+        // ============================================================
+        // INIT CARDS
+        // ============================================================
+        function initCards() {
+            renderCards();
+
+            // Listen for storage changes (Admin က တင်တာနဲ့ auto update)
+            window.addEventListener('storage', function(e) {
+                if (e.key === STORAGE_KEY) {
+                    renderCards();
+                }
+            });
+
+            // Check for updates every 3 seconds (for same tab)
+            setInterval(function() {
+                const currentCards = getCards();
+                const renderedCards = document.querySelectorAll('#cardContainer .card-item').length;
+                if (currentCards.length !== renderedCards) {
+                    renderCards();
+                }
+            }, 3000);
+        }
 
         // ============================================================
         // INIT
@@ -572,7 +738,7 @@
             const savedLang = localStorage.getItem('manjomjai_lang') || 'mm';
             document.getElementById('langSwitch').value = savedLang;
             changeLanguage();
-            
+
             // Load saved theme
             const savedTheme = localStorage.getItem('manjomjai_theme') || 'dark';
             if (savedTheme === 'light') {
@@ -581,11 +747,15 @@
                 document.getElementById('themeIcon').classList.remove('fa-sun');
                 document.getElementById('themeIcon').classList.add('fa-moon');
             }
-            
+
+            // Init Cards
+            initCards();
+
             console.log('✅ Manjomjai initialized successfully!');
             console.log('🌙 Night mode available');
             console.log('🌍 Languages: Myanmar, Thai, English');
             console.log('📱 Fully responsive for all devices');
+            console.log('📊 Cards auto-sync with Admin panel');
         }
 
         window.onload = init;
