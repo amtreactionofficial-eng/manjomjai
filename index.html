@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manjomjai - Thai & Global Stock AI Predictions</title>
+    <title>Manjomjai - Thai & Global Stock Predictions</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <!-- FontAwesome Icons -->
@@ -16,12 +16,10 @@
             0%, 100% { opacity: 1; transform: scale(1); }
             50% { opacity: 0.6; transform: scale(1.02); }
         }
-        .live-glow {
-            animation: pulse-glow 2s infinite;
-        }
+        .live-glow { animation: pulse-glow 2s infinite; }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen transition-colors duration-300" id="bodyTheme">
+<body class="bg-slate-950 text-slate-100 min-h-screen" id="bodyTheme">
 
     <!-- Top Navigation Bar -->
     <header class="sticky top-0 z-50 backdrop-blur-md bg-slate-900/80 border-b border-slate-800">
@@ -32,7 +30,7 @@
                 </div>
                 <div>
                     <span class="text-2xl font-black tracking-wider bg-gradient-to-r from-amber-400 via-rose-400 to-purple-500 bg-clip-text text-transparent">MANJOMJAI</span>
-                    <span class="block text-[10px] text-slate-400 tracking-widest uppercase">Global Stock AI Predict</span>
+                    <span class="block text-[10px] text-slate-400 tracking-widest uppercase">Global Stock Predict</span>
                 </div>
             </div>
 
@@ -47,7 +45,7 @@
                     <i id="themeIcon" class="fa-solid fa-sun text-sm"></i>
                 </button>
 
-                <button onclick="openVipModal()" class="bg-gradient-to-r from-amber-500 to-rose-600 hover:from-amber-600 hover:to-rose-700 text-white font-semibold px-4 py-2 rounded-xl text-xs sm:text-sm shadow-lg shadow-rose-500/30 transition transform hover:-translate-y-0.5">
+                <button onclick="openVipModal()" class="bg-gradient-to-r from-amber-500 to-rose-600 hover:from-amber-600 hover:to-rose-700 text-white font-semibold px-4 py-2 rounded-xl text-xs sm:text-sm shadow-lg shadow-rose-500/30 transition">
                     <i class="fa-solid fa-crown mr-1.5"></i> <span data-i18n="vipBtn">VIP ဝင်ရန်</span>
                 </button>
             </div>
@@ -56,7 +54,7 @@
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
 
-        <!-- 1. Hero Section (Expanded Professional Stock Analysis Description) -->
+        <!-- 1. Hero Section -->
         <section class="relative rounded-3xl overflow-hidden bg-gradient-to-br from-slate-900 via-purple-950/40 to-slate-900 border border-slate-800 p-6 sm:p-10 shadow-2xl">
             <div class="absolute -right-10 -bottom-10 w-60 h-60 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
             
@@ -64,13 +62,13 @@
                 <div class="space-y-4 max-w-3xl">
                     <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-rose-500/10 text-rose-400 border border-rose-500/20 live-glow">
                         <span class="w-2 h-2 rounded-full bg-rose-500 mr-2 animate-ping"></span>
-                        <span data-i18n="liveBadge">LIVE - Advanced AI Stock Analysis & Prediction Platform</span>
+                        <span data-i18n="liveBadge">LIVE - Advanced Stock Analysis & Prediction Platform</span>
                     </span>
                     <h1 class="text-xl sm:text-3xl font-extrabold tracking-tight leading-snug">
-                        <span data-i18n="heroTitle">စတော့ဈေးကွက်များကို နက်နက်နဲနဲ ခွဲခြမ်းစိတ်ဖြာပြီး အဆင့်မြင့် AI နည်းပညာဖြင့် အတိကျဆုံး ခန့်မှန်းချက်များကို ဖော်ပြပေးနေသော ပလပ်ဖောင်း</span>
+                        <span data-i18n="heroTitle">စတော့ဈေးကွက်များကို နက်နက်နဲနဲ ခွဲခြမ်းစိတ်ဖြာပြီး အတိကျဆုံး ခန့်မှန်းချက်များကို ဖော်ပြပေးနေသော ပလပ်ဖောင်း</span>
                     </h1>
                     <p class="text-slate-400 text-xs sm:text-sm leading-relaxed" data-i18n="heroDesc">
-                        Manjomjai ဝဘ်ဆိုဒ်သည် ကမ္ဘာ့ထိပ်တန်း စတော့ဈေးကွက်များဖြစ်သော Dow Jones၊ ဟနွိုင်း (Hanoi)၊ ထိုင်း (Thailand SET) နှင့် အခြားသော ငွေကြေးဆိုင်ရာ အညွှန်းကိန်းများကို အချိန်နှင့်တပြေးညီ (Real-time) စောင့်ကြည့်စစ်ဆေးကာ ကိန်းဂဏန်းဆိုင်ရာ သမိုင်းကြောင်းအချက်အလက်များ၊ Trend ခေတ်ရေစီးကြောင်းများနှင့် AI ၏ အဆင့်မြင့်တွက်ချက်မှုပုံစံများကို ပေါင်းစပ်၍ အသေချာဆုံး ကံစမ်းခန့်မှန်းကွက်များကို အများပြည်သူနှင့် VIP အဖွဲ့ဝင်များအတွက် တိကျမှန်ကန်စွာ ထုတ်ပြန်ပေးနေပါသည်။
+                        Manjomjai ဝဘ်ဆိုဒ်သည် ကမ္ဘာ့ထိပ်တန်း စတော့ဈေးကွက်များဖြစ်သော Dow Jones၊ ဟနွိုင်း (Hanoi)၊ ထိုင်း (Thailand SET) နှင့် အခြားသော ငွေကြေးဆိုင်ရာ အညွှန်းကိန်းများကို အချိန်နှင့်တပြေးညီ (Real-time) စောင့်ကြည့်စစ်ဆေးကာ ကိန်းဂဏန်းဆိုင်ရာ သမိုင်းကြောင်းအချက်အလက်များ၊ Trend ခေတ်ရေစီးကြောင်းများနှင့် တွက်ချက်မှုပုံစံများကို ပေါင်းစပ်၍ အသေချာဆုံး ကံစမ်းခန့်မှန်းကွက်များကို အများပြည်သူနှင့် VIP အဖွဲ့ဝင်များအတွက် တိကျမှန်ကန်စွာ ထုတ်ပြန်ပေးနေပါသည်။
                     </p>
                 </div>
                 <div class="bg-slate-900/90 border border-slate-800 p-6 rounded-2xl text-center shadow-xl w-full md:w-80 shrink-0">
@@ -83,7 +81,7 @@
             </div>
         </section>
 
-        <!-- 2. Global Markets & Commodities Live Bar -->
+        <!-- 2. Global Markets Live Bar -->
         <section class="space-y-4">
             <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-2">
                 <i class="fa-solid fa-chart-pie text-cyan-400"></i> <span data-i18n="marketStatusBar">ကမ္ဘာ့စတော့နှင့် ကုန်စည်ဈေးနှုန်းများ (Live Status)</span>
@@ -122,104 +120,101 @@
             </div>
         </section>
 
-        <!-- 3. Today's AI Predictions (Dow Jones, Hanoi, Thailand SET with Dynamic Dates) -->
+        <!-- 3. Today's Predictions (Dow Jones, Hanoi, Thailand with 3-Digit Trading Numbers) -->
         <section class="space-y-6">
             <div class="flex items-center justify-between">
                 <h2 class="text-xl sm:text-2xl font-bold flex items-center gap-2">
-                    <i class="fa-solid fa-robot text-amber-500"></i> <span data-i18n="sectionStockTitle">AI ဖြင့် ခန့်မှန်းထားသော နေ့စဉ်စတော့ကွက်များ (AI Predictions)</span>
+                    <i class="fa-solid fa-bolt text-amber-500"></i> <span data-i18n="sectionStockTitle">နေ့စဉ်စတော့ ခန့်မှန်းချက်များနှင့် ကစားရန်ဂဏန်းများ</span>
                 </h2>
                 <span class="text-xs text-slate-400 bg-slate-900 px-3 py-1 rounded-lg border border-slate-800" id="liveDateBadge">Date: 06.09.2026</span>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Dow Jones AI Card -->
-                <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl hover:border-amber-500/50 transition duration-300 relative overflow-hidden group">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-bl-full pointer-events-none"></div>
+                <!-- Dow Jones Forecast -->
+                <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl hover:border-amber-500/50 transition duration-300 relative overflow-hidden">
                     <div class="flex justify-between items-start mb-4">
                         <div>
-                            <span class="text-xs font-semibold px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/20">US Market</span>
-                            <h3 class="text-xl font-bold mt-2">Dow Jones AI Forecast</h3>
+                            <span class="text-xs font-semibold px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/20">Dow Jones</span>
+                            <h3 class="text-lg font-bold mt-2">Dow Jones Forecast</h3>
                         </div>
-                        <span class="text-xs text-slate-400 font-mono ai-date-text">06.09.2026</span>
+                        <span class="text-xs text-slate-400 font-mono">06.09.2026</span>
                     </div>
                     <div class="bg-slate-950/60 rounded-xl p-4 border border-slate-800/80 my-4 text-center">
-                        <span class="text-xs text-slate-400 block mb-1">AI ခန့်မှန်းဂဏန်း (AI Pick)</span>
-                        <div class="text-3xl font-black bg-gradient-to-r from-amber-400 to-rose-500 bg-clip-text text-transparent live-glow">
-                            38 - 84 - 29
+                        <span class="text-xs text-slate-400 block mb-1">ဈေးကွက်ကစားရန် ဂဏန်း ၃ လုံး</span>
+                        <div class="text-2xl sm:text-3xl font-black bg-gradient-to-r from-amber-400 to-rose-500 bg-clip-text text-transparent font-mono">
+                            384 - 829 - 512
                         </div>
                     </div>
                     <div class="flex justify-between text-xs text-slate-400">
-                        <span>ခန့်မှန်းချက်: <strong class="text-slate-200">AI Accuracy 94%</strong></span>
+                        <span>သေချာမှုနှုန်း: <strong class="text-slate-200">94% Accuracy</strong></span>
                         <span class="text-emerald-400 font-medium">Auto Updated</span>
                     </div>
                 </div>
 
-                <!-- Hanoi AI Card -->
-                <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl hover:border-rose-500/50 transition duration-300 relative overflow-hidden group">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-rose-500/5 rounded-bl-full pointer-events-none"></div>
+                <!-- Hanoi Forecast -->
+                <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl hover:border-rose-500/50 transition duration-300 relative overflow-hidden">
                     <div class="flex justify-between items-start mb-4">
                         <div>
-                            <span class="text-xs font-semibold px-2.5 py-1 rounded-md bg-rose-500/10 text-rose-400 border border-rose-500/20">Vietnam Market</span>
-                            <h3 class="text-xl font-bold mt-2">Hanoi Stock AI Forecast</h3>
+                            <span class="text-xs font-semibold px-2.5 py-1 rounded-md bg-rose-500/10 text-rose-400 border border-rose-500/20">Hanoi Stock</span>
+                            <h3 class="text-lg font-bold mt-2">Hanoi Forecast</h3>
                         </div>
-                        <span class="text-xs text-slate-400 font-mono ai-date-text">06.09.2026</span>
+                        <span class="text-xs text-slate-400 font-mono">06.09.2026</span>
                     </div>
                     <div class="bg-slate-950/60 rounded-xl p-4 border border-slate-800/80 my-4 text-center">
-                        <span class="text-xs text-slate-400 block mb-1">AI ခန့်မှန်းဂဏန်း (AI Pick)</span>
-                        <div class="text-3xl font-black bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent live-glow">
-                            15 - 51 - 83
+                        <span class="text-xs text-slate-400 block mb-1">ဈေးကွက်ကစားရန် ဂဏန်း ၃ လုံး</span>
+                        <div class="text-2xl sm:text-3xl font-black bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent font-mono">
+                            151 - 583 - 704
                         </div>
                     </div>
                     <div class="flex justify-between text-xs text-slate-400">
-                        <span>ခန့်မှန်းချက်: <strong class="text-slate-200">AI Accuracy 91%</strong></span>
+                        <span>သေချာမှုနှုန်း: <strong class="text-slate-200">91% Accuracy</strong></span>
                         <span class="text-emerald-400 font-medium">Auto Updated</span>
                     </div>
                 </div>
 
-                <!-- Thailand SET AI Card -->
-                <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl hover:border-purple-500/50 transition duration-300 relative overflow-hidden group">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 rounded-bl-full pointer-events-none"></div>
+                <!-- Thailand Forecast -->
+                <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl hover:border-purple-500/50 transition duration-300 relative overflow-hidden">
                     <div class="flex justify-between items-start mb-4">
                         <div>
-                            <span class="text-xs font-semibold px-2.5 py-1 rounded-md bg-purple-500/10 text-purple-400 border border-purple-500/20">Thailand Market</span>
-                            <h3 class="text-xl font-bold mt-2">Thailand SET AI Forecast</h3>
+                            <span class="text-xs font-semibold px-2.5 py-1 rounded-md bg-purple-500/10 text-purple-400 border border-purple-500/20">Thailand SET</span>
+                            <h3 class="text-lg font-bold mt-2">Thailand Forecast</h3>
                         </div>
-                        <span class="text-xs text-slate-400 font-mono ai-date-text">06.09.2026</span>
+                        <span class="text-xs text-slate-400 font-mono">06.09.2026</span>
                     </div>
                     <div class="bg-slate-950/60 rounded-xl p-4 border border-slate-800/80 my-4 text-center">
-                        <span class="text-xs text-slate-400 block mb-1">AI ခန့်မှန်းဂဏန်း (AI Pick)</span>
-                        <div class="text-3xl font-black bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent live-glow">
-                            79 - 94 - 28
+                        <span class="text-xs text-slate-400 block mb-1">ဈေးကွက်ကစားရန် ဂဏန်း ၃ လုံး</span>
+                        <div class="text-2xl sm:text-3xl font-black bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent font-mono">
+                            794 - 928 - 361
                         </div>
                     </div>
                     <div class="flex justify-between text-xs text-slate-400">
-                        <span>ခန့်မှန်းချက်: <strong class="text-slate-200">AI Accuracy 96%</strong></span>
+                        <span>သေချာမှုနှုန်း: <strong class="text-slate-200">96% Accuracy</strong></span>
                         <span class="text-emerald-400 font-medium">Auto Updated</span>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 4. Daily Admin Card Upload Section (Featured Card Showcase) -->
+        <!-- 4. Admin Main Prediction Card for Today (Dynamic Card Showcase) -->
         <section class="bg-gradient-to-r from-slate-900 via-slate-900 to-purple-950/50 border border-amber-500/30 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
             <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div>
-                    <span class="text-xs font-semibold px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">Admin Featured Post</span>
-                    <h2 class="text-xl sm:text-2xl font-bold mt-2">ယနေ့အတွက် Admin တင်ထားသော ပင်မခန့်မှန်းကွက် ကဒ်</h2>
-                    <p class="text-xs sm:text-sm text-slate-400 mt-1">တရားဝင် Admin Panel မှ အချိန်နှင့်တပြေးညီ တင်ဆက်ပေးနေသော ပင်မကဒ်ဒီဇိုင်း</p>
+                    <span class="text-xs font-semibold px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">Admin Main Prediction Card</span>
+                    <h2 class="text-xl sm:text-2xl font-bold mt-2">ယနေ့အတွက် Admin တင်ထားသော ပင်မကဒ်</h2>
+                    <p class="text-xs sm:text-sm text-slate-400 mt-1">Admin Panel မှ တင်လိုက်သောကဒ်သည် ဤနေရာတွင် အလိုအလျောက် လာရောက်ပေါ်ပြမည်ဖြစ်ပါသည်။</p>
                 </div>
                 <div class="bg-slate-950 px-4 py-2 rounded-xl border border-slate-800 text-xs text-amber-400 font-mono">
                     <i class="fa-solid fa-circle-check mr-1.5 text-emerald-400"></i> Active Official Card
                 </div>
             </div>
 
-            <!-- Card Display Box (Similar to user's uploaded image style) -->
+            <!-- Card Display Box (Matches user's card layout style) -->
             <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 max-w-xl mx-auto shadow-2xl relative overflow-hidden text-center space-y-4">
                 <div class="absolute top-3 right-3 bg-rose-500/10 text-rose-400 border border-rose-500/20 px-3 py-1 rounded-lg text-xs font-mono font-bold">
                     678 လမ်းညွှန်
                 </div>
                 <div class="text-xs text-slate-400 uppercase tracking-widest">Manjomjai Official VIP Prediction</div>
-                <div class="text-4xl font-black bg-gradient-to-r from-amber-400 via-rose-400 to-purple-500 bg-clip-text text-transparent">
+                <div class="text-4xl font-black bg-gradient-to-r from-amber-400 via-rose-400 to-purple-500 bg-clip-text text-transparent font-mono">
                     7 - 8
                 </div>
                 <div class="grid grid-cols-3 gap-2 text-xs font-mono bg-slate-900/60 p-3 rounded-xl border border-slate-800 text-slate-300">
@@ -234,14 +229,14 @@
             </div>
         </section>
 
-        <!-- 5. Card History Section (Card-based Layout for past daily cards) -->
+        <!-- 5. Card History Section (Card-based layout for past cards) -->
         <section class="space-y-6">
             <div class="flex items-center justify-between">
                 <div>
                     <h2 class="text-xl sm:text-2xl font-bold flex items-center gap-2">
                         <i class="fa-solid fa-id-card text-cyan-400"></i> <span>ယခင်ကဒ်ဟောင်းများ မှတ်တမ်း (Card History)</span>
                     </h2>
-                    <p class="text-xs sm:text-sm text-slate-400 mt-1">အတိတ်ရက်များက Admin တင်ခဲ့သော ခန့်မှန်းကဒ်ပုံစံ မှတ်တမ်းဟောင်းများ</p>
+                    <p class="text-xs sm:text-sm text-slate-400 mt-1">ကြည့်ရှုသူများ မှန်/မမှန် ပြန်လည်စစ်ဆေးနိုင်ရန် ယခင်ရက်များက တင်ခဲ့သော ကဒ်မှတ်တမ်းများ</p>
                 </div>
             </div>
 
@@ -253,10 +248,13 @@
                         <span class="font-mono text-amber-400">05.09.2026</span>
                         <span class="bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/20 text-[10px]">အောင်မြင်သည်</span>
                     </div>
-                    <div class="text-center py-2">
-                        <span class="text-xs text-slate-400 block mb-1">ထွက်ဂဏန်း / ပင်မကွက်</span>
+                    <div class="text-center py-2 space-y-2">
+                        <span class="text-xs text-slate-400 block">ထွက်ဂဏန်း / ပင်မကွက်</span>
                         <div class="text-2xl font-bold text-rose-400 font-mono">5 - 0</div>
-                        <div class="text-xs text-slate-300 font-mono mt-1">50 - 51 - 71 - 72</div>
+                        <div class="grid grid-cols-2 gap-2 text-xs font-mono bg-slate-950 p-2 rounded-xl text-slate-300">
+                            <div>50 - 51</div>
+                            <div>71 - 72</div>
+                        </div>
                     </div>
                 </div>
 
@@ -266,10 +264,13 @@
                         <span class="font-mono text-amber-400">04.09.2026</span>
                         <span class="bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/20 text-[10px]">အောင်မြင်သည်</span>
                     </div>
-                    <div class="text-center py-2">
-                        <span class="text-xs text-slate-400 block mb-1">ထွက်ဂဏန်း / ပင်မကွက်</span>
+                    <div class="text-center py-2 space-y-2">
+                        <span class="text-xs text-slate-400 block">ထွက်ဂဏန်း / ပင်မကွက်</span>
                         <div class="text-2xl font-bold text-rose-400 font-mono">7 - 8</div>
-                        <div class="text-xs text-slate-300 font-mono mt-1">71 - 72 - 81 - 84</div>
+                        <div class="grid grid-cols-2 gap-2 text-xs font-mono bg-slate-950 p-2 rounded-xl text-slate-300">
+                            <div>71 - 72</div>
+                            <div>81 - 84</div>
+                        </div>
                     </div>
                 </div>
 
@@ -279,10 +280,13 @@
                         <span class="font-mono text-amber-400">03.09.2026</span>
                         <span class="bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/20 text-[10px]">အောင်မြင်သည်</span>
                     </div>
-                    <div class="text-center py-2">
-                        <span class="text-xs text-slate-400 block mb-1">ထွက်ဂဏန်း / ပင်မကွက်</span>
+                    <div class="text-center py-2 space-y-2">
+                        <span class="text-xs text-slate-400 block">ထွက်ဂဏန်း / ပင်မကွက်</span>
                         <div class="text-2xl font-bold text-rose-400 font-mono">3 - 9</div>
-                        <div class="text-xs text-slate-300 font-mono mt-1">34 - 35 - 91 - 92</div>
+                        <div class="grid grid-cols-2 gap-2 text-xs font-mono bg-slate-950 p-2 rounded-xl text-slate-300">
+                            <div>34 - 35</div>
+                            <div>91 - 92</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -294,7 +298,7 @@
         <p>&copy; 2026 Manjomjai.site — All Rights Reserved. (Domain: https://manjomjai.site)</p>
     </footer>
 
-    <!-- VIP Membership Modal -->
+    <!-- VIP Modal -->
     <div id="vipModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden p-4">
         <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-3xl p-6 sm:p-8 shadow-2xl relative space-y-6">
             <button onclick="closeVipModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white text-lg">
@@ -322,7 +326,7 @@
 
             <div class="space-y-3">
                 <label class="block text-xs text-slate-400" data-i18n="screenshotLabel">ငွေလွှဲစလစ် တင်ရန် (Upload Slip)</label>
-                <input type="file" class="w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-slate-955 hover:file:bg-amber-600 cursor-pointer bg-slate-950 rounded-xl border border-slate-800 p-2">
+                <input type="file" class="w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-600 cursor-pointer bg-slate-950 rounded-xl border border-slate-800 p-2">
             </div>
 
             <button onclick="alert('စလစ်တင်သွင်းမှု အောင်မြင်ပါသည်။ Admin မှ စစ်ဆေးပြီး ၁၅ မိနစ်အတွင်း VIP ဖွင့်ပေးပါမည်။')" class="w-full bg-gradient-to-r from-amber-500 to-rose-600 hover:from-amber-600 hover:to-rose-700 text-white font-bold py-3 rounded-xl text-sm shadow-lg shadow-rose-500/20 transition" data-i18n="submitSlip">
@@ -336,13 +340,13 @@
         const translations = {
             mm: {
                 vipBtn: "VIP ဝင်ရန်",
-                liveBadge: "LIVE - Advanced AI Stock Analysis & Prediction Platform",
-                heroTitle: "စတော့ဈေးကွက်များကို နက်နက်နဲနဲ ခွဲခြမ်းစိတ်ဖြာပြီး အဆင့်မြင့် AI နည်းပညာဖြင့် အတိကျဆုံး ခန့်မှန်းချက်များကို ဖော်ပြပေးနေသော ပလပ်ဖောင်း",
-                heroDesc: "Manjomjai ဝဘ်ဆိုဒ်သည် ကမ္ဘာ့ထိပ်တန်း စတော့ဈေးကွက်များဖြစ်သော Dow Jones၊ ဟနွိုင်း (Hanoi)၊ ထိုင်း (Thailand SET) နှင့် အခြားသော ငွေကြေးဆိုင်ရာ အညွှန်းကိန်းများကို အချိန်နှင့်တပြေးညီ (Real-time) စောင့်ကြည့်စစ်ဆေးကာ ကိန်းဂဏန်းဆိုင်ရာ သမိုင်းကြောင်းအချက်အလက်များ၊ Trend ခေတ်ရေစီးကြောင်းများနှင့် AI ၏ အဆင့်မြင့်တွက်ချက်မှုပုံစံများကို ပေါင်းစပ်၍ အသေချာဆုံး ကံစမ်းခန့်မှန်းကွက်များကို အများပြည်သူနှင့် VIP အဖွဲ့ဝင်များအတွက် တိကျမှန်ကန်စွာ ထုတ်ပြန်ပေးနေပါသည်။",
+                liveBadge: "LIVE - Advanced Stock Analysis & Prediction Platform",
+                heroTitle: "စတော့ဈေးကွက်များကို နက်နက်နဲနဲ ခွဲခြမ်းစိတ်ဖြာပြီး အတိကျဆုံး ခန့်မှန်းချက်များကို ဖော်ပြပေးနေသော ပလပ်ဖောင်း",
+                heroDesc: "Manjomjai ဝဘ်ဆိုဒ်သည် ကမ္ဘာ့ထိပ်တန်း စတော့ဈေးကွက်များဖြစ်သော Dow Jones၊ ဟနွိုင်း (Hanoi)၊ ထိုင်း (Thailand SET) နှင့် အခြားသော ငွေကြေးဆိုင်ရာ အညွှန်းကိန်းများကို အချိန်နှင့်တပြေးညီ (Real-time) စောင့်ကြည့်စစ်ဆေးကာ ကိန်းဂဏန်းဆိုင်ရာ သမိုင်းကြောင်းအချက်အလက်များနှင့် တွက်ချက်မှုပုံစံများကို ပေါင်းစပ်၍ အသေချာဆုံး ကံစမ်းခန့်မှန်းကွက်များကို အများပြည်သူနှင့် VIP အဖွဲ့ဝင်များအတွက် တိကျမှန်ကန်စွာ ထုတ်ပြန်ပေးနေပါသည်။",
                 todayDateLabel: "ယနေ့ရက်စွဲ (Date)",
                 statusActive: "System Status: Normal & Active",
                 marketStatusBar: "ကမ္ဘာ့စတော့နှင့် ကုန်စည်ဈေးနှုန်းများ (Live Status)",
-                sectionStockTitle: "AI ဖြင့် ခန့်မှန်းထားသော နေ့စဉ်စတော့ကွက်များ (AI Predictions)",
+                sectionStockTitle: "နေ့စဉ်စတော့ ခန့်မှန်းချက်များနှင့် ကစားရန်ဂဏန်းများ",
                 modalTitle: "VIP မန်ဘာဝင်ရောက်ရန်",
                 modalDesc: "KBZPay၊ Wave Money သို့မဟုတ် MMQR ဖြင့် ငွေလွှဲ၍ မန်ဘာဝင်နိုင်ပါသည်။",
                 screenshotLabel: "ငွေလွှဲစလစ် တင်ရန် (Upload Slip)",
@@ -350,13 +354,13 @@
             },
             th: {
                 vipBtn: "สมัคร VIP",
-                liveBadge: "LIVE - Advanced AI Stock Analysis & Prediction Platform",
-                heroTitle: "แพลตฟอร์มวิเคราะห์ตลาดหุ้นเชิงลึกและการคาดการณ์ด้วย AI ที่แม่นยำที่สุด",
-                heroDesc: "เว็บไซต์ Manjomjai ติดตามตลาดหุ้นชั้นนำระดับโลก เช่น Dow Jones, ฮานอย (Hanoi), ไทย (Thailand SET) และดัชนีการเงินอื่นๆ แบบเรียลไทม์ พร้อมผสานข้อมูลสถิติย้อนหลังและอัลกอริทึม AI ขั้นสูงเพื่อออกเลขเด็ดและแนวทางที่แม่นยำที่สุด",
+                liveBadge: "LIVE - Advanced Stock Analysis & Prediction Platform",
+                heroTitle: "แพลตฟอร์มวิเคราะห์ตลาดหุ้นเชิงลึกและการคาดการณ์ที่แม่นยำที่สุด",
+                heroDesc: "เว็บไซต์ Manjomjai ติดตามตลาดหุ้นชั้นนำระดับโลก เช่น Dow Jones, ฮานอย (Hanoi), ไทย (Thailand SET) และดัชนีการเงินอื่นๆ แบบเรียลไทม์ พร้อมผสานข้อมูลสถิติย้อนหลังและแนวทางที่แม่นยำที่สุด",
                 todayDateLabel: "วันที่ปัจจุบัน (Date)",
                 statusActive: "สถานะระบบ: ปกติและใช้งานได้",
                 marketStatusBar: "สถานะตลาดโลกและสินค้าโภคภัณฑ์ (Live)",
-                sectionStockTitle: "เลขเด็ดพยากรณ์ประจำวันด้วย AI (AI Predictions)",
+                sectionStockTitle: "การคาดการณ์หุ้นประจำวันและตัวเลขสำหรับเล่น",
                 modalTitle: "สมัครสมาชิก VIP",
                 modalDesc: "ชำระเงินผ่าน KBZPay, Wave Money หรือ MMQR เพื่อสมัครสมาชิก",
                 screenshotLabel: "อัปโหลดสลิปการโอนเงิน (Upload Slip)",
@@ -364,13 +368,13 @@
             },
             en: {
                 vipBtn: "Join VIP",
-                liveBadge: "LIVE - Advanced AI Stock Analysis & Prediction Platform",
-                heroTitle: "Advanced AI-Powered Stock Market Analysis & Most Accurate Predictions",
-                heroDesc: "Manjomjai platform monitors global leading markets including Dow Jones, Hanoi, Thailand SET, and financial indices in real-time, combining historical statistics and advanced AI algorithms to deliver the most accurate predictions.",
+                liveBadge: "LIVE - Advanced Stock Analysis & Prediction Platform",
+                heroTitle: "Advanced Stock Market Analysis & Most Accurate Predictions",
+                heroDesc: "Manjomjai platform monitors global leading markets including Dow Jones, Hanoi, Thailand SET, and financial indices in real-time, combining historical statistics to deliver the most accurate predictions.",
                 todayDateLabel: "Current Date",
                 statusActive: "System Status: Normal & Active",
                 marketStatusBar: "Global Markets & Commodities Live Status",
-                sectionStockTitle: "AI-Powered Daily Stock Predictions",
+                sectionStockTitle: "Daily Stock Predictions & Trading Numbers",
                 modalTitle: "Join VIP Membership",
                 modalDesc: "Transfer via KBZPay, Wave Money or MMQR to join membership.",
                 screenshotLabel: "Upload Transfer Slip",
