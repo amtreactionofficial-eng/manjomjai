@@ -286,8 +286,9 @@
 
     <script>
         // ============================================================
-        // CONFIG - JSONBin (မင်းရဲ့ Data)
+        // CONFIG - JSONBin (✅ မှန်ကန်တဲ့ API Key)
         // ============================================================
+        // ဒီ API Key က Screenshot ထဲက X-MASTER-KEY အတိုင်းပါ
         const JSONBIN_API_KEY = '$2a$10$6mZWgwXg/6P6a9PdZ0DLT0uxC/b7Sv81xHPw6wJ1U.cuGoCDoPR.G';
         const JSONBIN_BIN_ID = '6a9d7740da38895dfe4004a0';
 
@@ -320,20 +321,33 @@
         // ============================================================
         async function fetchCardsFromCloud() {
             try {
+                console.log('📥 Fetching cards from cloud...');
                 const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
                     headers: { 'X-Master-Key': JSONBIN_API_KEY }
                 });
-                if (!response.ok) throw new Error('Failed to fetch');
+                
+                if (!response.ok) {
+                    console.error('❌ Fetch failed with status:', response.status);
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
                 const data = await response.json();
+                console.log('✅ Fetched data:', data);
                 return data.record?.cards || [];
             } catch (error) {
-                console.error('Cloud fetch error:', error);
-                return getCachedCards();
+                console.error('❌ Cloud fetch error:', error);
+                const cached = getCachedCards();
+                if (cached.length > 0) {
+                    console.log('📦 Using cached data');
+                    return cached;
+                }
+                return [];
             }
         }
 
         async function saveCardsToCloud(cards) {
             try {
+                console.log('📤 Saving cards to cloud...', cards.length);
                 const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
                     method: 'PUT',
                     headers: {
@@ -342,15 +356,26 @@
                     },
                     body: JSON.stringify({ cards: cards })
                 });
-                if (!response.ok) throw new Error('Failed to save');
+                
+                if (!response.ok) {
+                    console.error('❌ Save failed with status:', response.status);
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('✅ Save successful:', data);
+                
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(cards));
+                
                 document.getElementById('syncStatus').textContent = '✅ Synced';
                 document.getElementById('syncStatus').className = 'text-xs text-emerald-400 hidden sm:inline';
                 return true;
             } catch (error) {
-                console.error('Cloud save error:', error);
+                console.error('❌ Cloud save error:', error);
                 document.getElementById('syncStatus').textContent = '❌ Sync Failed';
                 document.getElementById('syncStatus').className = 'text-xs text-rose-400 hidden sm:inline';
+                
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(cards));
                 return false;
             }
         }
@@ -380,7 +405,8 @@
                 renderHistory();
                 return card;
             }
-            return null;
+            renderHistory();
+            return card;
         }
 
         async function deleteCard(id) {
@@ -392,45 +418,50 @@
                 renderHistory();
                 return true;
             }
-            return false;
+            renderHistory();
+            return true;
         }
 
         // ============================================================
         // RENDER HISTORY
         // ============================================================
         async function renderHistory() {
-            const cards = await getCards();
-            const container = document.getElementById('cardHistory');
-            const empty = document.getElementById('emptyHistory');
-            const count = document.getElementById('cardCount');
+            try {
+                const cards = await getCards();
+                const container = document.getElementById('cardHistory');
+                const empty = document.getElementById('emptyHistory');
+                const count = document.getElementById('cardCount');
 
-            count.textContent = `${cards.length} ကဒ်`;
+                count.textContent = `${cards.length} ကဒ်`;
 
-            if (cards.length === 0) {
-                container.innerHTML = '';
-                empty.style.display = 'block';
-                return;
-            }
-            empty.style.display = 'none';
+                if (cards.length === 0) {
+                    container.innerHTML = '';
+                    empty.style.display = 'block';
+                    return;
+                }
+                empty.style.display = 'none';
 
-            container.innerHTML = cards.map(card => `
-                <div class="history-card">
-                    <div class="card-image-container">
-                        <img src="${card.image}" alt="Card" 
-                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22600%22 height=%22338%22%3E%3Crect fill=%22%231e293b%22 width=%22600%22 height=%22338%22/%3E%3Ctext x=%22300%22 y=%22169%22 text-anchor=%22middle%22 fill=%22%2364748b%22 font-size=%2220%22 font-family=%22sans-serif%22%3ENo Image%3C/text%3E%3C/svg%3E'">
-                    </div>
-                    <div class="p-4 space-y-2">
-                        <div class="flex items-center justify-between pt-1">
-                            <span class="text-[9px] text-slate-600">
-                                <i class="fa-regular fa-clock mr-1"></i> ${new Date(card.createdAt).toLocaleDateString()}
-                            </span>
-                            <button onclick="deleteCard('${card.id}')" class="delete-btn text-slate-500 hover:text-rose-400 text-sm px-3 py-1 rounded-lg hover:bg-rose-500/10 transition-all">
-                                <i class="fa-solid fa-trash-can mr-1"></i> ဖျက်
-                            </button>
+                container.innerHTML = cards.map(card => `
+                    <div class="history-card">
+                        <div class="card-image-container">
+                            <img src="${card.image}" alt="Card" 
+                                 onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22600%22 height=%22338%22%3E%3Crect fill=%22%231e293b%22 width=%22600%22 height=%22338%22/%3E%3Ctext x=%22300%22 y=%22169%22 text-anchor=%22middle%22 fill=%22%2364748b%22 font-size=%2220%22 font-family=%22sans-serif%22%3ENo Image%3C/text%3E%3C/svg%3E'">
+                        </div>
+                        <div class="p-4 space-y-2">
+                            <div class="flex items-center justify-between pt-1">
+                                <span class="text-[9px] text-slate-600">
+                                    <i class="fa-regular fa-clock mr-1"></i> ${new Date(card.createdAt).toLocaleDateString()}
+                                </span>
+                                <button onclick="deleteCard('${card.id}')" class="delete-btn text-slate-500 hover:text-rose-400 text-sm px-3 py-1 rounded-lg hover:bg-rose-500/10 transition-all">
+                                    <i class="fa-solid fa-trash-can mr-1"></i> ဖျက်
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            `).join('');
+                `).join('');
+            } catch (error) {
+                console.error('❌ Render error:', error);
+            }
         }
 
         // ============================================================
@@ -457,22 +488,26 @@
 
             const reader = new FileReader();
             reader.onload = async function(event) {
-                const newCard = { image: event.target.result };
-                const result = await addCard(newCard);
-                if (result) {
-                    status.className = 'mt-4 p-3 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
-                    status.textContent = '✅ ကဒ်တင်ပြီးပါပြီ။ အားလုံးမြင်ရမည်။';
-                    document.getElementById('cardForm').reset();
+                try {
+                    const newCard = { image: event.target.result };
+                    const result = await addCard(newCard);
+                    if (result) {
+                        status.className = 'mt-4 p-3 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
+                        status.textContent = '✅ ကဒ်တင်ပြီးပါပြီ။ အားလုံးမြင်ရမည်။';
+                        document.getElementById('cardForm').reset();
+                    } else {
+                        status.className = 'mt-4 p-3 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20';
+                        status.textContent = '⚠️ Cloud မှာ မသိမ်းနိုင်ပေမယ့် Local မှာ သိမ်းထားပါသည်။';
+                    }
+                } catch (error) {
+                    status.className = 'mt-4 p-3 rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/20';
+                    status.textContent = '❌ ကဒ်တင်မအောင်မြင်ပါ။ Error: ' + error.message;
+                } finally {
                     setTimeout(() => {
                         status.classList.add('hidden');
                         submitBtn.disabled = false;
                         submitBtn.innerHTML = '<i class="fa-solid fa-upload mr-2"></i> ကဒ်တင်မည်';
                     }, 5000);
-                } else {
-                    status.className = 'mt-4 p-3 rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/20';
-                    status.textContent = '❌ ကဒ်တင်မအောင်မြင်ပါ။ နောက်မှကြိုးစားပါ။';
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = '<i class="fa-solid fa-upload mr-2"></i> ကဒ်တင်မည်';
                 }
             };
             reader.readAsDataURL(file);
@@ -528,8 +563,8 @@
             checkSession();
             console.log('✅ Admin Panel loaded!');
             console.log('🔐 Username: aungminthu');
-            console.log('☁️ Using JSONBin for cloud storage');
-            console.log('📦 Bin ID:', JSONBIN_BIN_ID);
+            console.log('☁️ Using JSONBin with Bin ID:', JSONBIN_BIN_ID);
+            console.log('🔑 API Key:', JSONBIN_API_KEY.substring(0, 20) + '...');
         };
     </script>
 
