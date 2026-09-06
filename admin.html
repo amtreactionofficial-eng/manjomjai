@@ -26,9 +26,13 @@
                     <i class="fa-solid fa-lock text-2xl"></i>
                 </div>
                 <h2 class="text-2xl font-bold">Admin Login</h2>
-                <p class="text-xs text-slate-400">Manjomjai Dashboard သို့ ဝင်ရန် စကားဝှက်ထည့်ပါ</p>
+                <p class="text-xs text-slate-400">Manjomjai Dashboard သို့ ဝင်ရန် အချက်အလက်ထည့်ပါ</p>
             </div>
             <div class="space-y-4">
+                <div>
+                    <input type="text" id="adminUser" placeholder="Username ထည့်ရန်..." 
+                           class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-amber-500">
+                </div>
                 <div class="relative">
                     <input type="password" id="adminPassword" placeholder="Password ထည့်ရန်..." 
                            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-amber-500 pr-10">
@@ -39,12 +43,12 @@
                 <button onclick="handleLogin()" class="w-full bg-gradient-to-r from-amber-500 to-rose-500 text-white font-bold py-3 rounded-xl text-sm shadow-lg shadow-rose-500/20 hover:opacity-95 transition-all">
                     လော့ဂ်အင်ဝင်မည်
                 </button>
-                <p id="loginError" class="text-rose-400 text-xs text-center hidden">စကားဝှက် မှားယွင်းနေပါသည်။</p>
+                <p id="loginError" class="text-rose-400 text-xs text-center hidden">Username သို့မဟုတ် Password မှားယွင်းနေပါသည်။</p>
             </div>
         </div>
     </div>
 
-    <!-- ADMIN DASHBOARD (Hidden by default) -->
+    <!-- ADMIN DASHBOARD -->
     <div id="adminDashboard" class="hidden max-w-6xl mx-auto px-4 py-8 space-y-8">
         <header class="flex items-center justify-between border-b border-slate-800 pb-4">
             <div class="flex items-center space-x-3">
@@ -58,18 +62,18 @@
             </button>
         </header>
 
-        <!-- ADD CARD SECTION -->
+        <!-- ADD CARD SECTION (File Upload) -->
         <section class="card-gradient rounded-2xl p-6 space-y-4 border border-slate-800">
             <h2 class="text-lg font-bold flex items-center gap-2">
-                <i class="fa-solid fa-plus-circle text-amber-400"></i> ပုံအသစ်ထည့်ရန် (Add Card)
+                <i class="fa-solid fa-plus-circle text-amber-400"></i> ပုံအသစ်ထည့်ရန် (Upload Image)
             </h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="md:col-span-2">
-                    <input type="text" id="imageUrlInput" placeholder="ပုံ URL (သို့) Imgur/GitHub Image Link ထည့်ရန်..." 
-                           class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-amber-500">
+                    <input type="file" id="imageFileInput" accept="image/*" 
+                           class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-white hover:file:bg-amber-600 focus:outline-none">
                 </div>
                 <button onclick="addNewCard()" id="addBtn" class="bg-gradient-to-r from-amber-500 to-rose-500 text-white font-bold py-3 rounded-xl text-sm shadow-lg hover:opacity-95 transition-all flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-cloud-arrow-up"></i> တင်မည် (Add)
+                    <i class="fa-solid fa-cloud-arrow-up"></i> တင်မည် (Upload)
                 </button>
             </div>
             <p id="statusMsg" class="text-xs text-slate-400"></p>
@@ -90,18 +94,15 @@
     </div>
 
     <script>
-        // GitHub Config
         const GITHUB_USERNAME = 'amtreactionofficial-eng';
         const GITHUB_REPO = 'stock-app';
         const GITHUB_BRANCH = 'main';
         const FILE_PATH = 'cards.json';
-        
-        // Token ထည့်သွင်းပြီးပါပြီ
         const GITHUB_TOKEN = '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'; 
 
-        const ADMIN_PASS = '123456';
+        const ADMIN_USER = 'aungminthu';
+        const ADMIN_PASS = '@@aungminthu';
 
-        // Password မျက်လုံးအဖွင့်အပိတ် လုပ်ဆောင်ချက်
         function togglePasswordVisibility() {
             const passwordInput = document.getElementById('adminPassword');
             const eyeIcon = document.getElementById('eyeIcon');
@@ -117,8 +118,9 @@
         }
 
         function handleLogin() {
+            const user = document.getElementById('adminUser').value.trim();
             const pass = document.getElementById('adminPassword').value;
-            if (pass === ADMIN_PASS) {
+            if (user === ADMIN_USER && pass === ADMIN_PASS) {
                 localStorage.setItem('manjomjai_admin_logged', 'true');
                 showDashboard();
             } else {
@@ -138,24 +140,21 @@
             loadAdminCards();
         }
 
-        // Auto login check
         window.onload = function() {
             if (localStorage.getItem('manjomjai_admin_logged') === 'true') {
                 showDashboard();
             }
         };
 
-        // GitHub ကနေ လက်ရှိ JSON ဖိုင်ကို ဆွဲထုတ်ခြင်း
         async function getGitHubFile() {
             const url = `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/${FILE_PATH}`;
             const res = await fetch(url, {
                 headers: { 'Authorization': `token ${GITHUB_TOKEN}` }
             });
-            if (!res.ok) throw new Error('GitHub data fetch failed');
+            if (!res.ok) throw new Error('GitHub data fetch failed (Repository ဒါမှမဟုတ် File အမည် စစ်ဆေးပါ)');
             return await res.json();
         }
 
-        // Admin panel ထဲမှာ ပုံများပြသရန်
         async function loadAdminCards() {
             const listContainer = document.getElementById('adminCardList');
             listContainer.innerHTML = '<p class="text-xs text-slate-400 col-span-full text-center py-4">ဒေတာများကို ဆွဲထုတ်နေပါသည်...</p>';
@@ -188,58 +187,67 @@
             }
         }
 
-        // ပုံအသစ်ထည့်ခြင်း
-        async function addNewCard() {
-            const urlInput = document.getElementById('imageUrlInput').value.trim();
+        // ဖိုင်ကို ရွေးပြီး Base64 ပြောင်းကာ GitHub သို့ တင်ခြင်း
+        function addNewCard() {
+            const fileInput = document.getElementById('imageFileInput');
             const statusMsg = document.getElementById('statusMsg');
-            if (!urlInput) {
-                statusMsg.textContent = 'ကျေးဇူးပြု၍ ပုံ URL ထည့်ပါ။';
+            
+            if (fileInput.files.length === 0) {
+                statusMsg.textContent = 'ကျေးဇူးပြု၍ တင်မည့်ပုံကို ရွေးချယ်ပါ။';
                 statusMsg.className = 'text-xs text-rose-400';
                 return;
             }
 
-            statusMsg.textContent = 'GitHub သို့ တင်နေပါသည်...';
+            const file = fileInput.files[0];
+            statusMsg.textContent = 'ပုံကို ဖတ်နေပါသည်...';
             statusMsg.className = 'text-xs text-amber-400';
 
-            try {
-                const fileData = await getGitHubFile();
-                const contentDecoded = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
-                let cards = Array.isArray(contentDecoded) ? contentDecoded : (contentDecoded.cards || []);
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                const base64Image = e.target.result; // Image Base64 Data
 
-                const newCard = {
-                    image: urlInput,
-                    createdAt: new Date().toISOString()
-                };
-                cards.push(newCard);
+                try {
+                    statusMsg.textContent = 'GitHub သို့ ပုံနှင့်ဒေတာများ တင်နေပါသည်...';
+                    
+                    const fileData = await getGitHubFile();
+                    const contentDecoded = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+                    let cards = Array.isArray(contentDecoded) ? contentDecoded : (contentDecoded.cards || []);
 
-                const updatedContent = btoa(unescape(encodeURIComponent(JSON.stringify(cards, null, 2))));
-                const updateRes = await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/${FILE_PATH}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `token ${GITHUB_TOKEN}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        message: 'Add new stock card',
-                        content: updatedContent,
-                        sha: fileData.sha,
-                        branch: GITHUB_BRANCH
-                    })
-                });
+                    const newCard = {
+                        image: base64Image,
+                        createdAt: new Date().toISOString()
+                    };
+                    cards.push(newCard);
 
-                if (!updateRes.ok) throw new Error('Failed to update GitHub');
+                    const updatedContent = btoa(unescape(encodeURIComponent(JSON.stringify(cards, null, 2))));
+                    const updateRes = await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/${FILE_PATH}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `token ${GITHUB_TOKEN}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            message: 'Add new image card via admin',
+                            content: updatedContent,
+                            sha: fileData.sha,
+                            branch: GITHUB_BRANCH
+                        })
+                    });
 
-                statusMsg.textContent = '✅ အောင်မြင်စွာ တင်ပြီးပါပြီ။ User ဘက်တွင်လည်း ချက်ချင်းပေါ်ပါမည်။';
-                statusMsg.className = 'text-xs text-emerald-400';
-                document.getElementById('imageUrlInput').value = '';
-                loadAdminCards();
-            } catch (err) {
-                statusMsg.textContent = `❌ အမှားအယွင်းရှိသည်: ${err.message}`;
-                statusMsg.className = 'text-xs text-rose-400';
-            }
+                    if (!updateRes.ok) throw new Error('GitHub သို့ တင်၍မရပါ။');
+
+                    statusMsg.textContent = '✅ အောင်မြင်စွာ တင်ပြီးပါပြီ။ User ဘက်တွင်လည်း ချက်ချင်းပေါ်ပါမည်။';
+                    statusMsg.className = 'text-xs text-emerald-400';
+                    fileInput.value = '';
+                    loadAdminCards();
+                } catch (err) {
+                    statusMsg.textContent = `❌ အမှားအယွင်းရှိသည်: ${err.message}`;
+                    statusMsg.className = 'text-xs text-rose-400';
+                }
+            };
+            reader.readAsDataURL(file);
         }
 
-        // ပုံဖျက်ခြင်း
         async function deleteCard(index) {
             if (!confirm('ဤပုံကို ဖျတ်ရန် သေချာပါသလား?')) return;
 
@@ -258,14 +266,14 @@
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        message: 'Delete stock card',
+                        message: 'Delete image card via admin',
                         content: updatedContent,
                         sha: fileData.sha,
                         branch: GITHUB_BRANCH
                     })
                 });
 
-                if (!updateRes.ok) throw new Error('Failed to delete from GitHub');
+                if (!updateRes.ok) throw new Error('GitHub မှ ဖြတ်၍မရပါ။');
 
                 alert('အောင်မြင်စွာ ဖျတ်ပြီးပါပြီ။ User ဘက်တွင်ပါ ပျောက်သွားပါမည်။');
                 loadAdminCards();
