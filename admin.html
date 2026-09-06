@@ -286,17 +286,15 @@
 
     <script>
         // ============================================================
-        // CONFIG - JSONBin (API Key အသစ်)
+        // CONFIG - Npoint.io (Read-Only)
         // ============================================================
-        const JSONBIN_API_KEY = '$2a$10$4uUGngsWb2sP598etWyRrO9ijJlYBh.zqRwf.wactawO92RT7o3W2';
-        const JSONBIN_BIN_ID = '6a9d7740da38895dfe4004a0';
+        // 📌 မင်းရဲ့ Npoint URL
+        const NPOINT_URL = 'https://api.npoint.io/530d726853626cde2939';
 
         const ADMIN_CREDENTIALS = {
             username: 'aungminthu',
             password: '@@aungminthu'
         };
-
-        const STORAGE_KEY = 'manjomjai_cards_cache';
 
         // ============================================================
         // TOGGLE PASSWORD
@@ -316,73 +314,20 @@
         }
 
         // ============================================================
-        // JSONBIN FUNCTIONS
+        // NPOINT FUNCTIONS
         // ============================================================
-        async function fetchCardsFromCloud() {
+        async function getCards() {
             try {
-                console.log('📥 Fetching from JSONBin...');
-                const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
-                    headers: { 'X-Master-Key': JSONBIN_API_KEY }
-                });
+                console.log('📥 Fetching from Npoint...');
+                const response = await fetch(NPOINT_URL);
                 
-                if (!response.ok) {
-                    console.error('❌ Fetch failed with status:', response.status);
-                    throw new Error(`HTTP ${response.status}`);
-                }
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 
                 const data = await response.json();
                 console.log('✅ Fetched data:', data);
-                return data.record?.cards || [];
+                return data.cards || [];
             } catch (error) {
-                console.error('❌ Cloud fetch error:', error);
-                const cached = getCachedCards();
-                if (cached.length > 0) {
-                    console.log('📦 Using cached data');
-                    return cached;
-                }
-                return [];
-            }
-        }
-
-        async function saveCardsToCloud(cards) {
-            try {
-                console.log('📤 Saving cards to cloud...', cards.length);
-                const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Master-Key': JSONBIN_API_KEY
-                    },
-                    body: JSON.stringify({ cards: cards })
-                });
-                
-                if (!response.ok) {
-                    console.error('❌ Save failed with status:', response.status);
-                    throw new Error(`HTTP ${response.status}`);
-                }
-                
-                const data = await response.json();
-                console.log('✅ Save successful:', data);
-                
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(cards));
-                
-                document.getElementById('syncStatus').textContent = '✅ Synced';
-                document.getElementById('syncStatus').className = 'text-xs text-emerald-400 hidden sm:inline';
-                return true;
-            } catch (error) {
-                console.error('❌ Cloud save error:', error);
-                document.getElementById('syncStatus').textContent = '❌ Sync Failed';
-                document.getElementById('syncStatus').className = 'text-xs text-rose-400 hidden sm:inline';
-                
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(cards));
-                return false;
-            }
-        }
-
-        function getCachedCards() {
-            try {
-                return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-            } catch {
+                console.error('❌ Fetch error:', error);
                 return [];
             }
         }
@@ -390,33 +335,38 @@
         // ============================================================
         // DATA FUNCTIONS
         // ============================================================
-        async function getCards() {
-            return await fetchCardsFromCloud();
-        }
-
         async function addCard(card) {
-            const cards = await getCards();
+            // Npoint.io က Read-Only ဖြစ်တဲ့အတွက် LocalStorage မှာသိမ်းမယ်
+            const cards = getLocalCards();
             card.id = Date.now().toString(36) + Math.random().toString(36).substr(2, 6);
             card.createdAt = new Date().toISOString();
             cards.unshift(card);
-            const success = await saveCardsToCloud(cards);
-            if (success) {
-                renderHistory();
-                return card;
-            }
+            saveLocalCards(cards);
             renderHistory();
+            
+            // Npoint ကိုလည်း update လုပ်ဖို့ အကြောင်းကြားမယ်
+            alert('✅ ကဒ်ကို Local Storage မှာ သိမ်းထားပါသည်။\n\n⚠️ Npoint.io က Read-Only ဖြစ်တဲ့အတွက် အားလုံးမြင်ရဖို့ Npoint မှာ JSON ကို ကိုယ်တိုင် Update လုပ်ပေးရပါမယ်။');
+            
             return card;
         }
 
-        async function deleteCard(id) {
-            if (!confirm('❌ ဒီကဒ်ကို ဖျက်မှာသေချာလား?\n\n⚠️ User ဘက်မှာပါ ပျက်သွားမယ်။')) return false;
-            let cards = await getCards();
-            cards = cards.filter(c => c.id !== id);
-            const success = await saveCardsToCloud(cards);
-            if (success) {
-                renderHistory();
-                return true;
+        function getLocalCards() {
+            try {
+                return JSON.parse(localStorage.getItem('manjomjai_cards')) || [];
+            } catch {
+                return [];
             }
+        }
+
+        function saveLocalCards(cards) {
+            localStorage.setItem('manjomjai_cards', JSON.stringify(cards));
+        }
+
+        function deleteLocalCard(id) {
+            if (!confirm('❌ ဒီကဒ်ကို ဖျက်မှာသေချာလား?\n\n⚠️ User ဘက်မှာပါ ပျက်သွားမယ်။')) return false;
+            let cards = getLocalCards();
+            cards = cards.filter(c => c.id !== id);
+            saveLocalCards(cards);
             renderHistory();
             return true;
         }
@@ -426,6 +376,7 @@
         // ============================================================
         async function renderHistory() {
             try {
+                // Npoint ကနေယူမယ် (User ကြည့်တဲ့အတိုင်း)
                 const cards = await getCards();
                 const container = document.getElementById('cardHistory');
                 const empty = document.getElementById('emptyHistory');
@@ -451,7 +402,7 @@
                                 <span class="text-[9px] text-slate-600">
                                     <i class="fa-regular fa-clock mr-1"></i> ${new Date(card.createdAt).toLocaleDateString()}
                                 </span>
-                                <button onclick="deleteCard('${card.id}')" class="delete-btn text-slate-500 hover:text-rose-400 text-sm px-3 py-1 rounded-lg hover:bg-rose-500/10 transition-all">
+                                <button onclick="deleteLocalCard('${card.id}')" class="delete-btn text-slate-500 hover:text-rose-400 text-sm px-3 py-1 rounded-lg hover:bg-rose-500/10 transition-all">
                                     <i class="fa-solid fa-trash-can mr-1"></i> ဖျက်
                                 </button>
                             </div>
@@ -492,15 +443,15 @@
                     const result = await addCard(newCard);
                     if (result) {
                         status.className = 'mt-4 p-3 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
-                        status.textContent = '✅ ကဒ်တင်ပြီးပါပြီ။ အားလုံးမြင်ရမည်။';
+                        status.textContent = '✅ ကဒ်ကို Local Storage မှာ သိမ်းထားပါသည်။';
                         document.getElementById('cardForm').reset();
                     } else {
                         status.className = 'mt-4 p-3 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20';
-                        status.textContent = '⚠️ Cloud မှာ မသိမ်းနိုင်ပေမယ့် Local မှာ သိမ်းထားပါသည်။';
+                        status.textContent = '⚠️ ကဒ်တင်မအောင်မြင်ပါ။';
                     }
                 } catch (error) {
                     status.className = 'mt-4 p-3 rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/20';
-                    status.textContent = '❌ ကဒ်တင်မအောင်မြင်ပါ။ Error: ' + error.message;
+                    status.textContent = '❌ Error: ' + error.message;
                 } finally {
                     setTimeout(() => {
                         status.classList.add('hidden');
@@ -561,9 +512,7 @@
         window.onload = function() {
             checkSession();
             console.log('✅ Admin Panel loaded!');
-            console.log('🔐 Username: aungminthu');
-            console.log('☁️ Using JSONBin with Bin ID:', JSONBIN_BIN_ID);
-            console.log('🔑 API Key:', JSONBIN_API_KEY.substring(0, 20) + '...');
+            console.log('☁️ Using Npoint.io (Read-Only):', NPOINT_URL);
         };
     </script>
 
