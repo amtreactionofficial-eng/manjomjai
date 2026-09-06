@@ -286,9 +286,8 @@
 
     <script>
         // ============================================================
-        // CONFIG - Npoint.io (Read-Only)
+        // CONFIG - Npoint.io 
         // ============================================================
-        // 📌 မင်းရဲ့ Npoint URL
         const NPOINT_URL = 'https://api.npoint.io/530d726853626cde2939';
 
         const ADMIN_CREDENTIALS = {
@@ -296,9 +295,6 @@
             password: '@@aungminthu'
         };
 
-        // ============================================================
-        // TOGGLE PASSWORD
-        // ============================================================
         function togglePasswordVisibility() {
             const passwordInput = document.getElementById('passwordInput');
             const eyeIcon = document.getElementById('eyeIcon');
@@ -313,18 +309,11 @@
             }
         }
 
-        // ============================================================
-        // NPOINT FUNCTIONS
-        // ============================================================
         async function getCards() {
             try {
-                console.log('📥 Fetching from Npoint...');
                 const response = await fetch(NPOINT_URL);
-                
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                
                 const data = await response.json();
-                console.log('✅ Fetched data:', data);
                 return data.cards || [];
             } catch (error) {
                 console.error('❌ Fetch error:', error);
@@ -332,51 +321,53 @@
             }
         }
 
-        // ============================================================
-        // DATA FUNCTIONS
-        // ============================================================
-        async function addCard(card) {
-            // Npoint.io က Read-Only ဖြစ်တဲ့အတွက် LocalStorage မှာသိမ်းမယ်
-            const cards = getLocalCards();
-            card.id = Date.now().toString(36) + Math.random().toString(36).substr(2, 6);
-            card.createdAt = new Date().toISOString();
-            cards.unshift(card);
-            saveLocalCards(cards);
-            renderHistory();
-            
-            // Npoint ကိုလည်း update လုပ်ဖို့ အကြောင်းကြားမယ်
-            alert('✅ ကဒ်ကို Local Storage မှာ သိမ်းထားပါသည်။\n\n⚠️ Npoint.io က Read-Only ဖြစ်တဲ့အတွက် အားလုံးမြင်ရဖို့ Npoint မှာ JSON ကို ကိုယ်တိုင် Update လုပ်ပေးရပါမယ်။');
-            
-            return card;
-        }
-
-        function getLocalCards() {
+        async function saveCardsToCloud(cards) {
             try {
-                return JSON.parse(localStorage.getItem('manjomjai_cards')) || [];
-            } catch {
-                return [];
+                const response = await fetch(NPOINT_URL, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ cards: cards })
+                });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                return true;
+            } catch (error) {
+                console.error('❌ Save error:', error);
+                return false;
             }
         }
 
-        function saveLocalCards(cards) {
-            localStorage.setItem('manjomjai_cards', JSON.stringify(cards));
+        async function addCard(newCardImage) {
+            let cards = await getCards();
+            const cardObj = {
+                id: Date.now().toString(36) + Math.random().toString(36).substr(2, 6),
+                image: newCardImage,
+                createdAt: new Date().toISOString()
+            };
+            cards.unshift(cardObj);
+            
+            const success = await saveCardsToCloud(cards);
+            if (success) {
+                renderHistory();
+                return true;
+            }
+            return false;
         }
 
-        function deleteLocalCard(id) {
-            if (!confirm('❌ ဒီကဒ်ကို ဖျက်မှာသေချာလား?\n\n⚠️ User ဘက်မှာပါ ပျက်သွားမယ်။')) return false;
-            let cards = getLocalCards();
+        async function deleteCard(id) {
+            if (!confirm('❌ ဒီကဒ်ကို ဖျက်မှာသေချာလား?\n\n⚠️ User ဘက်မှာပါ ပျက်သွားပါမယ်။')) return;
+            let cards = await getCards();
             cards = cards.filter(c => c.id !== id);
-            saveLocalCards(cards);
-            renderHistory();
-            return true;
+            
+            const success = await saveCardsToCloud(cards);
+            if (success) {
+                renderHistory();
+            } else {
+                alert('❌ ဖျက်မအောင်မြင်ပါ။ ထပ်ကြိုးစားပါ။');
+            }
         }
 
-        // ============================================================
-        // RENDER HISTORY
-        // ============================================================
         async function renderHistory() {
             try {
-                // Npoint ကနေယူမယ် (User ကြည့်တဲ့အတိုင်း)
                 const cards = await getCards();
                 const container = document.getElementById('cardHistory');
                 const empty = document.getElementById('emptyHistory');
@@ -402,7 +393,7 @@
                                 <span class="text-[9px] text-slate-600">
                                     <i class="fa-regular fa-clock mr-1"></i> ${new Date(card.createdAt).toLocaleDateString()}
                                 </span>
-                                <button onclick="deleteLocalCard('${card.id}')" class="delete-btn text-slate-500 hover:text-rose-400 text-sm px-3 py-1 rounded-lg hover:bg-rose-500/10 transition-all">
+                                <button onclick="deleteCard('${card.id}')" class="delete-btn text-slate-500 hover:text-rose-400 text-sm px-3 py-1 rounded-lg hover:bg-rose-500/10 transition-all">
                                     <i class="fa-solid fa-trash-can mr-1"></i> ဖျက်
                                 </button>
                             </div>
@@ -414,9 +405,6 @@
             }
         }
 
-        // ============================================================
-        // HANDLE ADD CARD
-        // ============================================================
         async function handleAddCard(e) {
             e.preventDefault();
 
@@ -431,7 +419,7 @@
 
             const status = document.getElementById('uploadStatus');
             status.className = 'mt-4 p-3 rounded-xl bg-blue-500/10 text-blue-400 border border-blue-500/20';
-            status.textContent = '⏳ ကဒ်တင်နေပါသည်...';
+            status.textContent = '⏳ ကဒ်တင်နေပါသည်... Cloud သို့ ပို့နေသည်...';
             status.classList.remove('hidden');
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<span class="loading-spinner"></span> စောင့်ပါ...';
@@ -439,33 +427,27 @@
             const reader = new FileReader();
             reader.onload = async function(event) {
                 try {
-                    const newCard = { image: event.target.result };
-                    const result = await addCard(newCard);
-                    if (result) {
+                    const success = await addCard(event.target.result);
+                    if (success) {
                         status.className = 'mt-4 p-3 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
-                        status.textContent = '✅ ကဒ်ကို Local Storage မှာ သိမ်းထားပါသည်။';
+                        status.textContent = '✅ ကဒ်တင်ပြီးပါပြီ။ User ဘက်တွင် အလိုအလျောက် ပေါ်မည်။';
                         document.getElementById('cardForm').reset();
                     } else {
-                        status.className = 'mt-4 p-3 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20';
-                        status.textContent = '⚠️ ကဒ်တင်မအောင်မြင်ပါ။';
+                        status.className = 'mt-4 p-3 rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/20';
+                        status.textContent = '❌ တင်မအောင်မြင်ပါ။ ပုံအရွယ်အစား ကြီးလွန်းနိုင်ပါသည်။';
                     }
                 } catch (error) {
                     status.className = 'mt-4 p-3 rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/20';
                     status.textContent = '❌ Error: ' + error.message;
                 } finally {
-                    setTimeout(() => {
-                        status.classList.add('hidden');
-                        submitBtn.disabled = false;
-                        submitBtn.innerHTML = '<i class="fa-solid fa-upload mr-2"></i> ကဒ်တင်မည်';
-                    }, 5000);
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fa-solid fa-upload mr-2"></i> ကဒ်တင်မည်';
+                    setTimeout(() => status.classList.add('hidden'), 5000);
                 }
             };
             reader.readAsDataURL(file);
         }
 
-        // ============================================================
-        // LOGIN
-        // ============================================================
         function handleLogin(e) {
             e.preventDefault();
             const username = document.getElementById('usernameInput').value.trim();
@@ -484,9 +466,6 @@
             }
         }
 
-        // ============================================================
-        // LOGOUT
-        // ============================================================
         function logout() {
             sessionStorage.removeItem('admin_logged_in');
             document.getElementById('loginOverlay').style.display = 'flex';
@@ -495,9 +474,6 @@
             document.getElementById('loginError').classList.add('hidden');
         }
 
-        // ============================================================
-        // CHECK SESSION
-        // ============================================================
         function checkSession() {
             if (sessionStorage.getItem('admin_logged_in') === 'true') {
                 document.getElementById('loginOverlay').style.display = 'none';
@@ -506,15 +482,9 @@
             }
         }
 
-        // ============================================================
-        // INIT
-        // ============================================================
         window.onload = function() {
             checkSession();
-            console.log('✅ Admin Panel loaded!');
-            console.log('☁️ Using Npoint.io (Read-Only):', NPOINT_URL);
         };
     </script>
-
 </body>
 </html>
