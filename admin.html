@@ -84,6 +84,7 @@
             border-radius: 12px;
             width: 100%;
             transition: all 0.3s;
+            padding-right: 45px;
         }
         .login-box input:focus {
             outline: none;
@@ -91,6 +92,30 @@
             box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
         }
         .login-box input::placeholder { color: #64748b; }
+
+        .password-wrapper {
+            position: relative;
+            width: 100%;
+        }
+        .password-wrapper input {
+            padding-right: 45px;
+        }
+        .toggle-password {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #64748b;
+            cursor: pointer;
+            font-size: 1.1rem;
+            padding: 4px;
+            transition: color 0.3s;
+        }
+        .toggle-password:hover {
+            color: #f59e0b;
+        }
 
         .error-msg {
             background: rgba(239, 68, 68, 0.15);
@@ -169,17 +194,6 @@
             transform: translateY(-2px);
         }
 
-        /* Number badges */
-        .num-badge {
-            background: rgba(16, 185, 129, 0.15);
-            color: #34d399;
-            padding: 2px 10px;
-            border-radius: 8px;
-            font-size: 0.8rem;
-            font-family: monospace;
-            border: 1px solid rgba(16, 185, 129, 0.1);
-        }
-
         @media (max-width: 640px) {
             .login-box { padding: 24px; }
         }
@@ -208,7 +222,12 @@
                     </div>
                     <div>
                         <label class="block text-sm text-slate-400 mb-1.5">Password</label>
-                        <input type="password" id="passwordInput" placeholder="Enter password" required>
+                        <div class="password-wrapper">
+                            <input type="password" id="passwordInput" placeholder="Enter password" required>
+                            <button type="button" class="toggle-password" onclick="togglePasswordVisibility()">
+                                <i id="eyeIcon" class="fa-regular fa-eye"></i>
+                            </button>
+                        </div>
                     </div>
                     <div id="loginError" class="error-msg hidden"></div>
                     <button type="submit" class="gradient-btn w-full text-white font-bold py-3 rounded-xl text-sm transition-all duration-300">
@@ -238,7 +257,7 @@
                 </div>
                 <div class="flex items-center gap-3">
                     <span id="adminUser" class="text-xs text-slate-400 hidden sm:inline">
-                        <i class="fa-regular fa-user mr-1"></i> aungminnthu
+                        <i class="fa-regular fa-user mr-1"></i> aungminthu
                     </span>
                     <button onclick="logout()" class="text-slate-400 hover:text-rose-400 text-sm transition-colors flex items-center gap-1">
                         <i class="fa-solid fa-right-from-bracket"></i>
@@ -254,74 +273,22 @@
         <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
 
             <!-- =================================================== -->
-            <!-- ADD CARD FORM -->
+            <!-- ADD CARD FORM - ကဒ်တိုက်ရိုက်တင်ရန် -->
             <!-- =================================================== -->
             <section class="glass-card p-6 sm:p-8">
                 <h2 class="text-xl font-bold mb-6 flex items-center gap-3">
                     <i class="fa-solid fa-plus-circle text-amber-400"></i>
                     Thai Stock Card တင်ရန်
-                    <span class="text-xs text-slate-500 font-normal ml-2">(ပုံစံအတိုင်း ကွက်တိကျ)</span>
+                    <span class="text-xs text-slate-500 font-normal ml-2">(ကဒ်ပုံကို တိုက်ရိုက်တင်ပါ)</span>
                 </h2>
 
                 <form id="cardForm" onsubmit="handleAddCard(event)" class="space-y-5">
 
-                    <!-- Row 1: Date & Lucky Number -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                        <div>
-                            <label class="form-label">📅 ရက်စွဲ (Date)</label>
-                            <input type="date" id="cardDate" required class="form-input">
-                        </div>
-                        <div>
-                            <label class="form-label">🔢 ကံထူးနံပါတ် (Lucky Number)</label>
-                            <input type="text" id="luckyNumber" placeholder="eg. 890" required class="form-input">
-                        </div>
-                    </div>
-
-                    <!-- Row 2: Top Number -->
-                    <div>
-                        <label class="form-label">🏆 ထိပ်တန်းနံပါတ် (Top Number)</label>
-                        <input type="text" id="topNumber" placeholder="eg. 9 - 0" required class="form-input">
-                    </div>
-
-                    <!-- Row 3: Number Sets -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                        <div>
-                            <label class="form-label">🔹 နံပါတ်အစု (၁) <span class="text-slate-500 text-xs">(၆ လုံး ခွဲထားပါ)</span></label>
-                            <input type="text" id="numberSet1" placeholder="92 93 94 02 03 04" required class="form-input">
-                        </div>
-                        <div>
-                            <label class="form-label">🔹 နံပါတ်အစု (၂) <span class="text-slate-500 text-xs">(၆ လုံး ခွဲထားပါ)</span></label>
-                            <input type="text" id="numberSet2" placeholder="96 97 98 06 07 08" required class="form-input">
-                        </div>
-                    </div>
-
-                    <!-- Row 4: Bottom Countries -->
-                    <div>
-                        <label class="form-label">🌏 အောက်ခြေစာတန်း (Countries)</label>
-                        <input type="text" id="bottomText" placeholder="จีน - เน็กซี - ซึ้งเล็ง - อินเดีย - ลาว - มาเลย์" required class="form-input">
-                    </div>
-
-                    <!-- Row 5: Image Upload -->
+                    <!-- Only Image Upload -->
                     <div>
                         <label class="form-label">🖼️ ကဒ်ပုံတင်ရန် (Card Image) <span class="text-slate-500 text-xs">(JPG/PNG)</span></label>
                         <input type="file" id="cardImage" accept="image/*" required class="file-input">
-                    </div>
-
-                    <!-- Live Preview -->
-                    <div id="cardPreview" class="hidden mt-4">
-                        <p class="text-sm text-slate-400 mb-2">📸 ကဒ်အကြမ်းဖော်ပြချက်</p>
-                        <div class="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50">
-                            <div class="grid grid-cols-2 gap-2 text-xs">
-                                <div><span class="text-slate-500">ရက်စွဲ:</span> <span id="previewDate" class="text-amber-400">-</span></div>
-                                <div><span class="text-slate-500">ကံထူးနံပါတ်:</span> <span id="previewLucky" class="text-rose-400 font-bold">-</span></div>
-                                <div><span class="text-slate-500">ထိပ်တန်းနံပါတ်:</span> <span id="previewTop" class="text-amber-400">-</span></div>
-                                <div><span class="text-slate-500">အောက်ခြေ:</span> <span id="previewBottom" class="text-slate-400 text-[10px]">-</span></div>
-                            </div>
-                            <div class="mt-2 flex flex-wrap gap-1">
-                                <span class="text-slate-500 text-[10px]">နံပါတ်များ:</span>
-                                <span id="previewNumbers" class="text-emerald-400 text-xs">-</span>
-                            </div>
-                        </div>
+                        <p class="text-xs text-slate-500 mt-1.5">📌 ကဒ်ပုံကို တိုက်ရိုက်ရွေးချယ်တင်ပါ။ ကျန်အချက်အလက်များ ပုံထဲမှာပါဝင်ပါသည်။</p>
                     </div>
 
                     <button type="submit" class="gradient-btn text-white font-bold px-8 py-3.5 rounded-xl text-sm transition-all duration-300 w-full">
@@ -373,11 +340,29 @@
         // CONFIG
         // =========================================================
         const ADMIN_CREDENTIALS = {
-            username: 'aungminnthu',
-            password: '@@aungminthu1998'
+            username: 'aungminthu',
+            password: '@@aungminthu'
         };
 
         const STORAGE_KEY = 'manjomjai_cards';
+
+        // =========================================================
+        // TOGGLE PASSWORD VISIBILITY
+        // =========================================================
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('passwordInput');
+            const eyeIcon = document.getElementById('eyeIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.classList.remove('fa-eye');
+                eyeIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
+            }
+        }
 
         // =========================================================
         // DATA FUNCTIONS
@@ -392,7 +377,6 @@
 
         function saveCards(cards) {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(cards));
-            // Trigger storage event for other tabs
             window.dispatchEvent(new Event('storage'));
         }
 
@@ -437,7 +421,7 @@
                 <div class="history-card">
                     <!-- Image -->
                     <div class="relative">
-                        <img src="${card.image}" alt="${card.title || 'Card'}" 
+                        <img src="${card.image}" alt="Card" 
                              class="card-preview-img" 
                              onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22600%22 height=%22338%22%3E%3Crect fill=%22%231e293b%22 width=%22600%22 height=%22338%22/%3E%3Ctext x=%22300%22 y=%22169%22 text-anchor=%22middle%22 fill=%22%2364748b%22 font-size=%2220%22 font-family=%22sans-serif%22%3ENo Image%3C/text%3E%3C/svg%3E'">
                         <div class="absolute top-2 right-2 bg-black/60 backdrop-blur-sm px-2.5 py-1 rounded-lg text-[9px] text-amber-400 border border-amber-500/20">
@@ -447,32 +431,8 @@
 
                     <!-- Content -->
                     <div class="p-4 space-y-2">
-                        <!-- Date & Lucky -->
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs text-slate-400">📅 ${card.date}</span>
-                            <span class="text-sm font-bold text-rose-400 bg-rose-500/10 px-3 py-0.5 rounded-full border border-rose-500/20"># ${card.luckyNumber}</span>
-                        </div>
-
-                        <!-- Top Number -->
-                        <div class="text-center py-1">
-                            <span class="text-2xl font-bold text-amber-400"># ${card.topNumber}</span>
-                        </div>
-
-                        <!-- Number Sets -->
-                        <div class="flex flex-wrap justify-center gap-1.5 py-1">
-                            ${card.numberSet1.split(' ').map(n => `<span class="num-badge">${n}</span>`).join('')}
-                        </div>
-                        <div class="flex flex-wrap justify-center gap-1.5 py-1">
-                            ${card.numberSet2.split(' ').map(n => `<span class="num-badge">${n}</span>`).join('')}
-                        </div>
-
-                        <!-- Bottom Countries -->
-                        <div class="text-center text-[10px] text-slate-500 border-t border-slate-700/30 pt-2 mt-1 truncate">
-                            ${card.bottomText}
-                        </div>
-
                         <!-- Delete Button -->
-                        <div class="flex items-center justify-between pt-2 border-t border-slate-700/20">
+                        <div class="flex items-center justify-between pt-1">
                             <span class="text-[9px] text-slate-600">
                                 <i class="fa-regular fa-clock mr-1"></i> ${new Date(card.createdAt).toLocaleDateString()}
                             </span>
@@ -491,76 +451,24 @@
         function handleAddCard(e) {
             e.preventDefault();
 
-            const date = document.getElementById('cardDate').value;
-            const luckyNumber = document.getElementById('luckyNumber').value.trim();
-            const topNumber = document.getElementById('topNumber').value.trim();
-            const numberSet1 = document.getElementById('numberSet1').value.trim();
-            const numberSet2 = document.getElementById('numberSet2').value.trim();
-            const bottomText = document.getElementById('bottomText').value.trim();
             const fileInput = document.getElementById('cardImage');
             const file = fileInput.files[0];
 
-            // Validation
-            if (!date || !luckyNumber || !topNumber || !numberSet1 || !numberSet2 || !bottomText || !file) {
-                alert('⚠️ အကုန်လုံးကို ဖြည့်ပါ။');
-                return;
-            }
-
-            // Check number sets have 6 numbers each
-            const nums1 = numberSet1.split(/\s+/);
-            const nums2 = numberSet2.split(/\s+/);
-            if (nums1.length !== 6 || nums2.length !== 6) {
-                alert('⚠️ နံပါတ်အစုတစ်ခုစီမှာ ၆ လုံးစီ ထည့်ပါ။\n(ဥပမာ: 92 93 94 02 03 04)');
+            if (!file) {
+                alert('⚠️ ပုံတစ်ပုံကို ရွေးချယ်ပါ။');
                 return;
             }
 
             const reader = new FileReader();
             reader.onload = function(event) {
                 const newCard = {
-                    date: date,
-                    luckyNumber: luckyNumber,
-                    topNumber: topNumber,
-                    numberSet1: numberSet1,
-                    numberSet2: numberSet2,
-                    bottomText: bottomText,
-                    image: event.target.result,
-                    title: `Card ${luckyNumber}`
+                    image: event.target.result
                 };
                 addCard(newCard);
                 document.getElementById('cardForm').reset();
-                document.getElementById('cardPreview').classList.add('hidden');
-                // Set default date again
-                setDefaultDate();
                 alert('✅ ကဒ်တင်ပြီးပါပြီ။');
             };
             reader.readAsDataURL(file);
-        }
-
-        // =========================================================
-        // LIVE PREVIEW
-        // =========================================================
-        function updatePreview() {
-            const date = document.getElementById('cardDate').value;
-            const lucky = document.getElementById('luckyNumber').value.trim();
-            const top = document.getElementById('topNumber').value.trim();
-            const set1 = document.getElementById('numberSet1').value.trim();
-            const set2 = document.getElementById('numberSet2').value.trim();
-            const bottom = document.getElementById('bottomText').value.trim();
-
-            const preview = document.getElementById('cardPreview');
-            const hasData = date || lucky || top || set1 || set2 || bottom;
-            
-            if (hasData) {
-                preview.classList.remove('hidden');
-                document.getElementById('previewDate').textContent = date || '-';
-                document.getElementById('previewLucky').textContent = lucky || '-';
-                document.getElementById('previewTop').textContent = top || '-';
-                document.getElementById('previewBottom').textContent = bottom || '-';
-                const allNums = [...set1.split(/\s+/), ...set2.split(/\s+/)].filter(n => n);
-                document.getElementById('previewNumbers').textContent = allNums.length ? allNums.join(' ') : '-';
-            } else {
-                preview.classList.add('hidden');
-            }
         }
 
         // =========================================================
@@ -596,14 +504,6 @@
         }
 
         // =========================================================
-        // SET DEFAULT DATE
-        // =========================================================
-        function setDefaultDate() {
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('cardDate').value = today;
-        }
-
-        // =========================================================
         // CHECK SESSION
         // =========================================================
         function checkSession() {
@@ -618,14 +518,7 @@
         // INIT
         // =========================================================
         window.onload = function() {
-            setDefaultDate();
             checkSession();
-
-            // Live preview on input
-            const formInputs = document.querySelectorAll('#cardForm input, #cardForm textarea');
-            formInputs.forEach(input => {
-                input.addEventListener('input', updatePreview);
-            });
 
             // Listen for storage changes (from other tabs)
             window.addEventListener('storage', function(e) {
@@ -635,7 +528,7 @@
             });
 
             console.log('✅ Admin Panel loaded successfully!');
-            console.log('🔐 Username: aungminnthu');
+            console.log('🔐 Username: aungminthu');
         };
     </script>
 
