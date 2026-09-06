@@ -62,7 +62,7 @@
             </button>
         </header>
 
-        <!-- ADD CARD SECTION (File Upload) -->
+        <!-- ADD CARD SECTION -->
         <section class="card-gradient rounded-2xl p-6 space-y-4 border border-slate-800">
             <h2 class="text-lg font-bold flex items-center gap-2">
                 <i class="fa-solid fa-plus-circle text-amber-400"></i> ပုံအသစ်ထည့်ရန် (Upload Image)
@@ -147,11 +147,17 @@
         };
 
         async function getGitHubFile() {
-            const url = `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/${FILE_PATH}`;
+            const url = `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/${FILE_PATH}?ref=${GITHUB_BRANCH}`;
             const res = await fetch(url, {
-                headers: { 'Authorization': `token ${GITHUB_TOKEN}` }
+                headers: { 
+                    'Authorization': `token ${GITHUB_TOKEN}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                }
             });
-            if (!res.ok) throw new Error('GitHub data fetch failed (Repository ဒါမှမဟုတ် File အမည် စစ်ဆေးပါ)');
+            if (!res.ok) {
+                const errData = await res.json().catch(() => ({}));
+                throw new Error(errData.message || 'GitHub data fetch failed');
+            }
             return await res.json();
         }
 
@@ -161,8 +167,11 @@
             
             try {
                 const fileData = await getGitHubFile();
-                const contentDecoded = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
-                let cards = Array.isArray(contentDecoded) ? contentDecoded : (contentDecoded.cards || []);
+                let cards = [];
+                if (fileData.content) {
+                    const contentDecoded = JSON.parse(decodeURIComponent(escape(atob(fileData.content.replace(/\s/g, '')))));
+                    cards = Array.isArray(contentDecoded) ? contentDecoded : (contentDecoded.cards || []);
+                }
                 
                 document.getElementById('totalCardsCount').textContent = `${cards.length} ခု`;
 
@@ -175,8 +184,8 @@
                     <div class="card-gradient rounded-xl p-3 border border-slate-800 space-y-3">
                         <img src="${card.image || card.img}" class="w-full h-32 object-contain bg-slate-900 rounded-lg">
                         <div class="flex items-center justify-between text-[10px] text-slate-400">
-                            <span>${new Date(card.createdAt).toLocaleDateString('my-MM')}</span>
-                            <button onclick="deleteCard(${index})" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 px-3 py-1.5 rounded-lg border border-rose-500/20 transition-all">
+                            <span>${card.createdAt ? new Date(card.createdAt).toLocaleDateString('my-MM') : ''}</span>
+                            <button onclick="deleteCard(${index})" class="bg-rose-500/15 hover:bg-rose-500/30 text-rose-400 px-3 py-1.5 rounded-lg border border-rose-500/30 transition-all font-medium">
                                 <i class="fa-solid fa-trash mr-1"></i> ဖြတ်မည်
                             </button>
                         </div>
@@ -187,7 +196,6 @@
             }
         }
 
-        // ဖိုင်ကို ရွေးပြီး Base64 ပြောင်းကာ GitHub သို့ တင်ခြင်း
         function addNewCard() {
             const fileInput = document.getElementById('imageFileInput');
             const statusMsg = document.getElementById('statusMsg');
@@ -204,14 +212,17 @@
 
             const reader = new FileReader();
             reader.onload = async function(e) {
-                const base64Image = e.target.result; // Image Base64 Data
+                const base64Image = e.target.result;
 
                 try {
                     statusMsg.textContent = 'GitHub သို့ ပုံနှင့်ဒေတာများ တင်နေပါသည်...';
                     
                     const fileData = await getGitHubFile();
-                    const contentDecoded = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
-                    let cards = Array.isArray(contentDecoded) ? contentDecoded : (contentDecoded.cards || []);
+                    let cards = [];
+                    if (fileData.content) {
+                        const contentDecoded = JSON.parse(decodeURIComponent(escape(atob(fileData.content.replace(/\s/g, '')))));
+                        cards = Array.isArray(contentDecoded) ? contentDecoded : (contentDecoded.cards || []);
+                    }
 
                     const newCard = {
                         image: base64Image,
@@ -224,7 +235,8 @@
                         method: 'PUT',
                         headers: {
                             'Authorization': `token ${GITHUB_TOKEN}`,
-                            'Content-Type': 'application/json'
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/vnd.github.v3+json'
                         },
                         body: JSON.stringify({
                             message: 'Add new image card via admin',
@@ -234,7 +246,10 @@
                         })
                     });
 
-                    if (!updateRes.ok) throw new Error('GitHub သို့ တင်၍မရပါ။');
+                    if (!updateRes.ok) {
+                        const errRes = await updateRes.json().catch(() => ({}));
+                        throw new Error(errRes.message || 'GitHub သို့ တင်၍မရပါ။');
+                    }
 
                     statusMsg.textContent = '✅ အောင်မြင်စွာ တင်ပြီးပါပြီ။ User ဘက်တွင်လည်း ချက်ချင်းပေါ်ပါမည်။';
                     statusMsg.className = 'text-xs text-emerald-400';
@@ -249,12 +264,15 @@
         }
 
         async function deleteCard(index) {
-            if (!confirm('ဤပုံကို ဖျတ်ရန် သေချာပါသလား?')) return;
+            if (!confirm('ဤပုံကို ဖြတ်ရန် သေချာပါသလား?')) return;
 
             try {
                 const fileData = await getGitHubFile();
-                const contentDecoded = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
-                let cards = Array.isArray(contentDecoded) ? contentDecoded : (contentDecoded.cards || []);
+                let cards = [];
+                if (fileData.content) {
+                    const contentDecoded = JSON.parse(decodeURIComponent(escape(atob(fileData.content.replace(/\s/g, '')))));
+                    cards = Array.isArray(contentDecoded) ? contentDecoded : (contentDecoded.cards || []);
+                }
 
                 cards.splice(index, 1);
 
@@ -263,7 +281,8 @@
                     method: 'PUT',
                     headers: {
                         'Authorization': `token ${GITHUB_TOKEN}`,
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/vnd.github.v3+json'
                     },
                     body: JSON.stringify({
                         message: 'Delete image card via admin',
@@ -273,12 +292,15 @@
                     })
                 });
 
-                if (!updateRes.ok) throw new Error('GitHub မှ ဖြတ်၍မရပါ။');
+                if (!updateRes.ok) {
+                    const errRes = await updateRes.json().catch(() => ({}));
+                    throw new Error(errRes.message || 'GitHub မှ ဖြတ်၍မရပါ။');
+                }
 
-                alert('အောင်မြင်စွာ ဖျတ်ပြီးပါပြီ။ User ဘက်တွင်ပါ ပျောက်သွားပါမည်။');
+                alert('အောင်မြင်စွာ ဖြတ်ပြီးပါပြီ။');
                 loadAdminCards();
             } catch (err) {
-                alert(`ဖျတ်၍မရပါ: ${err.message}`);
+                alert(`ဖြတ်၍မရပါ: ${err.message}`);
             }
         }
     </script>
