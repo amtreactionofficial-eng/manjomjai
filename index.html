@@ -1,70 +1,155 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Man Jom Jai - Thai Stock Card</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Pyidaungsu:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#0f172a',
+                        lightBg: '#f8fafc',
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Pyidaungsu:wght@400;700&family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Inter', 'Pyidaungsu', sans-serif;
-            background-color: #0f172a;
-            color: #f8fafc;
+            font-family: 'Sarabun', 'Inter', 'Pyidaungsu', sans-serif;
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col bg-lightBg dark:bg-darkBg text-slate-800 dark:text-slate-100 transition-colors duration-300">
 
-    <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50">
+    <header class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
             <div class="flex items-center space-x-3">
-                <span class="text-2xl font-black bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">manjomjai.site</span>
+                <span class="text-2xl font-black bg-gradient-to-r from-emerald-500 to-cyan-500 bg-clip-text text-transparent">manjomjai.site</span>
             </div>
-            <nav class="hidden md:flex space-x-6 text-sm font-medium text-slate-300">
-                <a href="#" class="hover:text-emerald-400 transition">ပင်မစာမျက်နှာ</a>
-                <a href="#" class="hover:text-emerald-400 transition">စတော့ခ်ကတ်များ</a>
-                <a href="#" class="hover:text-emerald-400 transition">အချက်အလက်</a>
-            </nav>
+            
+            <div class="flex items-center space-x-4">
+                <select id="langSwitch" onchange="changeLanguage(this.value)" class="bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-sm rounded-lg px-3 py-1.5 focus:outline-none focus:border-emerald-500 cursor-pointer">
+                    <option value="th">🇹🇭 ไทย</option>
+                    <option value="en">🇬🇧 English</option>
+                    <option value="my">🇲🇲 မြန်မာ</option>
+                </select>
+
+                <button onclick="toggleDarkMode()" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:text-emerald-500 transition">
+                    <svg id="themeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        </svg>
+                </button>
+            </div>
         </div>
     </header>
 
-    <main class="flex-grow max-w-7xl mx-auto px-4 py-8 w-full">
+    <main class="flex-grow max-w-7xl mx-auto px-4 py-10 w-full">
         <div class="text-center mb-12">
-            <h1 class="text-3xl md:text-5xl font-bold mb-4">ထိုင်းစတော့ခ်ကတ် နေ့စဉ်အချက်အလက်များ</h1>
-            <p class="text-slate-400 text-sm md:text-base">ထူးခြားဆန်းသစ်သော ဒီဇိုင်းနှင့်အတူ ယုံကြည်စိတ်ချရသော စတော့ခ်ကတ်များကို နေ့စဉ်ကြည့်ရှုနိုင်ပါပြီ။</p>
+            <h1 id="txtTitle" class="text-3xl md:text-5xl font-bold mb-4">ใบหุ้นไทยรายวัน (Thai Stock Cards)</h1>
+            <p id="txtSub" class="text-slate-600 dark:text-slate-400 text-sm md:text-base">รวมใบหุ้นไทยที่แม่นยำและวิเคราะห์ข้อมูลทุกวันอย่างมืออาชีพ</p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols.3 gap-6">
-            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-xl hover:border-emerald-500 transition duration-300">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 shadow-xl hover:border-emerald-500 transition duration-300">
                 <div class="flex justify-between items-center mb-4">
-                    <span class="bg-emerald-500/10 text-emerald-400 text-xs font-semibold px-3 py-1 rounded-full border border-emerald-500/20">LIVE</span>
-                    <span class="text-xs text-slate-400">Date: Sep 6, 2026</span>
+                    <span class="bg-emerald-500/10 text-emerald-500 text-xs font-semibold px-3 py-1 rounded-full border border-emerald-500/20">LIVE</span>
+                    <span class="text-xs text-slate-500 dark:text-slate-400">Date: Sep 6, 2026</span>
                 </div>
-                <h3 class="text-xl font-bold mb-2 text-white">Stock Card #01</h3>
-                <p class="text-slate-400 text-sm mb-4">ဒီနေ့အတွက် ထိုင်းစတော့ခ်ကတ် အချက်အလက်နှင့် ခွဲခြမ်းစိတ်ဖြာချက်များ။</p>
-                <div class="bg-slate-900 rounded-xl p-4 border border-slate-800 text-center text-slate-500 text-sm py-8">
+                <h3 class="text-xl font-bold mb-2">Stock Card #01</h3>
+                <p class="card-desc text-slate-600 dark:text-slate-400 text-sm mb-4">ข้อมูลและแนวทางใบหุ้นไทยประจำวันนี้ วิเคราะห์โดยผู้เชี่ยวชาญ。</p>
+                <div class="bg-slate-100 dark:bg-slate-900 rounded-xl p-4 border border-slate-200 dark:border-slate-800 text-center text-slate-400 text-sm py-8">
                     [ Stock Card Image / Data Here ]
                 </div>
             </div>
 
-            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-xl hover:border-emerald-500 transition duration-300">
+            <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 shadow-xl hover:border-emerald-500 transition duration-300">
                 <div class="flex justify-between items-center mb-4">
-                    <span class="bg-emerald-500/10 text-emerald-400 text-xs font-semibold px-3 py-1 rounded-full border border-emerald-500/20">LIVE</span>
-                    <span class="text-xs text-slate-400">Date: Sep 5, 2026</span>
+                    <span class="bg-emerald-500/10 text-emerald-500 text-xs font-semibold px-3 py-1 rounded-full border border-emerald-500/20">LIVE</span>
+                    <span class="text-xs text-slate-500 dark:text-slate-400">Date: Sep 5, 2026</span>
                 </div>
-                <h3 class="text-xl font-bold mb-2 text-white">Stock Card #02</h3>
-                <p class="text-slate-400 text-sm mb-4">ဒီနေ့အတွက် ထိုင်းစတော့ခ်ကတ် အချက်အလက်နှင့် ခွဲခြမ်းစိတ်ဖြာချက်များ။</p>
-                <div class="bg-slate-900 rounded-xl p-4 border border-slate-800 text-center text-slate-500 text-sm py-8">
+                <h3 class="text-xl font-bold mb-2">Stock Card #02</h3>
+                <p class="card-desc text-slate-600 dark:text-slate-400 text-sm mb-4">ข้อมูลและแนวทางใบหุ้นไทยประจำวันนี้ วิเคราะห์โดยผู้เชี่ยวชาญ。</p>
+                <div class="bg-slate-100 dark:bg-slate-900 rounded-xl p-4 border border-slate-200 dark:border-slate-800 text-center text-slate-400 text-sm py-8">
                     [ Stock Card Image / Data Here ]
                 </div>
             </div>
         </div>
     </main>
 
-    <footer class="bg-slate-900 border-t border-slate-800 py-6 text-center text-xs text-slate-500">
+    <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-6 text-center text-xs text-slate-500">
         <p>&copy; 2026 manjomjai.site. All rights reserved.</p>
     </footer>
 
+    <script>
+        // Translations Data
+        const translations = {
+            th: {
+                title: "ใบหุ้นไทยรายวัน (Thai Stock Cards)",
+                subtitle: "รวมใบหุ้นไทยที่แม่นยำและวิเคราะห์ข้อมูลทุกวันอย่างมืออาชีพ",
+                desc: "ข้อมูลและแนวทางใบหุ้นไทยประจำวันนี้ วิเคราะห์โดยผู้เชี่ยวชาญ。"
+            },
+            en: {
+                title: "Daily Thai Stock Cards",
+                subtitle: "Accurate Thai stock cards and professional daily analysis.",
+                desc: "Today's Thai stock card data and analysis, expert-backed."
+            },
+            my: {
+                title: "ထိုင်းစတော့ခ်ကတ် နေ့စဉ်အချက်အလက်များ",
+                subtitle: "တိကျမှန်ကန်သော ထိုင်းစတော့ခ်ကတ်များနှင့် ကျွမ်းကျင်သူများ၏ နေ့စဉ်သုံးသပ်ချက်များ",
+                desc: "ယနေ့အတွက် ထိုင်းစတော့ခ်ကတ် အချက်အလက်နှင့် ခွဲခြမ်းစိတ်ဖြာချက်များ။"
+            }
+        };
+
+        // Language Switcher Function
+        function changeLanguage(lang) {
+            document.getElementById('txtTitle').innerText = translations[lang].title;
+            document.getElementById('txtSub').innerText = translations[lang].subtitle;
+            document.querySelectorAll('.card-desc').forEach(el => {
+                el.innerText = translations[lang].desc;
+            });
+            localStorage.setItem('selectedLang', lang);
+        }
+
+        // Dark/Light Mode Function
+        const themeIcon = document.getElementById('themeIcon');
+        function updateThemeIcon() {
+            if (document.documentElement.classList.contains('dark')) {
+                themeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m3.343-5.657l-.707-.707m12.728 12.728l-.707-.707M6.343 17.657l-.707.707M16.95 7.05l-.707.707M12 8a4 4 0 100 8 4 4 0 000-8z"/>';
+            } else {
+                themeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>';
+            }
+        }
+
+        function toggleDarkMode() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+            updateThemeIcon();
+        }
+
+        // Load saved preferences on startup
+        window.onload = () => {
+            const savedLang = localStorage.getItem('selectedLang') || 'th';
+            document.getElementById('langSwitch').value = savedLang;
+            changeLanguage(savedLang);
+
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            if (savedTheme === 'light') {
+                document.documentElement.classList.remove('dark');
+            } else {
+                document.documentElement.classList.add('dark');
+            }
+            updateThemeIcon();
+        };
+    </script>
 </body>
 </html>
