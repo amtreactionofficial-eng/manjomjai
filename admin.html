@@ -1,291 +1,277 @@
 <!DOCTYPE html>
-<html lang="my">
+<html lang="my" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Admin Panel - GitHub Storage</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manjomjai - Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Poppins', 'Padauk', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; }
-        .glass-card {
-            background: linear-gradient(145deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.95));
+        body { font-family: 'Poppins', 'Padauk', sans-serif; }
+        .card-gradient {
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.92));
             backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 20px;
-        }
-        .gradient-btn {
-            background: linear-gradient(135deg, #f59e0b, #ef4444);
-            transition: all 0.3s;
-        }
-        .gradient-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(239,68,68,0.3); }
-        .card-image-container {
-            width: 100%;
-            background: #0f172a;
-            border-radius: 12px;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 200px;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-        .card-image-container img {
-            max-width: 100%;
-            max-height: 600px;
-            width: auto;
-            height: auto;
-            object-fit: contain;
-            display: block;
-        }
-        #loginOverlay {
-            position: fixed; inset: 0; background: rgba(15, 23, 42, 0.97);
-            backdrop-filter: blur(20px); display: flex; align-items: center; justify-content: center; z-index: 9999; padding: 20px;
-        }
-        .login-box {
-            background: linear-gradient(145deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98));
-            border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 40px; width: 100%; max-width: 400px;
-        }
-        .login-box input, .form-control {
-            background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255,255,255,0.08); color: #e2e8f0; padding: 12px 16px; border-radius: 12px; width: 100%;
-        }
-        .login-box input:focus, .form-control:focus { outline: none; border-color: #f59e0b; box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15); }
-        .file-input {
-            background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255,255,255,0.08); color: #e2e8f0; padding: 10px 14px; border-radius: 12px; width: 100%;
-        }
-        .file-input::-webkit-file-upload-button {
-            background: rgba(245, 158, 11, 0.2); border: none; color: #f59e0b; padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; margin-right: 12px;
-        }
-        .history-card {
-            background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; overflow: hidden; transition: all 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.06);
         }
     </style>
 </head>
-<body>
+<body class="bg-slate-950 text-slate-100 min-h-screen">
 
-    <!-- LOGIN OVERLAY -->
-    <div id="loginOverlay">
-        <div class="login-box">
-            <div class="text-center mb-8">
-                <h1 class="text-2xl font-bold">GitHub Admin Panel</h1>
-                <p class="text-slate-400 text-sm mt-1">Manjomjai Stock Predictions</p>
-            </div>
-            <form id="loginForm" onsubmit="handleLogin(event)">
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-sm text-slate-400 mb-1.5">Username</label>
-                        <input type="text" id="usernameInput" required>
-                    </div>
-                    <div>
-                        <label class="block text-sm text-slate-400 mb-1.5">Password</label>
-                        <input type="password" id="passwordInput" required>
-                    </div>
-                    <div id="loginError" class="text-rose-400 text-sm hidden"></div>
-                    <button type="submit" class="gradient-btn w-full text-white font-bold py-3 rounded-xl text-sm">Login</button>
+    <!-- LOGIN SCREEN -->
+    <div id="loginScreen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950 p-4">
+        <div class="card-gradient w-full max-w-md rounded-3xl p-8 shadow-2xl border border-slate-800 space-y-6">
+            <div class="text-center space-y-2">
+                <div class="inline-block bg-amber-500/10 p-3 rounded-2xl text-amber-400 border border-amber-500/20">
+                    <i class="fa-solid fa-lock text-2xl"></i>
                 </div>
-            </form>
+                <h2 class="text-2xl font-bold">Admin Login</h2>
+                <p class="text-xs text-slate-400">Manjomjai Dashboard သို့ ဝင်ရန် စကားဝှက်ထည့်ပါ</p>
+            </div>
+            <div class="space-y-4">
+                <div class="relative">
+                    <input type="password" id="adminPassword" placeholder="Password ထည့်ရန်..." 
+                           class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-amber-500 pr-10">
+                    <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-sm">
+                        <i id="eyeIcon" class="fa-solid fa-eye"></i>
+                    </button>
+                </div>
+                <button onclick="handleLogin()" class="w-full bg-gradient-to-r from-amber-500 to-rose-500 text-white font-bold py-3 rounded-xl text-sm shadow-lg shadow-rose-500/20 hover:opacity-95 transition-all">
+                    လော့ဂ်အင်ဝင်မည်
+                </button>
+                <p id="loginError" class="text-rose-400 text-xs text-center hidden">စကားဝှက် မှားယွင်းနေပါသည်။</p>
+            </div>
         </div>
     </div>
 
-    <!-- DASHBOARD -->
-    <div id="dashboardContent" class="hidden">
-        <header class="sticky top-0 z-50 bg-slate-900/80 backdrop-blur-xl border-b border-slate-800/50">
-            <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-                <span class="text-lg font-black text-amber-400">MANJOMJAI GITHUB ADMIN</span>
-                <button onclick="logout()" class="text-slate-400 hover:text-rose-400 text-sm">Logout</button>
+    <!-- ADMIN DASHBOARD (Hidden by default) -->
+    <div id="adminDashboard" class="hidden max-w-6xl mx-auto px-4 py-8 space-y-8">
+        <header class="flex items-center justify-between border-b border-slate-800 pb-4">
+            <div class="flex items-center space-x-3">
+                <div class="bg-gradient-to-r from-amber-500 to-rose-500 p-2.5 rounded-xl">
+                    <i class="fa-solid fa-gauge text-white text-lg"></i>
+                </div>
+                <h1 class="text-xl font-bold">Admin Management Panel</h1>
             </div>
+            <button onclick="handleLogout()" class="bg-slate-800 hover:bg-slate-700 text-rose-400 px-4 py-2 rounded-xl text-xs border border-slate-700 transition-all">
+                <i class="fa-solid fa-right-from-bracket mr-1.5"></i> ထွက်မည်
+            </button>
         </header>
 
-        <main class="max-w-7xl mx-auto px-4 py-8 space-y-8">
-            <!-- GITHUB SETTINGS CONFIG -->
-            <section class="glass-card p-6">
-                <h2 class="text-lg font-bold mb-4 text-amber-400"><i class="fa-solid fa-gear mr-2"></i>GitHub Config (ပထမအကြိမ် ချိတ်ရန်)</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div>
-                        <label class="text-xs text-slate-400 block mb-1">GitHub Username</label>
-                        <input type="text" id="ghUser" class="form-control" placeholder="amtreactionofficial-eng">
-                    </div>
-                    <div>
-                        <label class="text-xs text-slate-400 block mb-1">Repository Name</label>
-                        <input type="text" id="ghRepo" class="form-control" placeholder="stock-app">
-                    </div>
-                    <div>
-                        <label class="text-xs text-slate-400 block mb-1">GitHub Personal Token (PAT)</label>
-                        <input type="password" id="ghToken" class="form-control" placeholder="ghp_xxxxxxxxxxxx">
-                    </div>
+        <!-- ADD CARD SECTION -->
+        <section class="card-gradient rounded-2xl p-6 space-y-4 border border-slate-800">
+            <h2 class="text-lg font-bold flex items-center gap-2">
+                <i class="fa-solid fa-plus-circle text-amber-400"></i> ပုံအသစ်ထည့်ရန် (Add Card)
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="md:col-span-2">
+                    <input type="text" id="imageUrlInput" placeholder="ပုံ URL (သို့) Imgur/GitHub Image Link ထည့်ရန်..." 
+                           class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-amber-500">
                 </div>
-                <button onclick="saveSettings()" class="mt-4 bg-slate-800 hover:bg-slate-700 text-amber-400 px-4 py-2 rounded-xl text-xs font-bold">
-                    <i class="fa-solid fa-floppy-disk mr-1"></i> Config သိမ်းမည်
+                <button onclick="addNewCard()" id="addBtn" class="bg-gradient-to-r from-amber-500 to-rose-500 text-white font-bold py-3 rounded-xl text-sm shadow-lg hover:opacity-95 transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> တင်မည် (Add)
                 </button>
-            </section>
+            </div>
+            <p id="statusMsg" class="text-xs text-slate-400"></p>
+        </section>
 
-            <!-- UPLOAD SECTION -->
-            <section class="glass-card p-6">
-                <h2 class="text-xl font-bold mb-6">Thai Stock Card တင်ရန် (GitHub သို့)</h2>
-                <form id="cardForm" onsubmit="handleAddCard(event)" class="space-y-5">
-                    <div>
-                        <label class="block text-sm text-slate-400 mb-2">🖼️ ကဒ်ပုံရွေးပါ</label>
-                        <input type="file" id="cardImage" accept="image/*" required class="file-input">
-                    </div>
-                    <button type="submit" id="submitBtn" class="gradient-btn text-white font-bold px-8 py-3.5 rounded-xl text-sm w-full">
-                        <i class="fa-solid fa-upload mr-2"></i> GitHub သို့ တင်မည်
-                    </button>
-                </form>
-                <div id="uploadStatus" class="mt-4 hidden p-3 rounded-xl text-sm"></div>
-            </section>
-
-            <!-- HISTORY -->
-            <section class="glass-card p-6">
-                <h2 class="text-xl font-bold mb-6">တင်ထားပြီးသော ကဒ်များ</h2>
-                <div id="cardHistory" class="grid grid-cols-1 md:grid-cols-3 gap-5"></div>
-            </section>
-        </main>
+        <!-- EXISTING CARDS LIST -->
+        <section class="space-y-4">
+            <div class="flex items-center justify-between">
+                <h2 class="text-lg font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-images text-amber-400"></i> တင်ပြီးသားပုံများ စာရင်း
+                </h2>
+                <span id="totalCardsCount" class="text-xs bg-slate-800 px-3 py-1 rounded-full text-slate-400 border border-slate-700">0 ခု</span>
+            </div>
+            <div id="adminCardList" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                <!-- Loaded dynamically -->
+            </div>
+        </section>
     </div>
 
     <script>
-        const ADMIN_CRED = { user: 'aungminthu', pass: '@@aungminthu' };
+        // GitHub Config
+        const GITHUB_USERNAME = 'amtreactionofficial-eng';
+        const GITHUB_REPO = 'stock-app';
+        const GITHUB_BRANCH = 'main';
+        const FILE_PATH = 'cards.json';
+        
+        // Token ထည့်သွင်းပြီးပါပြီ
+        const GITHUB_TOKEN = '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'; 
 
-        function getConfig() {
-            return {
-                user: localStorage.getItem('gh_user') || '',
-                repo: localStorage.getItem('gh_repo') || '',
-                token: localStorage.getItem('gh_token') || ''
-            };
-        }
+        const ADMIN_PASS = '123456';
 
-        function saveSettings() {
-            localStorage.setItem('gh_user', document.getElementById('ghUser').value.trim());
-            localStorage.setItem('gh_repo', document.getElementById('ghRepo').value.trim());
-            localStorage.setItem('gh_token', document.getElementById('ghToken').value.trim());
-            alert('✅ GitHub Configuration သိမ်းပြီးပါပြီ!');
-            loadCards();
-        }
-
-        function handleLogin(e) {
-            e.preventDefault();
-            if(document.getElementById('usernameInput').value === ADMIN_CRED.user && document.getElementById('passwordInput').value === ADMIN_CRED.pass) {
-                document.getElementById('loginOverlay').style.display = 'none';
-                document.getElementById('dashboardContent').classList.remove('hidden');
-                document.getElementById('ghUser').value = localStorage.getItem('gh_user') || 'amtreactionofficial-eng';
-                document.getElementById('ghRepo').value = localStorage.getItem('gh_repo') || 'stock-app';
-                document.getElementById('ghToken').value = localStorage.getItem('gh_token') || '';
-                loadCards();
+        // Password မျက်လုံးအဖွင့်အပိတ် လုပ်ဆောင်ချက်
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('adminPassword');
+            const eyeIcon = document.getElementById('eyeIcon');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.classList.remove('fa-eye');
+                eyeIcon.classList.add('fa-eye-slash');
             } else {
-                document.getElementById('loginError').textContent = '❌ Username သို့မဟုတ် Password မှားနေပါတယ်။';
+                passwordInput.type = 'password';
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
+            }
+        }
+
+        function handleLogin() {
+            const pass = document.getElementById('adminPassword').value;
+            if (pass === ADMIN_PASS) {
+                localStorage.setItem('manjomjai_admin_logged', 'true');
+                showDashboard();
+            } else {
                 document.getElementById('loginError').classList.remove('hidden');
             }
         }
 
-        function logout() { location.reload(); }
+        function handleLogout() {
+            localStorage.removeItem('manjomjai_admin_logged');
+            document.getElementById('adminDashboard').classList.add('hidden');
+            document.getElementById('loginScreen').classList.remove('hidden');
+        }
 
-        async function loadCards() {
-            const cfg = getConfig();
-            if(!cfg.user || !cfg.repo) return;
+        function showDashboard() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('adminDashboard').classList.remove('hidden');
+            loadAdminCards();
+        }
+
+        // Auto login check
+        window.onload = function() {
+            if (localStorage.getItem('manjomjai_admin_logged') === 'true') {
+                showDashboard();
+            }
+        };
+
+        // GitHub ကနေ လက်ရှိ JSON ဖိုင်ကို ဆွဲထုတ်ခြင်း
+        async function getGitHubFile() {
+            const url = `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/${FILE_PATH}`;
+            const res = await fetch(url, {
+                headers: { 'Authorization': `token ${GITHUB_TOKEN}` }
+            });
+            if (!res.ok) throw new Error('GitHub data fetch failed');
+            return await res.json();
+        }
+
+        // Admin panel ထဲမှာ ပုံများပြသရန်
+        async function loadAdminCards() {
+            const listContainer = document.getElementById('adminCardList');
+            listContainer.innerHTML = '<p class="text-xs text-slate-400 col-span-full text-center py-4">ဒေတာများကို ဆွဲထုတ်နေပါသည်...</p>';
             
             try {
-                const res = await fetch(`https://api.github.com/repos/${cfg.user}/${cfg.repo}/contents/cards.json`);
-                if(res.ok) {
-                    const data = await res.json();
-                    const content = JSON.parse(atob(data.content));
-                    renderHistory(content.cards || []);
+                const fileData = await getGitHubFile();
+                const contentDecoded = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+                let cards = Array.isArray(contentDecoded) ? contentDecoded : (contentDecoded.cards || []);
+                
+                document.getElementById('totalCardsCount').textContent = `${cards.length} ခု`;
+
+                if (cards.length === 0) {
+                    listContainer.innerHTML = '<p class="text-xs text-slate-500 col-span-full text-center py-8">ပုံမရှိသေးပါ။ ပုံအသစ်တင်ပါ။</p>';
+                    return;
                 }
-            } catch(e) { console.log('No cards.json yet'); }
+
+                listContainer.innerHTML = cards.map((card, index) => `
+                    <div class="card-gradient rounded-xl p-3 border border-slate-800 space-y-3">
+                        <img src="${card.image || card.img}" class="w-full h-32 object-contain bg-slate-900 rounded-lg">
+                        <div class="flex items-center justify-between text-[10px] text-slate-400">
+                            <span>${new Date(card.createdAt).toLocaleDateString('my-MM')}</span>
+                            <button onclick="deleteCard(${index})" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 px-3 py-1.5 rounded-lg border border-rose-500/20 transition-all">
+                                <i class="fa-solid fa-trash mr-1"></i> ဖြတ်မည်
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                listContainer.innerHTML = `<p class="text-rose-400 text-xs col-span-full text-center">Error: ${err.message}</p>`;
+            }
         }
 
-        async function handleAddCard(e) {
-            e.preventDefault();
-            const cfg = getConfig();
-            if(!cfg.token || !cfg.user || !cfg.repo) {
-                alert('⚠️ ကျေးဇူးပြု၍ အပေါ်ဆုံးတွင် GitHub Config အရင်ဖြည့်ပါ။');
+        // ပုံအသစ်ထည့်ခြင်း
+        async function addNewCard() {
+            const urlInput = document.getElementById('imageUrlInput').value.trim();
+            const statusMsg = document.getElementById('statusMsg');
+            if (!urlInput) {
+                statusMsg.textContent = 'ကျေးဇူးပြု၍ ပုံ URL ထည့်ပါ။';
+                statusMsg.className = 'text-xs text-rose-400';
                 return;
             }
 
-            const file = document.getElementById('cardImage').files[0];
-            const status = document.getElementById('uploadStatus');
-            const btn = document.getElementById('submitBtn');
+            statusMsg.textContent = 'GitHub သို့ တင်နေပါသည်...';
+            statusMsg.className = 'text-xs text-amber-400';
 
-            status.className = 'mt-4 p-3 rounded-xl bg-blue-500/10 text-blue-400 block';
-            status.textContent = '⏳ GitHub သို့ ပုံတင်နေပါပြီ...';
-            btn.disabled = true;
+            try {
+                const fileData = await getGitHubFile();
+                const contentDecoded = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+                let cards = Array.isArray(contentDecoded) ? contentDecoded : (contentDecoded.cards || []);
 
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = async function() {
-                const base64Content = reader.result.split(',')[1];
-                const fileName = `img_${Date.now()}.jpg`;
+                const newCard = {
+                    image: urlInput,
+                    createdAt: new Date().toISOString()
+                };
+                cards.push(newCard);
 
-                try {
-                    const imgRes = await fetch(`https://api.github.com/repos/${cfg.user}/${cfg.repo}/contents/images/${fileName}`, {
-                        method: 'PUT',
-                        headers: {
-                            'Authorization': `token ${cfg.token}`,
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            message: `Upload stock card ${fileName}`,
-                            content: base64Content
-                        })
-                    });
+                const updatedContent = btoa(unescape(encodeURIComponent(JSON.stringify(cards, null, 2))));
+                const updateRes = await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/${FILE_PATH}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${GITHUB_TOKEN}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: 'Add new stock card',
+                        content: updatedContent,
+                        sha: fileData.sha,
+                        branch: GITHUB_BRANCH
+                    })
+                });
 
-                    if(!imgRes.ok) throw new Error('Image upload failed');
-                    const imgData = await imgRes.json();
-                    const downloadUrl = imgData.content.download_url;
+                if (!updateRes.ok) throw new Error('Failed to update GitHub');
 
-                    let existingCards = [];
-                    let sha = '';
-                    const jsonRes = await fetch(`https://api.github.com/repos/${cfg.user}/${cfg.repo}/contents/cards.json`);
-                    if(jsonRes.ok) {
-                        const jsonData = await jsonRes.json();
-                        sha = jsonData.sha;
-                        existingCards = JSON.parse(atob(jsonData.content)).cards || [];
-                    }
-
-                    existingCards.unshift({
-                        id: fileName,
-                        image: downloadUrl,
-                        createdAt: new Date().toISOString()
-                    });
-
-                    await fetch(`https://api.github.com/repos/${cfg.user}/${cfg.repo}/contents/cards.json`, {
-                        method: 'PUT',
-                        headers: {
-                            'Authorization': `token ${cfg.token}`,
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            message: 'Update cards list',
-                            content: btoa(JSON.stringify({ cards: existingCards })),
-                            sha: sha ? sha : undefined
-                        })
-                    });
-
-                    status.className = 'mt-4 p-3 rounded-xl bg-emerald-500/10 text-emerald-400 block';
-                    status.textContent = '✅ အောင်မြင်စွာ တင်ပြီးပါပြီဘရို!';
-                    document.getElementById('cardForm').reset();
-                    loadCards();
-                } catch(err) {
-                    status.className = 'mt-4 p-3 rounded-xl bg-rose-500/10 text-rose-400 block';
-                    status.textContent = '❌ Error: ' + err.message;
-                } finally {
-                    btn.disabled = false;
-                }
-            };
+                statusMsg.textContent = '✅ အောင်မြင်စွာ တင်ပြီးပါပြီ။ User ဘက်တွင်လည်း ချက်ချင်းပေါ်ပါမည်။';
+                statusMsg.className = 'text-xs text-emerald-400';
+                document.getElementById('imageUrlInput').value = '';
+                loadAdminCards();
+            } catch (err) {
+                statusMsg.textContent = `❌ အမှားအယွင်းရှိသည်: ${err.message}`;
+                statusMsg.className = 'text-xs text-rose-400';
+            }
         }
 
-        function renderHistory(cards) {
-            const container = document.getElementById('cardHistory');
-            if(cards.length === 0) {
-                container.innerHTML = '<p class="text-slate-500">ကဒ်မရှိသေးပါ။</p>';
-                return;
+        // ပုံဖျက်ခြင်း
+        async function deleteCard(index) {
+            if (!confirm('ဤပုံကို ဖျတ်ရန် သေချာပါသလား?')) return;
+
+            try {
+                const fileData = await getGitHubFile();
+                const contentDecoded = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+                let cards = Array.isArray(contentDecoded) ? contentDecoded : (contentDecoded.cards || []);
+
+                cards.splice(index, 1);
+
+                const updatedContent = btoa(unescape(encodeURIComponent(JSON.stringify(cards, null, 2))));
+                const updateRes = await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/${FILE_PATH}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${GITHUB_TOKEN}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: 'Delete stock card',
+                        content: updatedContent,
+                        sha: fileData.sha,
+                        branch: GITHUB_BRANCH
+                    })
+                });
+
+                if (!updateRes.ok) throw new Error('Failed to delete from GitHub');
+
+                alert('အောင်မြင်စွာ ဖျတ်ပြီးပါပြီ။ User ဘက်တွင်ပါ ပျောက်သွားပါမည်။');
+                loadAdminCards();
+            } catch (err) {
+                alert(`ဖျတ်၍မရပါ: ${err.message}`);
             }
-            container.innerHTML = cards.map(c => `
-                <div class="history-card p-3">
-                    <div class="card-image-container mb-2"><img src="${c.image}" alt="Card"></div>
-                    <p class="text-xs text-slate-500">${new Date(c.createdAt).toLocaleDateString()}</p>
-                </div>
-            `).join('');
         }
     </script>
 </body>
