@@ -74,21 +74,6 @@
             font-size: 0.55rem;
             color: #64748b;
         }
-        .api-badge {
-            font-size: 0.5rem;
-            padding: 1px 6px;
-            border-radius: 4px;
-            background: rgba(59, 130, 246, 0.2);
-            color: #3b82f6;
-        }
-        .cache-badge {
-            font-size: 0.5rem;
-            padding: 1px 6px;
-            border-radius: 4px;
-            background: rgba(245, 158, 11, 0.2);
-            color: #f59e0b;
-        }
-        
         .data-loader {
             display: flex;
             align-items: center;
@@ -160,13 +145,13 @@
                 <div class="space-y-4 max-w-3xl">
                     <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-rose-500/10 text-rose-400 border border-rose-500/20 live-glow">
                         <span class="w-2 h-2 rounded-full bg-rose-500 mr-2 animate-ping"></span>
-                        <span>LIVE - Real Time Stock Data via API</span>
+                        <span>LIVE - Real Time Stock Data via Finnhub API</span>
                     </span>
                     <h1 class="text-xl sm:text-3xl font-extrabold tracking-tight leading-snug">
                         <span>တကယ့် စတော့ဈေးကွက်ဒေတာများ (Real Time Data)</span>
                     </h1>
                     <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
-                        ဈေးကွက်ဖွင့်နေချိန်တွင် API မှ တကယ့်ဒေတာများကို ဆွဲယူပြသပေးပြီး၊ ဈေးကွက်ပိတ်ချိန်တွင် နောက်ဆုံးရထားသော ဒေတာကို ပြသပေးပါသည်။
+                        Finnhub API မှ တကယ့်ဒေတာများကို ဆွဲယူပြသပေးပြီး၊ ဈေးကွက်ပိတ်ချိန်တွင် နောက်ဆုံးရထားသော ဒေတာကို ပြသပေးပါသည်။
                     </p>
                 </div>
                 <div class="bg-slate-900/90 border border-slate-800 p-6 rounded-2xl text-center shadow-xl w-full md:w-80 shrink-0">
@@ -180,7 +165,7 @@
                         <span id="lastUpdateTime">Last update: --:--:--</span>
                     </div>
                     <div class="text-[10px] text-slate-600 mt-1" id="dataSourceStatus">
-                        <span class="status-dot loading"></span> Connecting to API...
+                        <span class="status-dot loading"></span> Connecting to Finnhub API...
                     </div>
                 </div>
             </div>
@@ -293,7 +278,7 @@
 
     <footer class="border-t border-slate-800 mt-20 py-8 text-center text-slate-500 text-xs">
         <p>&copy; 2026 Manjomjai.site — All Rights Reserved.</p>
-        <p class="text-[10px] text-slate-600 mt-1">* Data from Alpha Vantage API. Updated every 5 minutes when markets are open.</p>
+        <p class="text-[10px] text-slate-600 mt-1">* Data from Finnhub API. Updated every 2 minutes when markets are open.</p>
     </footer>
 
     <!-- VIP Modal -->
@@ -316,20 +301,20 @@
     <!-- JavaScript -->
     <script>
         // ============================================================
-        // API CONFIGURATION - Your API Key is already inserted!
+        // API CONFIGURATION - Your Finnhub API Key
         // ============================================================
-        const ALPHA_VANTAGE_KEY = '08LPJLEGN0923F06';
+        const FINNHUB_KEY = '1d80176654614763960e870ddbe20156';
 
         // ============================================================
         // MARKET CONFIGURATION
         // ============================================================
         const markets = [
-            { id: 'nikkei', name: 'Nikkei 225', apiSymbol: 'NIKKEI', basePrice: 39123.50 },
-            { id: 'dow', name: 'Dow Jones', apiSymbol: 'DIA', basePrice: 53414.25 },
-            { id: 'hanoi', name: 'Hanoi Stock', apiSymbol: 'VN30', basePrice: 1245.80 },
-            { id: 'thai', name: 'Thailand SET', apiSymbol: 'SET', basePrice: 1524.60 },
-            { id: 'oil', name: 'Crude Oil', apiSymbol: 'CL', basePrice: 85.40 },
-            { id: 'gold', name: 'Gold', apiSymbol: 'XAUUSD', basePrice: 2035.80 }
+            { id: 'nikkei', name: 'Nikkei 225', symbol: 'N225.INDX', basePrice: 39123.50 },
+            { id: 'dow', name: 'Dow Jones', symbol: 'DJI.INDX', basePrice: 53414.25 },
+            { id: 'hanoi', name: 'Hanoi Stock', symbol: 'VN30.INDX', basePrice: 1245.80 },
+            { id: 'thai', name: 'Thailand SET', symbol: 'SET.INDX', basePrice: 1524.60 },
+            { id: 'oil', name: 'Crude Oil', symbol: 'CL.US', basePrice: 85.40 },
+            { id: 'gold', name: 'Gold', symbol: 'XAUUSD.OANDA', basePrice: 2035.80 }
         ];
 
         // ============================================================
@@ -361,32 +346,31 @@
         }
 
         // ============================================================
-        // API DATA FETCHING
+        // FINNHUB API FETCHING
         // ============================================================
-        async function fetchFromAlphaVantage(symbol) {
+        async function fetchFinnhubQuote(symbol) {
             try {
-                const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${ALPHA_VANTAGE_KEY}`;
+                const url = `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${FINNHUB_KEY}`;
                 const response = await fetch(url);
                 const data = await response.json();
                 
-                if (data['Global Quote']) {
-                    const quote = data['Global Quote'];
+                if (data && data.c) {
                     return {
-                        price: parseFloat(quote['05. price']),
-                        change: parseFloat(quote['10. change percent'].replace('%', '')),
-                        isUp: parseFloat(quote['09. change']) >= 0
+                        price: data.c,
+                        change: data.dp || 0,
+                        isUp: data.d >= 0
                     };
                 }
                 return null;
             } catch (e) {
-                console.warn('Alpha Vantage error:', e);
+                console.warn('Finnhub error:', e);
                 return null;
             }
         }
 
         async function fetchMarketData(market) {
-            // Try Alpha Vantage
-            let data = await fetchFromAlphaVantage(market.apiSymbol);
+            // Try Finnhub
+            let data = await fetchFinnhubQuote(market.symbol);
             
             if (!data) {
                 const cached = getCachedData(market.id);
@@ -477,7 +461,7 @@
             document.getElementById('lastUpdateTime').innerText = `Last update: ${timeStr}`;
             document.getElementById('systemStatusText').innerText = 'Updating data...';
             document.getElementById('systemStatusDot').className = 'status-dot loading';
-            document.getElementById('dataSourceStatus').innerHTML = '<span class="status-dot loading"></span> Fetching from API...';
+            document.getElementById('dataSourceStatus').innerHTML = '<span class="status-dot loading"></span> Fetching from Finnhub API...';
 
             let openCount = 0;
             const totalCount = markets.length;
@@ -499,7 +483,7 @@
                     if (isOpen) {
                         data = await fetchMarketData(market);
                         if (!data.fromCache) {
-                            source = 'API (Live)';
+                            source = 'Finnhub API (Live)';
                             setCachedData(market.id, data);
                         } else {
                             source = 'Cache (API unavailable)';
@@ -555,7 +539,7 @@
                 document.getElementById('systemStatusDot').className = 'status-dot open';
                 document.getElementById('systemStatusText').textContent = 'All markets open - Live data';
                 document.getElementById('dataSourceStatus').innerHTML = 
-                    `<span class="status-dot open"></span> Live Data from API (${openCount}/${totalCount} open)`;
+                    `<span class="status-dot open"></span> Live Data from Finnhub API (${openCount}/${totalCount} open)`;
             } else if (openCount > 0) {
                 summaryEl.innerHTML = `<span class="status-dot open"></span> ${openCount}/${totalCount} Markets Open`;
                 document.getElementById('systemStatusDot').className = 'status-dot open';
@@ -714,19 +698,20 @@
                 updateAllMarketData();
             }, 1000);
             
+            // Auto-update every 2 minutes
             setInterval(() => {
                 updateAllMarketData();
-            }, 300000);
+            }, 120000);
             
             setInterval(() => {
                 const now = new Date();
                 if (now.getHours() === 9 && now.getMinutes() === 0) updatePredictions();
             }, 60000);
 
-            console.log('✅ Manjomjai initialized with Real Time Data via Alpha Vantage API');
-            console.log('🔑 API Key: 08LPJLEGN0923F06');
+            console.log('✅ Manjomjai initialized with Finnhub API');
+            console.log('🔑 API Key: 1d80176654614763960e870ddbe20156');
             console.log('📊 Markets: Open = Live API, Closed = Cached data');
-            console.log('🔄 Auto-update every 5 minutes when markets are open');
+            console.log('🔄 Auto-update every 2 minutes when markets are open');
         }
 
         window.onload = init;
