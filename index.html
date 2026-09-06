@@ -608,9 +608,10 @@
         });
 
         // ============================================================
-        // CARDS - JSONBin Cloud
+        // CARDS - JSONBin Cloud (✅ API Key ပြင်ပြီး)
         // ============================================================
-        const JSONBIN_API_KEY = '$2a$10$MOWcSjLFZl7bm8GA2SoqcepS/1cWIp/vpKrVGFLPokRpGAC4jshCq';
+        // Admin မှာသုံးတဲ့ API Key အတိုင်း
+        const JSONBIN_API_KEY = '$2a$10$6mZWgwXg/6P6a9PdZ0DLT0uxC/b7Sv81xHPw6wJ1U.cuGoCDoPR.G';
         const JSONBIN_BIN_ID = '6a9d7740da38895dfe4004a0';
 
         async function fetchCardsFromCloud() {
@@ -695,12 +696,10 @@
         // INIT
         // ============================================================
         function init() {
-            // Load saved language
             const savedLang = localStorage.getItem('manjomjai_lang') || 'mm';
             document.getElementById('langSwitch').value = savedLang;
             changeLanguage();
 
-            // Load saved theme
             const savedTheme = localStorage.getItem('manjomjai_theme') || 'dark';
             if (savedTheme === 'light') {
                 document.getElementById('bodyTheme').classList.remove('dark');
@@ -709,18 +708,16 @@
                 document.getElementById('themeIcon').classList.add('fa-moon');
             }
 
-            // Load cards
             renderCards();
-
-            // Auto refresh every 10 seconds
             setInterval(renderCards, 10000);
 
-            console.log('✅ Manjomjai initialized successfully!');
-            console.log('☁️ Using JSONBin for cloud storage');
-            console.log('📦 Bin ID:', JSONBIN_BIN_ID);
+            console.log('✅ Manjomjai initialized!');
+            console.log('☁️ JSONBin Bin ID:', JSONBIN_BIN_ID);
+            console.log('🔑 API Key:', JSONBIN_API_KEY.substring(0, 20) + '...');
         }
 
         window.onload = init;
     </script>
+
 </body>
 </html>
