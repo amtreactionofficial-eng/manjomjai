@@ -516,4 +516,448 @@
 
         // ============================================================
         // INIT - Load from localStorage
-       
+        // ============================================================
+        function loadData() {
+            try {
+                const savedInsights = localStorage.getItem('manjomjai_insights');
+                insights = savedInsights ? JSON.parse(savedInsights) : getDefaultInsights();
+                
+                const savedNumbers = localStorage.getItem('manjomjai_numbers');
+                numbers = savedNumbers ? JSON.parse(savedNumbers) : getDefaultNumbers();
+            } catch (e) {
+                insights = getDefaultInsights();
+                numbers = getDefaultNumbers();
+            }
+            saveData();
+        }
+
+        function getDefaultInsights() {
+            return [
+                {
+                    id: 1,
+                    title: '🇹🇭 ထိုင်းစတော့ဈေးကွက် (SET) ၏ လက်ရှိအခြေအနေ',
+                    content: 'ထိုင်းနိုင်ငံ၏ စတော့ဈေးကွက်ဖြစ်သော SET (Stock Exchange of Thailand) သည် အရှေ့တောင်အာရှဒေသတွင် အကြီးဆုံးနှင့် အရည်အသွေးအမြင့်ဆုံး ဈေးကွက်များထဲမှ တစ်ခုဖြစ်ပါသည်။ လက်ရှိအချိန်တွင် SET ဈေးကွက်သည် ဒေသတွင်းစီးပွားရေးအခြေအနေ၊ ကမ္ဘာ့ငွေကြေးဈေးကွက်အပြောင်းအလဲများနှင့် နိုင်ငံရေးတည်ငြိမ်အေးချမ်းမှုတို့အပေါ် များစွာမူတည်လျက်ရှိပါသည်။',
+                    icon: 'fa-landmark',
+                    color: 'amber'
+                },
+                {
+                    id: 2,
+                    title: '🌏 အာရှဒေသဆိုင်ရာ စတော့ဈေးကွက်များ',
+                    content: 'အာရှဒေသရှိ စတော့ဈေးကွက်များသည် ကမ္ဘာ့စီးပွားရေး၏ အရေးပါသော အစိတ်အပိုင်းတစ်ခုဖြစ်လာပြီး တရုတ်၊ ဂျပန်၊ တောင်ကိုရီးယား၊ အိန္ဒိယနှင့် အရှေ့တောင်အာရှနိုင်ငံများ၏ ဈေးကွက်များသည် ကမ္ဘာ့ရင်းနှီးမြှုပ်နှံသူများ၏ အာရုံစိုက်မှုကို ခံနေရပါသည်။',
+                    icon: 'fa-globe-asia',
+                    color: 'blue'
+                }
+            ];
+        }
+
+        function getDefaultNumbers() {
+            return [
+                { id: 1, market: 'Dow Jones', number: '532 - 847 - 215', accuracy: 94 },
+                { id: 2, market: 'Hanoi Stock', number: '384 - 726 - 193', accuracy: 91 },
+                { id: 3, market: 'Thailand SET', number: '492 - 937 - 766', accuracy: 96 }
+            ];
+        }
+
+        function saveData() {
+            localStorage.setItem('manjomjai_insights', JSON.stringify(insights));
+            localStorage.setItem('manjomjai_numbers', JSON.stringify(numbers));
+        }
+
+        // ============================================================
+        // ADMIN LOGIN / LOGOUT
+        // ============================================================
+        function adminLogin() {
+            const username = document.getElementById('adminUsername').value.trim();
+            const password = document.getElementById('adminPassword').value.trim();
+            const errorEl = document.getElementById('loginError');
+            
+            if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+                isAdminLoggedIn = true;
+                errorEl.classList.add('hidden');
+                document.getElementById('loginOverlay').classList.add('hidden');
+                document.getElementById('adminStatusBadge').classList.remove('hidden');
+                renderAll();
+                console.log('✅ Admin logged in successfully!');
+            } else {
+                errorEl.classList.remove('hidden');
+                errorEl.textContent = '❌ Username သို့မဟုတ် Password မှားနေပါသည်။';
+            }
+        }
+
+        function adminLogout() {
+            if (confirm('အက်ဒမင်အကောင့်မှ ထွက်မည်။ သေချာပါသလား?')) {
+                isAdminLoggedIn = false;
+                document.getElementById('loginOverlay').classList.remove('hidden');
+                document.getElementById('adminStatusBadge').classList.add('hidden');
+                document.getElementById('adminUsername').value = '';
+                document.getElementById('adminPassword').value = '';
+                console.log('👋 Admin logged out');
+            }
+        }
+
+        function openLogin() {
+            if (!isAdminLoggedIn) {
+                document.getElementById('loginOverlay').classList.remove('hidden');
+            }
+        }
+
+        // ============================================================
+        // RENDER
+        // ============================================================
+        function renderAll() {
+            renderInsights();
+            renderNumbers();
+            renderUserView();
+            updateStats();
+        }
+
+        function renderInsights() {
+            const container = document.getElementById('insightsList');
+            if (!container) return;
+            
+            if (insights.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-slate-500 text-sm py-8">
+                        <i class="fa-solid fa-inbox text-3xl block mb-2 opacity-30"></i>
+                        အကြံပြုချက်မရှိသေးပါ။ အသစ်ထည့်ရန် "အကြံပြုချက်အသစ်ထည့်" ကိုနှိပ်ပါ။
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = insights.map((item, index) => `
+                <div class="card-gradient rounded-xl p-4 flex items-center justify-between gap-4 glow-border hover:border-amber-500/30 transition">
+                    <div class="flex items-center gap-3 flex-1 min-w-0">
+                        <div class="icon-circle bg-${item.color || 'amber'}-500/10 text-${item.color || 'amber'}-400 flex-shrink-0">
+                            <i class="fa-solid ${item.icon || 'fa-file-lines'}"></i>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <div class="font-semibold text-sm truncate">${item.title}</div>
+                            <div class="text-xs text-slate-400 truncate">${item.content.substring(0, 100)}${item.content.length > 100 ? '...' : ''}</div>
+                            <div class="text-[10px] text-slate-500 mt-1">#${item.id}</div>
+                        </div>
+                    </div>
+                    <div class="flex gap-2 flex-shrink-0">
+                        <button onclick="editInsight(${item.id})" class="text-blue-400 hover:text-blue-300 text-sm p-2 rounded-lg hover:bg-blue-500/10 transition">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button onclick="deleteInsight(${item.id})" class="text-rose-400 hover:text-rose-300 text-sm p-2 rounded-lg hover:bg-rose-500/10 transition">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderNumbers() {
+            const container = document.getElementById('numbersList');
+            if (!container) return;
+            
+            if (numbers.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-slate-500 text-sm py-8">
+                        <i class="fa-solid fa-inbox text-3xl block mb-2 opacity-30"></i>
+                        နံပါတ်မရှိသေးပါ။ အသစ်ထည့်ရန် "နံပါတ်အသစ်ထည့်" ကိုနှိပ်ပါ။
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = numbers.map(item => `
+                <div class="card-gradient rounded-xl p-4 flex items-center justify-between gap-4 glow-border hover:border-blue-500/30 transition">
+                    <div class="flex items-center gap-3 flex-1 min-w-0">
+                        <div class="w-10 h-10 rounded-full bg-blue-500/10 text-blue-400 flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-hashtag"></i>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <div class="font-semibold text-sm">${item.market}</div>
+                            <div class="text-lg font-mono font-bold text-amber-400">${item.number}</div>
+                            <div class="text-xs text-emerald-400">Accuracy: ${item.accuracy}%</div>
+                        </div>
+                    </div>
+                    <div class="flex gap-2 flex-shrink-0">
+                        <button onclick="editNumber(${item.id})" class="text-blue-400 hover:text-blue-300 text-sm p-2 rounded-lg hover:bg-blue-500/10 transition">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button onclick="deleteNumber(${item.id})" class="text-rose-400 hover:text-rose-300 text-sm p-2 rounded-lg hover:bg-rose-500/10 transition">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderUserView() {
+            // Render insights for user view
+            const userInsightsContainer = document.getElementById('userInsights');
+            if (userInsightsContainer) {
+                if (insights.length === 0) {
+                    userInsightsContainer.innerHTML = `<p class="text-xs text-slate-500 text-center">အကြံပြုချက်မရှိသေးပါ။</p>`;
+                } else {
+                    userInsightsContainer.innerHTML = insights.map(item => `
+                        <div class="insight-card bg-slate-800/30 dark:bg-slate-800/20 rounded-xl p-4 sm:p-5 transition-all duration-300">
+                            <div class="flex items-start gap-3">
+                                <div class="icon-circle bg-${item.color || 'amber'}-500/10 text-${item.color || 'amber'}-400">
+                                    <i class="fa-solid ${item.icon || 'fa-file-lines'}"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-sm sm:text-base">${item.title}</h3>
+                                    <p class="text-slate-400 text-xs sm:text-sm leading-relaxed mt-1">${item.content}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            }
+            
+            // Render numbers for user view
+            const userNumbersContainer = document.getElementById('userNumbers');
+            if (userNumbersContainer) {
+                if (numbers.length === 0) {
+                    userNumbersContainer.innerHTML = `<p class="text-xs text-slate-500 text-center col-span-3">နံပါတ်မရှိသေးပါ။</p>`;
+                } else {
+                    userNumbersContainer.innerHTML = numbers.map(item => `
+                        <div class="daily-number-card card-gradient rounded-2xl p-5 text-center glow-border">
+                            <div class="market-label text-xs text-slate-400 uppercase tracking-wider">${item.market}</div>
+                            <div class="text-2xl sm:text-3xl font-black font-mono text-amber-400 mt-2">${item.number}</div>
+                            <div class="text-xs text-emerald-400 mt-2">Accuracy: ${item.accuracy}%</div>
+                        </div>
+                    `).join('');
+                }
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('insightCount').textContent = insights.length;
+            document.getElementById('numberCount').textContent = numbers.length;
+            document.getElementById('lastUpdateDisplay').textContent = new Date().toLocaleTimeString('en-US', { hour12: false });
+        }
+
+        // ============================================================
+        // INSIGHT CRUD
+        // ============================================================
+        function openAddInsightModal() {
+            if (!isAdminLoggedIn) { alert('ကျေးဇူးပြု၍ Admin အကောင့်ဖြင့် ဝင်ရောက်ပါ။'); return; }
+            document.getElementById('insightTitle').value = '';
+            document.getElementById('insightContent').value = '';
+            document.getElementById('addInsightModal').classList.remove('hidden');
+        }
+
+        function closeAddInsightModal() {
+            document.getElementById('addInsightModal').classList.add('hidden');
+        }
+
+        function saveInsight() {
+            const title = document.getElementById('insightTitle').value.trim();
+            const content = document.getElementById('insightContent').value.trim();
+            const icon = document.getElementById('insightIcon').value;
+            const color = document.getElementById('insightColor').value;
+            
+            if (!title || !content) {
+                alert('ခေါင်းစဉ်နှင့် အကြောင်းအရာကို ဖြည့်သွင်းပါ။');
+                return;
+            }
+            
+            const newId = insights.length > 0 ? Math.max(...insights.map(i => i.id)) + 1 : 1;
+            insights.push({ id: newId, title, content, icon, color });
+            saveData();
+            closeAddInsightModal();
+            renderAll();
+            console.log('✅ Insight added:', title);
+        }
+
+        function editInsight(id) {
+            if (!isAdminLoggedIn) { alert('ကျေးဇူးပြု၍ Admin အကောင့်ဖြင့် ဝင်ရောက်ပါ။'); return; }
+            const item = insights.find(i => i.id === id);
+            if (!item) return;
+            
+            editInsightId = id;
+            document.getElementById('editInsightId').value = id;
+            document.getElementById('editInsightTitle').value = item.title;
+            document.getElementById('editInsightContent').value = item.content;
+            document.getElementById('editInsightIcon').value = item.icon || 'fa-file-lines';
+            document.getElementById('editInsightColor').value = item.color || 'amber';
+            document.getElementById('editInsightModal').classList.remove('hidden');
+        }
+
+        function closeEditInsightModal() {
+            document.getElementById('editInsightModal').classList.add('hidden');
+            editInsightId = null;
+        }
+
+        function updateInsight() {
+            const id = parseInt(document.getElementById('editInsightId').value);
+            const title = document.getElementById('editInsightTitle').value.trim();
+            const content = document.getElementById('editInsightContent').value.trim();
+            const icon = document.getElementById('editInsightIcon').value;
+            const color = document.getElementById('editInsightColor').value;
+            
+            if (!title || !content) {
+                alert('ခေါင်းစဉ်နှင့် အကြောင်းအရာကို ဖြည့်သွင်းပါ။');
+                return;
+            }
+            
+            const index = insights.findIndex(i => i.id === id);
+            if (index === -1) return;
+            
+            insights[index] = { ...insights[index], title, content, icon, color };
+            saveData();
+            closeEditInsightModal();
+            renderAll();
+            console.log('✅ Insight updated:', title);
+        }
+
+        function deleteInsight(id) {
+            if (!confirm('ဤအကြံပြုချက်ကို ဖျက်မည်။ သေချာပါသလား?')) return;
+            insights = insights.filter(i => i.id !== id);
+            saveData();
+            renderAll();
+            console.log('🗑️ Insight deleted:', id);
+        }
+
+        function deleteInsightFromEdit() {
+            const id = parseInt(document.getElementById('editInsightId').value);
+            closeEditInsightModal();
+            deleteInsight(id);
+        }
+
+        // ============================================================
+        // NUMBER CRUD
+        // ============================================================
+        function openAddNumberModal() {
+            if (!isAdminLoggedIn) { alert('ကျေးဇူးပြု၍ Admin အကောင့်ဖြင့် ဝင်ရောက်ပါ။'); return; }
+            document.getElementById('numberMarket').value = '';
+            document.getElementById('numberValue').value = '';
+            document.getElementById('numberAccuracy').value = '94';
+            document.getElementById('addNumberModal').classList.remove('hidden');
+        }
+
+        function closeAddNumberModal() {
+            document.getElementById('addNumberModal').classList.add('hidden');
+        }
+
+        function saveNumber() {
+            const market = document.getElementById('numberMarket').value.trim();
+            const number = document.getElementById('numberValue').value.trim();
+            const accuracy = parseInt(document.getElementById('numberAccuracy').value) || 94;
+            
+            if (!market || !number) {
+                alert('ဈေးကွက်အမည်နှင့် နံပါတ်ကို ဖြည့်သွင်းပါ။');
+                return;
+            }
+            
+            const newId = numbers.length > 0 ? Math.max(...numbers.map(n => n.id)) + 1 : 1;
+            numbers.push({ id: newId, market, number, accuracy });
+            saveData();
+            closeAddNumberModal();
+            renderAll();
+            console.log('✅ Number added:', market, number);
+        }
+
+        function editNumber(id) {
+            if (!isAdminLoggedIn) { alert('ကျေးဇူးပြု၍ Admin အကောင့်ဖြင့် ဝင်ရောက်ပါ။'); return; }
+            const item = numbers.find(n => n.id === id);
+            if (!item) return;
+            
+            // Simple edit - we'll just use the same modal with values filled
+            document.getElementById('numberMarket').value = item.market;
+            document.getElementById('numberValue').value = item.number;
+            document.getElementById('numberAccuracy').value = item.accuracy;
+            
+            // Remove the old one, add new one on save
+            // We'll handle this by deleting the old and saving new
+            const confirmEdit = confirm(`"${item.market}" ကို တည်းဖြတ်မည်။ ဆက်လုပ်မလား?`);
+            if (!confirmEdit) return;
+            
+            numbers = numbers.filter(n => n.id !== id);
+            saveData();
+            
+            // Open add modal with values
+            document.getElementById('addNumberModal').classList.remove('hidden');
+        }
+
+        function deleteNumber(id) {
+            if (!confirm('ဤနံပါတ်ကို ဖျက်မည်။ သေချာပါသလား?')) return;
+            numbers = numbers.filter(n => n.id !== id);
+            saveData();
+            renderAll();
+            console.log('🗑️ Number deleted:', id);
+        }
+
+        // ============================================================
+        // REFRESH
+        // ============================================================
+        function refreshData() {
+            loadData();
+            renderAll();
+            console.log('🔄 Data refreshed');
+        }
+
+        // ============================================================
+        // THEME
+        // ============================================================
+        function toggleTheme() {
+            const body = document.getElementById('bodyTheme');
+            const icon = document.getElementById('themeIcon');
+            if (body.classList.contains('dark')) {
+                body.classList.remove('dark');
+                body.classList.add('light');
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+                localStorage.setItem('manjomjai_theme', 'light');
+            } else {
+                body.classList.remove('light');
+                body.classList.add('dark');
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+                localStorage.setItem('manjomjai_theme', 'dark');
+            }
+        }
+
+        // ============================================================
+        // MODAL HELPERS
+        // ============================================================
+        function openVipModal() { document.getElementById('vipModal').classList.remove('hidden'); }
+        function closeVipModal() { document.getElementById('vipModal').classList.add('hidden'); }
+
+        // ============================================================
+        // INIT
+        // ============================================================
+        function init() {
+            // Load data
+            loadData();
+            
+            // Load theme
+            const savedTheme = localStorage.getItem('manjomjai_theme') || 'dark';
+            if (savedTheme === 'light') {
+                document.getElementById('bodyTheme').classList.remove('dark');
+                document.getElementById('bodyTheme').classList.add('light');
+                document.getElementById('themeIcon').classList.remove('fa-sun');
+                document.getElementById('themeIcon').classList.add('fa-moon');
+            }
+            
+            // Check if already logged in
+            // Default: not logged in, show login overlay
+            document.getElementById('loginOverlay').classList.remove('hidden');
+            document.getElementById('adminStatusBadge').classList.add('hidden');
+            
+            // Enter key for login
+            document.getElementById('adminPassword').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') adminLogin();
+            });
+            document.getElementById('adminUsername').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') adminLogin();
+            });
+            
+            // Render user view (default - no admin data shown until login)
+            renderUserView();
+            
+            console.log('✅ Manjomjai Admin Panel initialized!');
+            console.log('🔑 Demo: admin / admin123');
+            console.log('🌙 Theme: ' + savedTheme);
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
