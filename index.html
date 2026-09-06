@@ -157,10 +157,6 @@
         <section class="relative rounded-3xl overflow-hidden hero-gradient border border-slate-800 p-6 sm:p-10 shadow-2xl transition-colors duration-300">
             <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
                 <div class="space-y-4 max-w-3xl">
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-rose-500/10 text-rose-400 border border-rose-500/20 live-glow">
-                        <span class="w-2 h-2 rounded-full bg-rose-500 mr-2 animate-ping"></span>
-                        <span data-i18n="liveBadge">⚡ Live Predictions & Analysis</span>
-                    </span>
                     <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight leading-snug">
                         <span data-i18n="heroTitle">စတော့ဈေးကွက်များကို နက်နက်နဲနဲ ခွဲခြမ်းစိတ်ဖြာပြီး အတိကျဆုံး ခန့်မှန်းချက်များကို ဖော်ပြပေးနေသော ပလပ်ဖောင်း</span>
                     </h1>
@@ -169,13 +165,11 @@
                     </p>
                 </div>
                 <div class="card-gradient rounded-2xl p-6 text-center shadow-xl w-full md:w-72 shrink-0 glow-border transition-colors duration-300">
-                    <div class="text-xs text-slate-400 uppercase tracking-wider mb-1" data-i18n="todayDateLabel">ယနေ့ရက်စွဲ</div>
-                    <div id="currentDateDisplay" class="text-lg font-bold text-amber-400 mb-3">Loading...</div>
-                    <div class="border-t border-slate-700/50 pt-3 flex items-center justify-center gap-2">
+                    <div class="border-b border-slate-700/50 pb-3 flex items-center justify-center gap-2">
                         <span class="status-dot w-2 h-2 rounded-full bg-emerald-400 animate-pulse" id="systemStatusDot"></span>
                         <span class="text-xs text-emerald-400" id="systemStatusText" data-i18n="statusActive">System Active</span>
                     </div>
-                    <div class="text-[10px] text-slate-500 mt-2">
+                    <div class="text-[10px] text-slate-500 mt-3">
                         <span id="lastUpdateTime">Last update: --:--:--</span>
                     </div>
                 </div>
@@ -217,11 +211,9 @@
             mm: {
                 logoSub: "Stock Predictions",
                 vipBtn: "VIP ဝင်ရန်",
-                liveBadge: "⚡ Live Predictions & Analysis",
                 heroTitle: "စတော့ဈေးကွက်များကို နက်နက်နဲနဲ ခွဲခြမ်းစိတ်ဖြာပြီး အတိကျဆုံး ခန့်မှန်းချက်များကို ဖော်ပြပေးနေသော ပလပ်ဖောင်း",
                 heroDesc: "Manjomjai ဝဘ်ဆိုဒ်သည် ကမ္ဘာ့ထိပ်တန်း စတော့ဈေးကွက်များကို အချိန်နှင့်တပြေးညီ စောင့်ကြည့်စစ်ဆေးကာ ကိန်းဂဏန်းဆိုင်ရာ သမိုင်းကြောင်းအချက်အလက်များနှင့် တွက်ချက်မှုပုံစံများကို ပေါင်းစပ်၍ အသေချာဆုံး ကံစမ်းခန့်မှန်းကွက်များကို တိကျမှန်ကန်စွာ ထုတ်ပြန်ပေးနေပါသည်။",
-                todayDateLabel: "ယနေ့ရက်စွဲ",
-                statusActive: "✅ System Active",
+                statusActive: "System Active",
                 modalTitle: "VIP မန်ဘာဝင်ရောက်ရန်",
                 modalDesc: "KBZPay၊ Wave Money သို့မဟုတ် MMQR ဖြင့် ငွေလွှဲ၍ မန်ဘာဝင်နိုင်ပါသည်။",
                 submitSlip: "အတည်ပြုရန် ပို့မည်",
@@ -230,11 +222,9 @@
             th: {
                 logoSub: "Stock Predictions",
                 vipBtn: "สมัคร VIP",
-                liveBadge: "⚡ Live Predictions & Analysis",
                 heroTitle: "แพลตฟอร์มวิเคราะห์ตลาดหุ้นเชิงลึกและการคาดการณ์ที่แม่นยำที่สุด",
                 heroDesc: "เว็บไซต์ Manjomjai ติดตามตลาดหุ้นชั้นนำระดับโลกแบบเรียลไทม์ พร้อมผสานข้อมูลสถิติย้อนหลังและแนวทางที่แม่นยำที่สุดเพื่อคุณ",
-                todayDateLabel: "วันที่ปัจจุบัน",
-                statusActive: "✅ System Active",
+                statusActive: "System Active",
                 modalTitle: "สมัครสมาชิก VIP",
                 modalDesc: "ชำระเงินผ่าน KBZPay, Wave Money หรือ MMQR เพื่อสมัครสมาชิก",
                 submitSlip: "ยืนยันการส่งสลิป",
@@ -243,11 +233,9 @@
             en: {
                 logoSub: "Stock Predictions",
                 vipBtn: "Join VIP",
-                liveBadge: "⚡ Live Predictions & Analysis",
                 heroTitle: "Advanced Stock Market Analysis & Most Accurate Predictions",
                 heroDesc: "Manjomjai platform monitors global leading markets in real-time, combining historical statistics to deliver the most accurate predictions.",
-                todayDateLabel: "Today's Date",
-                statusActive: "✅ System Active",
+                statusActive: "System Active",
                 modalTitle: "Join VIP Membership",
                 modalDesc: "Transfer via KBZPay, Wave Money or MMQR to join membership.",
                 submitSlip: "Submit for Verification",
@@ -295,25 +283,26 @@
         function closeVipModal() { document.getElementById('vipModal').classList.add('hidden'); }
 
         // ============================================================
-        // DATE
+        // TIME
         // ============================================================
-        function getMyanmarDate() {
-            const now = new Date();
-            const months = ["ဇန်နဝါရီ", "ဖေဖော်ဝါရီ", "မတ်", "ဧပြီ", "မေ", "ဇွန်", "ဇူလိုင်", "သြဂုတ်", "စက်တင်ဘာ", "အောက်တိုဘာ", "နိုဝင်ဘာ", "ဒီဇင်ဘာ"];
-            return `${String(now.getDate()).padStart(2, '0')} ${months[now.getMonth()]} ${now.getFullYear()}`;
-        }
-
         function getTimeString() {
             const now = new Date();
             return `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
         }
 
         // ============================================================
+        // UPDATE TIME
+        // ============================================================
+        function updateTime() {
+            document.getElementById('lastUpdateTime').innerText = `Last update: ${getTimeString()}`;
+        }
+
+        // ============================================================
         // INIT
         // ============================================================
         function init() {
-            document.getElementById('currentDateDisplay').innerText = getMyanmarDate();
-            document.getElementById('lastUpdateTime').innerText = `Last update: ${getTimeString()}`;
+            updateTime();
+            setInterval(updateTime, 1000);
 
             console.log('✅ Manjomjai initialized successfully!');
             console.log('🌙 Night mode available');
