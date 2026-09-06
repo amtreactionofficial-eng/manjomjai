@@ -8,25 +8,271 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        /* Same styles as before... (ငါ့ရဲ့ ယခင်ကုဒ်အတိုင်း) */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Poppins', 'Padauk', sans-serif; }
-        /* ... (styles အကုန်လုံးက ယခင်အတိုင်း) ... */
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.02); }
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+
+        .float-animation { animation: float 4s ease-in-out infinite; }
+        .live-glow { animation: pulse-glow 2s infinite; }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #f59e0b, #ef4444, #8b5cf6, #3b82f6);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmer 4s ease-in-out infinite;
+        }
+
+        .hero-gradient {
+            background: radial-gradient(ellipse at 20% 50%, rgba(139, 92, 246, 0.12), transparent 50%),
+                        radial-gradient(ellipse at 80% 50%, rgba(239, 68, 68, 0.08), transparent 50%),
+                        radial-gradient(ellipse at 50% 100%, rgba(59, 130, 246, 0.06), transparent 40%),
+                        #0f172a;
+        }
+
+        .card-gradient {
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.92));
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .glow-border {
+            position: relative;
+        }
+        .glow-border::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: 20px;
+            padding: 1.5px;
+            background: linear-gradient(135deg, #f59e0b, #ef4444, #8b5cf6, #3b82f6);
+            background-size: 300% 300%;
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0.25;
+            transition: opacity 0.5s, transform 0.5s;
+            animation: shimmer 4s ease-in-out infinite;
+        }
+        .glow-border:hover::before { opacity: 0.7; }
+
+        .nav-blur {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .theme-toggle {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .theme-toggle:hover { transform: rotate(30deg) scale(1.12); }
+
+        .lang-select {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #e2e8f0;
+            padding: 7px 14px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+        .lang-select:hover { border-color: rgba(251, 191, 36, 0.35); background: rgba(30, 41, 59, 0.95); }
+        .lang-select:focus { outline: none; border-color: #f59e0b; box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15); }
+        .lang-select option { background: #1e293b; }
+
+        .vip-btn {
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            box-shadow: 0 4px 25px rgba(239, 68, 68, 0.3);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .vip-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 40px rgba(239, 68, 68, 0.45);
+        }
+        .vip-btn:active { transform: scale(0.97); }
+
+        .footer-text {
+            background: linear-gradient(135deg, #475569, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .insight-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-left: 3px solid transparent;
+        }
+        .insight-card:hover {
+            transform: translateX(6px);
+            border-left-color: #f59e0b;
+        }
+        .insight-card .icon-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 1.1rem;
+        }
+
+        #cardContainer {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(245, 158, 11, 0.3) transparent;
+            -webkit-overflow-scrolling: touch;
+        }
+        #cardContainer::-webkit-scrollbar {
+            height: 4px;
+        }
+        #cardContainer::-webkit-scrollbar-track {
+            background: rgba(30, 41, 59, 0.3);
+            border-radius: 10px;
+        }
+        #cardContainer::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            border-radius: 10px;
+        }
+
+        .card-item {
+            flex-shrink: 0;
+            width: 280px;
+            scroll-snap-align: start;
+        }
+        @media (min-width: 640px) { .card-item { width: 320px; } }
+        @media (min-width: 768px) { .card-item { width: 360px; } }
+        @media (min-width: 1024px) { .card-item { width: 400px; } }
+
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: rgba(30, 41, 59, 0.3); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #f59e0b, #ef4444); border-radius: 10px; }
+
+        body.light {
+            background: #f0f4f8;
+            color: #0f172a;
+        }
+        body.light .card-gradient {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(241, 245, 249, 0.96));
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        body.light .hero-gradient {
+            background: radial-gradient(ellipse at 20% 50%, rgba(139, 92, 246, 0.06), transparent 50%),
+                        radial-gradient(ellipse at 80% 50%, rgba(239, 68, 68, 0.04), transparent 50%),
+                        #f0f4f8;
+        }
+        body.light .nav-blur { background: rgba(255, 255, 255, 0.88) !important; border-bottom: 1px solid rgba(0,0,0,0.06) !important; }
+        body.light .lang-select { background: rgba(255, 255, 255, 0.9); color: #0f172a; border: 1px solid rgba(0,0,0,0.08); }
+        body.light .lang-select option { background: #ffffff; }
+        body.light .glow-border::before { opacity: 0.12; }
+        body.light .glow-border:hover::before { opacity: 0.45; }
+        body.light .text-slate-400 { color: #64748b; }
+        body.light .text-slate-500 { color: #94a3b8; }
+        body.light .insight-card { border-left-color: rgba(0,0,0,0.06); }
+        body.light .insight-card:hover { border-left-color: #f59e0b; }
+        body.light .footer-text { background: linear-gradient(135deg, #94a3b8, #64748b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        body.light ::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); }
+        body.light #cardContainer::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); }
+        body.light .card-item .bg-slate-800\/40 { background: rgba(241, 245, 249, 0.8); border-color: rgba(0,0,0,0.06); }
+
+        .loading-spinner-sm {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 50%;
+            border-top-color: #f59e0b;
+            animation: spin 0.8s ease-in-out infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        @media (max-width: 640px) {
+            .hero-gradient { padding: 1.5rem !important; }
+            .gradient-text { font-size: 1.8rem !important; }
+            .vip-btn { padding: 0.5rem 1rem !important; font-size: 0.7rem !important; }
+            .lang-select { padding: 5px 10px; font-size: 0.65rem; }
+            .insight-card { padding: 0.75rem !important; }
+            .insight-card .icon-circle { width: 32px; height: 32px; font-size: 0.9rem; }
+            .card-item { width: 240px; }
+        }
+        @media (max-width: 480px) {
+            .gradient-text { font-size: 1.5rem !important; }
+            .nav-blur .flex { gap: 0.5rem; }
+            .nav-blur .space-x-3 { gap: 0.4rem; }
+            .card-item { width: 200px; }
+        }
     </style>
 </head>
 <body class="dark bg-slate-950 text-slate-100 min-h-screen transition-colors duration-300" id="bodyTheme">
 
-    <!-- TOP NAVIGATION BAR (ယခင်အတိုင်း) -->
+    <!-- TOP NAVIGATION BAR -->
     <header class="sticky top-0 z-50 nav-blur bg-slate-900/80 border-b border-slate-800/50 transition-colors duration-300">
-        <!-- ... -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <div class="bg-gradient-to-r from-amber-500 to-rose-500 p-2 sm:p-2.5 rounded-xl shadow-lg shadow-amber-500/20">
+                    <i class="fa-solid fa-chart-line text-white text-sm sm:text-xl"></i>
+                </div>
+                <div>
+                    <span class="text-lg sm:text-2xl font-black tracking-wider gradient-text">MANJOMJAI</span>
+                    <span class="block text-[8px] sm:text-[10px] text-slate-400 tracking-widest uppercase" data-i18n="logoSub">Stock Predictions</span>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <select id="langSwitch" onchange="changeLanguage()" class="lang-select">
+                    <option value="mm">🇲🇲 မြန်မာ</option>
+                    <option value="th">🇹🇭 ไทย</option>
+                    <option value="en">🇬🇧 English</option>
+                </select>
+
+                <button onclick="toggleTheme()" class="theme-toggle bg-slate-800 hover:bg-slate-700 text-amber-400 p-2 sm:p-2.5 rounded-xl border border-slate-700 transition-all duration-300 text-xs sm:text-sm">
+                    <i id="themeIcon" class="fa-solid fa-sun"></i>
+                </button>
+
+                <button onclick="openVipModal()" class="vip-btn text-white font-bold px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-[10px] sm:text-xs transition-all duration-300">
+                    <i class="fa-solid fa-crown mr-1"></i> <span data-i18n="vipBtn">VIP</span>
+                </button>
+            </div>
+        </div>
     </header>
 
     <!-- MAIN CONTENT -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-8 sm:space-y-12">
 
-        <!-- HERO SECTION (ယခင်အတိုင်း) -->
+        <!-- HERO SECTION -->
         <section class="relative rounded-2xl sm:rounded-3xl overflow-hidden hero-gradient border border-slate-800/50 p-5 sm:p-10 shadow-2xl transition-colors duration-300">
-            <!-- ... -->
+            <div class="relative z-10">
+                <div class="space-y-4 max-w-4xl mx-auto text-center">
+                    <div class="inline-flex items-center px-3 py-1 rounded-full text-[10px] sm:text-xs font-medium bg-rose-500/10 text-rose-400 border border-rose-500/20 live-glow">
+                        <span class="w-1.5 h-1.5 rounded-full bg-rose-500 mr-1.5 animate-ping"></span>
+                        <span data-i18n="liveBadge">⚡ Live Predictions</span>
+                    </div>
+                    <h1 class="text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-snug gradient-text">
+                        <span data-i18n="heroTitle">စတော့ဈေးကွက်များကို နက်နက်နဲနဲ ခွဲခြမ်းစိတ်ဖြာပြီး အတိကျဆုံး ခန့်မှန်းချက်များကို ဖော်ပြပေးနေသော ပလပ်ဖောင်း</span>
+                    </h1>
+                    <p class="text-slate-400 text-xs sm:text-sm leading-relaxed max-w-2xl mx-auto" data-i18n="heroDesc">
+                        Manjomjai ဝဘ်ဆိုဒ်သည် ကမ္ဘာ့ထိပ်တန်း စတော့ဈေးကွက်များကို အချိန်နှင့်တပြေးညီ စောင့်ကြည့်စစ်ဆေးကာ ကိန်းဂဏန်းဆိုင်ရာ သမိုင်းကြောင်းအချက်အလက်များနှင့် တွက်ချက်မှုပုံစံများကို ပေါင်းစပ်၍ အသေချာဆုံး ကံစမ်းခန့်မှန်းကွက်များကို တိကျမှန်ကန်စွာ ထုတ်ပြန်ပေးနေပါသည်။
+                    </p>
+                </div>
+            </div>
+            <div class="absolute top-10 left-10 w-16 h-16 sm:w-24 sm:h-24 rounded-full bg-purple-500/5 blur-2xl"></div>
+            <div class="absolute bottom-10 right-10 w-20 h-20 sm:w-32 sm:h-32 rounded-full bg-rose-500/5 blur-2xl"></div>
         </section>
 
         <!-- CARDS SECTION -->
@@ -63,58 +309,324 @@
             </div>
         </section>
 
-        <!-- MARKET INSIGHTS SECTION (ယခင်အတိုင်း) -->
-        <!-- ... -->
+        <!-- MARKET INSIGHTS SECTION -->
+        <section class="space-y-6">
+            <div class="flex items-center gap-3">
+                <div class="w-1 h-8 bg-gradient-to-b from-amber-500 to-rose-500 rounded-full"></div>
+                <h2 class="text-xl sm:text-2xl font-bold" data-i18n="insightsTitle">ထိုင်းစတော့နှင့် ကမ္ဘာ့စတော့ဈေးကွက်များဆိုင်ရာ အကြံပြုချက်များ</h2>
+            </div>
+
+            <div class="card-gradient rounded-2xl p-5 sm:p-8 glow-border transition-colors duration-300">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Left Column -->
+                    <div class="space-y-4">
+                        <div class="insight-card bg-slate-800/30 dark:bg-slate-800/20 rounded-xl p-4 sm:p-5 transition-all duration-300">
+                            <div class="flex items-start gap-3">
+                                <div class="icon-circle bg-amber-500/10 text-amber-400">
+                                    <i class="fa-solid fa-landmark"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-sm sm:text-base" data-i18n="insight1Title">🇹🇭 ထိုင်းစတော့ဈေးကွက် (SET) ၏ လက်ရှိအခြေအနေ</h3>
+                                    <p class="text-slate-400 text-xs sm:text-sm leading-relaxed mt-1" data-i18n="insight1Desc">
+                                        ထိုင်းနိုင်ငံ၏ စတော့ဈေးကွက်ဖြစ်သော SET (Stock Exchange of Thailand) သည် အရှေ့တောင်အာရှဒေသတွင် အကြီးဆုံးနှင့် အရည်အသွေးအမြင့်ဆုံး ဈေးကွက်များထဲမှ တစ်ခုဖြစ်ပါသည်။ လက်ရှိအချိန်တွင် SET ဈေးကွက်သည် ဒေသတွင်းစီးပွားရေးအခြေအနေ၊ ကမ္ဘာ့ငွေကြေးဈေးကွက်အပြောင်းအလဲများနှင့် နိုင်ငံရေးတည်ငြိမ်အေးချမ်းမှုတို့အပေါ် များစွာမူတည်လျက်ရှိပါသည်။ ထိုင်းနိုင်ငံ၏ ခရီးသွားလုပ်ငန်း၊ ပို့ကုန်လုပ်ငန်းနှင့် ကုန်ထုတ်လုပ်ငန်းများ၏ စွမ်းဆောင်ရည်သည် SET ဈေးကွက်၏ လှုပ်ရှားမှုကို တိုက်ရိုက်သက်ရောက်မှုရှိပါသည်။
+                                    </p>
+                                    <p class="text-slate-400 text-xs sm:text-sm leading-relaxed mt-2" data-i18n="insight1Desc2">
+                                        ထိုင်းစတော့ဈေးကွက်သည် နိုင်ငံခြားရင်းနှီးမြှုပ်နှံသူများအတွက် ဆွဲဆောင်မှုရှိသော ဈေးကွက်တစ်ခုဖြစ်ပြီး အထူးသဖြင့် စွမ်းအင်၊ ဘဏ်လုပ်ငန်း၊ ဆက်သွယ်ရေးနှင့် စားသုံးသူကုန်ပစ္စည်းကဏ္ဍများတွင် ရင်းနှီးမြှုပ်နှံမှုအခွင့်အလမ်းများ ပေါများလျက်ရှိပါသည်။ SET ဈေးကွက်၏ အဓိကညွှန်းကိန်းဖြစ်သော SET Index သည် ဈေးကွက်၏ အလုံးစုံစွမ်းဆောင်ရည်ကို တိုင်းတာသည့် အဓိကကိန်းဂဏန်းတစ်ခုဖြစ်ပြီး ရင်းနှီးမြှုပ်နှံသူများ၏ စိတ်ခံစားချက်ကို ထင်ဟပ်စေပါသည်။
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="insight-card bg-slate-800/30 dark:bg-slate-800/20 rounded-xl p-4 sm:p-5 transition-all duration-300">
+                            <div class="flex items-start gap-3">
+                                <div class="icon-circle bg-blue-500/10 text-blue-400">
+                                    <i class="fa-solid fa-globe-asia"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-sm sm:text-base" data-i18n="insight2Title">🌏 အာရှဒေသဆိုင်ရာ စတော့ဈေးကွက်များ</h3>
+                                    <p class="text-slate-400 text-xs sm:text-sm leading-relaxed mt-1" data-i18n="insight2Desc">
+                                        အာရှဒေသရှိ စတော့ဈေးကွက်များသည် ကမ္ဘာ့စီးပွားရေး၏ အရေးပါသော အစိတ်အပိုင်းတစ်ခုဖြစ်လာပြီး တရုတ်၊ ဂျပန်၊ တောင်ကိုရီးယား၊ အိန္ဒိယနှင့် အရှေ့တောင်အာရှနိုင်ငံများ၏ ဈေးကွက်များသည် ကမ္ဘာ့ရင်းနှီးမြှုပ်နှံသူများ၏ အာရုံစိုက်မှုကို ခံနေရပါသည်။ အထူးသဖြင့် တရုတ်နိုင်ငံ၏ စီးပွားရေးတိုးတက်မှုနှုန်း၊ ဂျပန်နိုင်ငံ၏ ငွေကြေးမူဝါဒနှင့် အိန္ဒိယနိုင်ငံ၏ ဒစ်ဂျစ်တယ်စီးပွားရေးတိုးတက်မှုတို့သည် ဒေသတွင်းဈေးကွက်များကို သိသိသာသာ သက်ရောက်မှုရှိပါသည်။
+                                    </p>
+                                    <p class="text-slate-400 text-xs sm:text-sm leading-relaxed mt-2" data-i18n="insight2Desc2">
+                                        အာရှဒေသရှိ စတော့ဈေးကွက်များသည် နည်းပညာကဏ္ဍ၊ ကုန်ထုတ်လုပ်ငန်းနှင့် စားသုံးသူကုန်ပစ္စည်းကဏ္ဍများတွင် အားကောင်းမောင်းသန်ရှိပြီး ဒေသတွင်းကုန်သွယ်မှုသဘောတူညီချက်များ (RCEP) ကြောင့် ကုန်သွယ်မှုနှင့် ရင်းနှီးမြှုပ်နှံမှုများ ပိုမိုတိုးတက်လာနိုင်ပါသည်။ အာရှဒေသရှိ ဈေးကွက်များတွင် ရင်းနှီးမြှုပ်နှံရာတွင် ဒေသတွင်းနိုင်ငံရေးတည်ငြိမ်အေးချမ်းမှု၊ ငွေကြေးအတက်အကျနှင့် ကမ္ဘာ့ကုန်သွယ်မှုမူဝါဒများကို အထူးဂရုပြုရန် လိုအပ်ပါသည်။
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="insight-card bg-slate-800/30 dark:bg-slate-800/20 rounded-xl p-4 sm:p-5 transition-all duration-300">
+                            <div class="flex items-start gap-3">
+                                <div class="icon-circle bg-emerald-500/10 text-emerald-400">
+                                    <i class="fa-solid fa-oil-can"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-sm sm:text-base" data-i18n="insight3Title">🛢️ စွမ်းအင်နှင့် ကုန်စည်ဈေးကွက်များ</h3>
+                                    <p class="text-slate-400 text-xs sm:text-sm leading-relaxed mt-1" data-i18n="insight3Desc">
+                                        ရေနံစိမ်းနှင့် ရွှေဈေးနှုန်းများသည် ကမ္ဘာ့စီးပွားရေး၏ အခြေခံကျသော အညွှန်းကိန်းများဖြစ်ပြီး ၎င်းတို့၏ ဈေးနှုန်းအတက်အကျသည် အခြားသော စတော့ဈေးကွက်များကိုပါ သက်ရောက်မှုရှိပါသည်။ ရေနံစိမ်းဈေးနှုန်းသည် ကမ္ဘာ့စီးပွားရေးတိုးတက်မှု၊ OPEC ၏ ထုတ်လုပ်မှုဆုံးဖြတ်ချက်များ၊ ပထဝီဝင်နိုင်ငံရေးအခြေအနေများနှင့် ရာသီဥတုပြောင်းလဲမှုတို့အပေါ် မူတည်၍ အတက်အကျရှိတတ်ပါသည်။ ရွှေဈေးနှုန်းများသည် ငွေကြေးဖောင်းပွမှု၊ ကမ္ဘာ့ငွေကြေးဈေးကွက်မတည်ငြိမ်မှုနှင့် ဘဏ်အတိုးနှုန်းများအပေါ် များစွာမူတည်ပါသည်။
+                                    </p>
+                                    <p class="text-slate-400 text-xs sm:text-sm leading-relaxed mt-2" data-i18n="insight3Desc2">
+                                        စွမ်းအင်နှင့် ကုန်စည်ဈေးကွက်များတွင် ရင်းနှီးမြှုပ်နှံသူများအနေဖြင့် ကမ္ဘာ့စီးပွားရေးအညွှန်းကိန်းများ၊ ဗဟိုဘဏ်များ၏ မူဝါဒပြောင်းလဲမှုများနှင့် နိုင်ငံရေးအန္တရာယ်များကို စဉ်ဆက်မပြတ် စောင့်ကြည့်လေ့လာရန် အရေးကြီးပါသည်။ ရွှေသည် ငွေကြေးဈေးကွက်မတည်ငြိမ်ချိန်တွင် လုံခြုံသော ရင်းနှီးမြှုပ်နှံမှုတစ်ခုအဖြစ် သတ်မှတ်ခံရပြီး ရေနံစိမ်းသည် ကမ္ဘာ့စီးပွားရေး၏ သွေးကြောအဖြစ် တည်ရှိနေပါသည်။
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="space-y-4">
+                        <div class="insight-card bg-slate-800/30 dark:bg-slate-800/20 rounded-xl p-4 sm:p-5 transition-all duration-300">
+                            <div class="flex items-start gap-3">
+                                <div class="icon-circle bg-rose-500/10 text-rose-400">
+                                    <i class="fa-solid fa-chart-line"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-sm sm:text-base" data-i18n="insight4Title">📊 အမေရိကန်စတော့ဈေးကွက်များ၏ သက်ရောက်မှု</h3>
+                                    <p class="text-slate-400 text-xs sm:text-sm leading-relaxed mt-1" data-i18n="insight4Desc">
+                                        အမေရိကန်စတော့ဈေးကွက်များဖြစ်သော Dow Jones, S&P 500 နှင့် Nasdaq တို့သည် ကမ္ဘာ့စတော့ဈေးကွက်များ၏ ဦးတည်ချက်ကို သတ်မှတ်ပေးသော အဓိကဈေးကွက်များဖြစ်ပါသည်။ အမေရိကန်ဗဟိုဘဏ် (Fed) ၏ အတိုးနှုန်းဆုံးဖြတ်ချက်များ၊ အလုပ်အကိုင်စာရင်းဇယားများနှင့် ငွေကြေးဖောင်းပွမှုနှုန်းတို့သည် အမေရိကန်စတော့ဈေးကွက်များ၏ လှုပ်ရှားမှုကို တိုက်ရိုက်သက်ရောက်မှုရှိပြီး ၎င်းသည် အခြားသော ကမ္ဘာ့ဈေးကွက်များသို့ ပျံ့နှံ့သက်ရောက်မှုရှိပါသည်။
+                                    </p>
+                                    <p class="text-slate-400 text-xs sm:text-sm leading-relaxed mt-2" data-i18n="insight4Desc2">
+                                        အမေရိကန်စတော့ဈေးကွက်များတွင် နည်းပညာကုမ္ပဏီကြီးများ (FAANG) ၏ စွမ်းဆောင်ရည်သည် ဈေးကွက်တစ်ခုလုံး၏ လှုပ်ရှားမှုကို သိသိသာသာ သက်ရောက်မှုရှိပါသည်။ ထို့ပြင် အမေရိကန်ဒေါ်လာ၏ အတက်အကျသည်လည်း အခြားနိုင်ငံများ၏ စတော့ဈေးကွက်များနှင့် ကုန်စည်ဈေးနှုန်းများကို သက်ရောက်မှုရှိသောကြောင့် ကမ္ဘာ့ရင်းနှီးမြှုပ်နှံသူများအနေဖြင့် အမေရိကန်ဈေးကွက်ကို အထူးဂရုပြုရန် လိုအပ်ပါသည်။
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="insight-card bg-slate-800/30 dark:bg-slate-800/20 rounded-xl p-4 sm:p-5 transition-all duration-300">
+                            <div class="flex items-start gap-3">
+                                <div class="icon-circle bg-purple-500/10 text-purple-400">
+                                    <i class="fa-solid fa-robot"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-sm sm:text-base" data-i18n="insight5Title">🤖 AI နှင့် စတော့ဈေးကွက်ခန့်မှန်းချက်များ</h3>
+                                    <p class="text-slate-400 text-xs sm:text-sm leading-relaxed mt-1" data-i18n="insight5Desc">
+                                        ဉာဏ်ရည်တု (AI) နည်းပညာသည် စတော့ဈေးကွက်ခန့်မှန်းချက်များတွင် ပိုမိုအရေးပါလာပြီး ကြီးမားသော ဒေတာအစုအဝေးများကို ခွဲခြမ်းစိတ်ဖြာနိုင်သော စွမ်းရည်ကြောင့် ဈေးကွက်လှုပ်ရှားမှုများကို ပိုမိုတိကျစွာ ခန့်မှန်းနိုင်လာပါသည်။ Machine Learning နှင့် Deep Learning အယ်လဂိုရီသမ်များသည် သမိုင်းကြောင်းဒေတာများ၊ ဈေးကွက်အချက်အလက်များနှင့် သတင်းများကို ပေါင်းစပ်၍ ဈေးကွက်လမ်းကြောင်းများကို ကြိုတင်ခန့်မှန်းနိုင်ပါသည်။
+                                    </p>
+                                    <p class="text-slate-400 text-xs sm:text-sm leading-relaxed mt-2" data-i18n="insight5Desc2">
+                                        သို့သော် AI ခန့်မှန်းချက်များသည် ၁၀၀% တိကျမှုရှိသည်ဟု မဆိုနိုင်သော်လည်း ရင်းနှီးမြှုပ်နှံသူများအတွက် အဖိုးတန်သော ထိုးထွင်းသိမြင်မှုများကို ပေးစွမ်းနိုင်ပါသည်။ AI သည် ဈေးကွက်အတွင်းရှိ ပုံစံများ၊ လမ်းကြောင်းများနှင့် ဆက်စပ်မှုများကို ရှာဖွေတွေ့ရှိနိုင်ပြီး ရင်းနှီးမြှုပ်နှံသူများ၏ ဆုံးဖြတ်ချက်ချမှုကို အထောက်အကူပြုနိုင်ပါသည်။ Manjomjai သည် AI နည်းပညာကို အသုံးပြု၍ ဈေးကွက်ခန့်မှန်းချက်များကို ဖော်ပြပေးနေသော ပလပ်ဖောင်းတစ်ခုဖြစ်ပါသည်။
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="insight-card bg-slate-800/30 dark:bg-slate-800/20 rounded-xl p-4 sm:p-5 transition-all duration-300">
+                            <div class="flex items-start gap-3">
+                                <div class="icon-circle bg-indigo-500/10 text-indigo-400">
+                                    <i class="fa-solid fa-hand-holding-usd"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-sm sm:text-base" data-i18n="insight6Title">💰 ရင်းနှီးမြှုပ်နှံမှုဆိုင်ရာ အကြံပြုချက်များ</h3>
+                                    <p class="text-slate-400 text-xs sm:text-sm leading-relaxed mt-1" data-i18n="insight6Desc">
+                                        စတော့ဈေးကွက်တွင် ရင်းနှီးမြှုပ်နှံရာတွင် အဓိကကျသော အချက်များမှာ ဈေးကွက်၏ အခြေခံအချက်အလက်များ၊ နည်းပညာပိုင်းဆိုင်ရာ အညွှန်းကိန်းများနှင့် စိတ်ခံစားချက်ဆိုင်ရာ အညွှန်းကိန်းများကို ပေါင်းစပ်သုံးသပ်ရန် လိုအပ်ပါသည်။ ရင်းနှီးမြှုပ်နှံသူများအနေဖြင့် မိမိ၏ ရင်းနှီးမြှုပ်နှံမှုပန်းတိုင်များ၊ စွန့်စားနိုင်မှုအဆင့်နှင့် အချိန်ကာလတို့ကို ကြိုတင်သတ်မှတ်ထားရန် အရေးကြီးပါသည်။
+                                    </p>
+                                    <p class="text-slate-400 text-xs sm:text-sm leading-relaxed mt-2" data-i18n="insight6Desc2">
+                                        ဈေးကွက်အတက်အကျများတွင် စိတ်ရှည်သည်းခံခြင်း၊ ကွဲပြားသော ရင်းနှီးမြှုပ်နှံမှုများကို ရွေးချယ်ခြင်း (Diversification) နှင့် စျေးကွက်အခြေအနေများကို စဉ်ဆက်မပြတ် လေ့လာခြင်းတို့သည် အောင်မြင်သော ရင်းနှီးမြှုပ်နှံသူများ၏ အဓိကလက္ခဏာများဖြစ်ပါသည်။ Manjomjai မှ ဖော်ပြပေးသော ခန့်မှန်းချက်များသည် ရင်းနှီးမြှုပ်နှံမှုဆိုင်ရာ ဆုံးဖြတ်ချက်များအတွက် အခြေခံအချက်အလက်များကို ပေးစွမ်းနိုင်သော်လည်း ကိုယ်ပိုင်သုံးသပ်ချက်နှင့် ကျွမ်းကျင်သူများ၏ အကြံဉာဏ်ကိုလည်း ရယူသင့်ပါသည်။
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
     </main>
 
-    <!-- FOOTER (ယခင်အတိုင်း) -->
-    <!-- ... -->
+    <!-- FOOTER -->
+    <footer class="border-t border-slate-800/50 mt-12 sm:mt-20 py-6 sm:py-8 text-center transition-colors duration-300">
+        <p class="text-xs footer-text">&copy; 2026 Manjomjai.site — All Rights Reserved.</p>
+        <p class="text-[10px] text-slate-600 mt-1" data-i18n="footerNote">* ခန့်မှန်းချက်များသည် ဖျော်ဖြေရေးအတွက်သာ ရည်ရွယ်ပါသည်။</p>
+    </footer>
+
+    <!-- VIP MODAL -->
+    <div id="vipModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm hidden p-4 transition-opacity duration-300">
+        <div class="card-gradient w-full max-w-md rounded-3xl p-6 sm:p-8 shadow-2xl relative space-y-6 glow-border transition-colors duration-300">
+            <button onclick="closeVipModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl transition-colors">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="text-center space-y-3">
+                <div class="inline-block bg-amber-500/10 p-3 rounded-2xl text-amber-400 border border-amber-500/20">
+                    <i class="fa-solid fa-crown text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold" data-i18n="modalTitle">VIP မန်ဘာဝင်ရောက်ရန်</h3>
+                <p class="text-xs text-slate-400 leading-relaxed" data-i18n="modalDesc">
+                    KBZPay၊ Wave Money သို့မဟုတ် MMQR ဖြင့် ငွေလွှဲ၍ မန်ဘာဝင်နိုင်ပါသည်။<br>
+                    ပိုမိုသိရှိလိုပါက 09-XXX-XXX-XXX သို့ ဆက်သွယ်ပါ။
+                </p>
+            </div>
+            <button onclick="closeVipModal()" class="w-full vip-btn text-white font-bold py-3 rounded-xl text-sm transition-all duration-300">
+                <span data-i18n="submitSlip">အတည်ပြုရန် ပို့မည်</span>
+            </button>
+        </div>
+    </div>
 
     <script>
         // ============================================================
-        // TRANSLATIONS (ယခင်အတိုင်း)
+        // TRANSLATIONS
         // ============================================================
-        // ... (translations အကုန်လုံး)
+        const translations = {
+            mm: {
+                logoSub: "Stock Predictions",
+                vipBtn: "VIP",
+                liveBadge: "⚡ Live Predictions",
+                heroTitle: "စတော့ဈေးကွက်များကို နက်နက်နဲနဲ ခွဲခြမ်းစိတ်ဖြာပြီး အတိကျဆုံး ခန့်မှန်းချက်များကို ဖော်ပြပေးနေသော ပလပ်ဖောင်း",
+                heroDesc: "Manjomjai ဝဘ်ဆိုဒ်သည် ကမ္ဘာ့ထိပ်တန်း စတော့ဈေးကွက်များကို အချိန်နှင့်တပြေးညီ စောင့်ကြည့်စစ်ဆေးကာ ကိန်းဂဏန်းဆိုင်ရာ သမိုင်းကြောင်းအချက်အလက်များနှင့် တွက်ချက်မှုပုံစံများကို ပေါင်းစပ်၍ အသေချာဆုံး ကံစမ်းခန့်မှန်းကွက်များကို တိကျမှန်ကန်စွာ ထုတ်ပြန်ပေးနေပါသည်။",
+                insightsTitle: "ထိုင်းစတော့နှင့် ကမ္ဘာ့စတော့ဈေးကွက်များဆိုင်ရာ အကြံပြုချက်များ",
+                insight1Title: "🇹🇭 ထိုင်းစတော့ဈေးကွက် (SET) ၏ လက်ရှိအခြေအနေ",
+                insight1Desc: "ထိုင်းနိုင်ငံ၏ စတော့ဈေးကွက်ဖြစ်သော SET (Stock Exchange of Thailand) သည် အရှေ့တောင်အာရှဒေသတွင် အကြီးဆုံးနှင့် အရည်အသွေးအမြင့်ဆုံး ဈေးကွက်များထဲမှ တစ်ခုဖြစ်ပါသည်။ လက်ရှိအချိန်တွင် SET ဈေးကွက်သည် ဒေသတွင်းစီးပွားရေးအခြေအနေ၊ ကမ္ဘာ့ငွေကြေးဈေးကွက်အပြောင်းအလဲများနှင့် နိုင်ငံရေးတည်ငြိမ်အေးချမ်းမှုတို့အပေါ် များစွာမူတည်လျက်ရှိပါသည်။ ထိုင်းနိုင်ငံ၏ ခရီးသွားလုပ်ငန်း၊ ပို့ကုန်လုပ်ငန်းနှင့် ကုန်ထုတ်လုပ်ငန်းများ၏ စွမ်းဆောင်ရည်သည် SET ဈေးကွက်၏ လှုပ်ရှားမှုကို တိုက်ရိုက်သက်ရောက်မှုရှိပါသည်။",
+                insight1Desc2: "ထိုင်းစတော့ဈေးကွက်သည် နိုင်ငံခြားရင်းနှီးမြှုပ်နှံသူများအတွက် ဆွဲဆောင်မှုရှိသော ဈေးကွက်တစ်ခုဖြစ်ပြီး အထူးသဖြင့် စွမ်းအင်၊ ဘဏ်လုပ်ငန်း၊ ဆက်သွယ်ရေးနှင့် စားသုံးသူကုန်ပစ္စည်းကဏ္ဍများတွင် ရင်းနှီးမြှုပ်နှံမှုအခွင့်အလမ်းများ ပေါများလျက်ရှိပါသည်။ SET ဈေးကွက်၏ အဓိကညွှန်းကိန်းဖြစ်သော SET Index သည် ဈေးကွက်၏ အလုံးစုံစွမ်းဆောင်ရည်ကို တိုင်းတာသည့် အဓိကကိန်းဂဏန်းတစ်ခုဖြစ်ပြီး ရင်းနှီးမြှုပ်နှံသူများ၏ စိတ်ခံစားချက်ကို ထင်ဟပ်စေပါသည်။",
+                insight2Title: "🌏 အာရှဒေသဆိုင်ရာ စတော့ဈေးကွက်များ",
+                insight2Desc: "အာရှဒေသရှိ စတော့ဈေးကွက်များသည် ကမ္ဘာ့စီးပွားရေး၏ အရေးပါသော အစိတ်အပိုင်းတစ်ခုဖြစ်လာပြီး တရုတ်၊ ဂျပန်၊ တောင်ကိုရီးယား၊ အိန္ဒိယနှင့် အရှေ့တောင်အာရှနိုင်ငံများ၏ ဈေးကွက်များသည် ကမ္ဘာ့ရင်းနှီးမြှုပ်နှံသူများ၏ အာရုံစိုက်မှုကို ခံနေရပါသည်။ အထူးသဖြင့် တရုတ်နိုင်ငံ၏ စီးပွားရေးတိုးတက်မှုနှုန်း၊ ဂျပန်နိုင်ငံ၏ ငွေကြေးမူဝါဒနှင့် အိန္ဒိယနိုင်ငံ၏ ဒစ်ဂျစ်တယ်စီးပွားရေးတိုးတက်မှုတို့သည် ဒေသတွင်းဈေးကွက်များကို သိသိသာသာ သက်ရောက်မှုရှိပါသည်။",
+                insight2Desc2: "အာရှဒေသရှိ စတော့ဈေးကွက်များသည် နည်းပညာကဏ္ဍ၊ ကုန်ထုတ်လုပ်ငန်းနှင့် စားသုံးသူကုန်ပစ္စည်းကဏ္ဍများတွင် အားကောင်းမောင်းသန်ရှိပြီး ဒေသတွင်းကုန်သွယ်မှုသဘောတူညီချက်များ (RCEP) ကြောင့် ကုန်သွယ်မှုနှင့် ရင်းနှီးမြှုပ်နှံမှုများ ပိုမိုတိုးတက်လာနိုင်ပါသည်။ အာရှဒေသရှိ ဈေးကွက်များတွင် ရင်းနှီးမြှုပ်နှံရာတွင် ဒေသတွင်းနိုင်ငံရေးတည်ငြိမ်အေးချမ်းမှု၊ ငွေကြေးအတက်အကျနှင့် ကမ္ဘာ့ကုန်သွယ်မှုမူဝါဒများကို အထူးဂရုပြုရန် လိုအပ်ပါသည်။",
+                insight3Title: "🛢️ စွမ်းအင်နှင့် ကုန်စည်ဈေးကွက်များ",
+                insight3Desc: "ရေနံစိမ်းနှင့် ရွှေဈေးနှုန်းများသည် ကမ္ဘာ့စီးပွားရေး၏ အခြေခံကျသော အညွှန်းကိန်းများဖြစ်ပြီး ၎င်းတို့၏ ဈေးနှုန်းအတက်အကျသည် အခြားသော စတော့ဈေးကွက်များကိုပါ သက်ရောက်မှုရှိပါသည်။ ရေနံစိမ်းဈေးနှုန်းသည် ကမ္ဘာ့စီးပွားရေးတိုးတက်မှု၊ OPEC ၏ ထုတ်လုပ်မှုဆုံးဖြတ်ချက်များ၊ ပထဝီဝင်နိုင်ငံရေးအခြေအနေများနှင့် ရာသီဥတုပြောင်းလဲမှုတို့အပေါ် မူတည်၍ အတက်အကျရှိတတ်ပါသည်။ ရွှေဈေးနှုန်းများသည် ငွေကြေးဖောင်းပွမှု၊ ကမ္ဘာ့ငွေကြေးဈေးကွက်မတည်ငြိမ်မှုနှင့် ဘဏ်အတိုးနှုန်းများအပေါ် များစွာမူတည်ပါသည်။",
+                insight3Desc2: "စွမ်းအင်နှင့် ကုန်စည်ဈေးကွက်များတွင် ရင်းနှီးမြှုပ်နှံသူများအနေဖြင့် ကမ္ဘာ့စီးပွားရေးအညွှန်းကိန်းများ၊ ဗဟိုဘဏ်များ၏ မူဝါဒပြောင်းလဲမှုများနှင့် နိုင်ငံရေးအန္တရာယ်များကို စဉ်ဆက်မပြတ် စောင့်ကြည့်လေ့လာရန် အရေးကြီးပါသည်။ ရွှေသည် ငွေကြေးဈေးကွက်မတည်ငြိမ်ချိန်တွင် လုံခြုံသော ရင်းနှီးမြှုပ်နှံမှုတစ်ခုအဖြစ် သတ်မှတ်ခံရပြီး ရေနံစိမ်းသည် ကမ္ဘာ့စီးပွားရေး၏ သွေးကြောအဖြစ် တည်ရှိနေပါသည်။",
+                insight4Title: "📊 အမေရိကန်စတော့ဈေးကွက်များ၏ သက်ရောက်မှု",
+                insight4Desc: "အမေရိကန်စတော့ဈေးကွက်များဖြစ်သော Dow Jones, S&P 500 နှင့် Nasdaq တို့သည် ကမ္ဘာ့စတော့ဈေးကွက်များ၏ ဦးတည်ချက်ကို သတ်မှတ်ပေးသော အဓိကဈေးကွက်များဖြစ်ပါသည်။ အမေရိကန်ဗဟိုဘဏ် (Fed) ၏ အတိုးနှုန်းဆုံးဖြတ်ချက်များ၊ အလုပ်အကိုင်စာရင်းဇယားများနှင့် ငွေကြေးဖောင်းပွမှုနှုန်းတို့သည် အမေရိကန်စတော့ဈေးကွက်များ၏ လှုပ်ရှားမှုကို တိုက်ရိုက်သက်ရောက်မှုရှိပြီး ၎င်းသည် အခြားသော ကမ္ဘာ့ဈေးကွက်များသို့ ပျံ့နှံ့သက်ရောက်မှုရှိပါသည်။",
+                insight4Desc2: "အမေရိကန်စတော့ဈေးကွက်များတွင် နည်းပညာကုမ္ပဏီကြီးများ (FAANG) ၏ စွမ်းဆောင်ရည်သည် ဈေးကွက်တစ်ခုလုံး၏ လှုပ်ရှားမှုကို သိသိသာသာ သက်ရောက်မှုရှိပါသည်။ ထို့ပြင် အမေရိကန်ဒေါ်လာ၏ အတက်အကျသည်လည်း အခြားနိုင်ငံများ၏ စတော့ဈေးကွက်များနှင့် ကုန်စည်ဈေးနှုန်းများကို သက်ရောက်မှုရှိသောကြောင့် ကမ္ဘာ့ရင်းနှီးမြှုပ်နှံသူများအနေဖြင့် အမေရိကန်ဈေးကွက်ကို အထူးဂရုပြုရန် လိုအပ်ပါသည်။",
+                insight5Title: "🤖 AI နှင့် စတော့ဈေးကွက်ခန့်မှန်းချက်များ",
+                insight5Desc: "ဉာဏ်ရည်တု (AI) နည်းပညာသည် စတော့ဈေးကွက်ခန့်မှန်းချက်များတွင် ပိုမိုအရေးပါလာပြီး ကြီးမားသော ဒေတာအစုအဝေးများကို ခွဲခြမ်းစိတ်ဖြာနိုင်သော စွမ်းရည်ကြောင့် ဈေးကွက်လှုပ်ရှားမှုများကို ပိုမိုတိကျစွာ ခန့်မှန်းနိုင်လာပါသည်။ Machine Learning နှင့် Deep Learning အယ်လဂိုရီသမ်များသည် သမိုင်းကြောင်းဒေတာများ၊ ဈေးကွက်အချက်အလက်များနှင့် သတင်းများကို ပေါင်းစပ်၍ ဈေးကွက်လမ်းကြောင်းများကို ကြိုတင်ခန့်မှန်းနိုင်ပါသည်။",
+                insight5Desc2: "သို့သော် AI ခန့်မှန်းချက်များသည် ၁၀၀% တိကျမှုရှိသည်ဟု မဆိုနိုင်သော်လည်း ရင်းနှီးမြှုပ်နှံသူများအတွက် အဖိုးတန်သော ထိုးထွင်းသိမြင်မှုများကို ပေးစွမ်းနိုင်ပါသည်။ AI သည် ဈေးကွက်အတွင်းရှိ ပုံစံများ၊ လမ်းကြောင်းများနှင့် ဆက်စပ်မှုများကို ရှာဖွေတွေ့ရှိနိုင်ပြီး ရင်းနှီးမြှုပ်နှံသူများ၏ ဆုံးဖြတ်ချက်ချမှုကို အထောက်အကူပြုနိုင်ပါသည်။ Manjomjai သည် AI နည်းပညာကို အသုံးပြု၍ ဈေးကွက်ခန့်မှန်းချက်များကို ဖော်ပြပေးနေသော ပလပ်ဖောင်းတစ်ခုဖြစ်ပါသည်။",
+                insight6Title: "💰 ရင်းနှီးမြှုပ်နှံမှုဆိုင်ရာ အကြံပြုချက်များ",
+                insight6Desc: "စတော့ဈေးကွက်တွင် ရင်းနှီးမြှုပ်နှံရာတွင် အဓိကကျသော အချက်များမှာ ဈေးကွက်၏ အခြေခံအချက်အလက်များ၊ နည်းပညာပိုင်းဆိုင်ရာ အညွှန်းကိန်းများနှင့် စိတ်ခံစားချက်ဆိုင်ရာ အညွှန်းကိန်းများကို ပေါင်းစပ်သုံးသပ်ရန် လိုအပ်ပါသည်။ ရင်းနှီးမြှုပ်နှံသူများအနေဖြင့် မိမိ၏ ရင်းနှီးမြှုပ်နှံမှုပန်းတိုင်များ၊ စွန့်စားနိုင်မှုအဆင့်နှင့် အချိန်ကာလတို့ကို ကြိုတင်သတ်မှတ်ထားရန် အရေးကြီးပါသည်။",
+                insight6Desc2: "ဈေးကွက်အတက်အကျများတွင် စိတ်ရှည်သည်းခံခြင်း၊ ကွဲပြားသော ရင်းနှီးမြှုပ်နှံမှုများကို ရွေးချယ်ခြင်း (Diversification) နှင့် စျေးကွက်အခြေအနေများကို စဉ်ဆက်မပြတ် လေ့လာခြင်းတို့သည် အောင်မြင်သော ရင်းနှီးမြှုပ်နှံသူများ၏ အဓိကလက္ခဏာများဖြစ်ပါသည်။ Manjomjai မှ ဖော်ပြပေးသော ခန့်မှန်းချက်များသည် ရင်းနှီးမြှုပ်နှံမှုဆိုင်ရာ ဆုံးဖြတ်ချက်များအတွက် အခြေခံအချက်အလက်များကို ပေးစွမ်းနိုင်သော်လည်း ကိုယ်ပိုင်သုံးသပ်ချက်နှင့် ကျွမ်းကျင်သူများ၏ အကြံဉာဏ်ကိုလည်း ရယူသင့်ပါသည်။",
+                modalTitle: "VIP မန်ဘာဝင်ရောက်ရန်",
+                modalDesc: "KBZPay၊ Wave Money သို့မဟုတ် MMQR ဖြင့် ငွေလွှဲ၍ မန်ဘာဝင်နိုင်ပါသည်။",
+                submitSlip: "အတည်ပြုရန် ပို့မည်",
+                footerNote: "* ခန့်မှန်းချက်များသည် ဖျော်ဖြေရေးအတွက်သာ ရည်ရွယ်ပါသည်။"
+            },
+            th: {
+                logoSub: "Stock Predictions",
+                vipBtn: "VIP",
+                liveBadge: "⚡ Live Predictions",
+                heroTitle: "แพลตฟอร์มวิเคราะห์ตลาดหุ้นเชิงลึกและการคาดการณ์ที่แม่นยำที่สุด",
+                heroDesc: "เว็บไซต์ Manjomjai ติดตามตลาดหุ้นชั้นนำระดับโลกแบบเรียลไทม์ พร้อมผสานข้อมูลสถิติย้อนหลังและแนวทางที่แม่นยำที่สุดเพื่อคุณ",
+                insightsTitle: "คำแนะนำเกี่ยวกับตลาดหุ้นไทยและตลาดหุ้นโลก",
+                insight1Title: "🇹🇭 สถานะปัจจุบันของตลาดหุ้นไทย (SET)",
+                insight1Desc: "ตลาดหลักทรัพย์แห่งประเทศไทย (SET) เป็นหนึ่งในตลาดหุ้นที่ใหญ่ที่สุดและมีคุณภาพสูงสุดในภูมิภาคเอเชียตะวันออกเฉียงใต้ ในปัจจุบันตลาด SET ขึ้นอยู่กับสภาพเศรษฐกิจในภูมิภาค การเปลี่ยนแปลงของตลาดการเงินโลก และเสถียรภาพทางการเมืองเป็นอย่างมาก ประสิทธิภาพของภาคการท่องเที่ยว การส่งออก และการผลิตของไทยมีผลโดยตรงต่อการเคลื่อนไหวของตลาด SET",
+                insight1Desc2: "ตลาดหุ้นไทยเป็นตลาดที่น่าดึงดูดสำหรับนักลงทุนต่างชาติ โดยเฉพาะอย่างยิ่งในภาคพลังงาน ธนาคาร โทรคมนาคม และสินค้าอุปโภคบริโภคที่มีโอกาสในการลงทุนมากมาย ดัชนี SET ซึ่งเป็นดัชนีหลักของตลาด เป็นตัวเลขสำคัญที่วัดประสิทธิภาพโดยรวมของตลาดและสะท้อนความรู้สึกของนักลงทุน",
+                insight2Title: "🌏 ตลาดหุ้นในภูมิภาคเอเชีย",
+                insight2Desc: "ตลาดหุ้นในภูมิภาคเอเชียได้กลายเป็นส่วนสำคัญของเศรษฐกิจโลก โดยตลาดของจีน ญี่ปุ่น เกาหลีใต้ อินเดีย และประเทศในเอเชียตะวันออกเฉียงใต้กำลังได้รับความสนใจจากนักลงทุนทั่วโลก โดยเฉพาะอย่างยิ่งอัตราการเติบโตทางเศรษฐกิจของจีน นโยบายการเงินของญี่ปุ่น และการเติบโตของเศรษฐกิจดิจิทัลของอินเดียมีผลกระทบอย่างมีนัยสำคัญต่อตลาดในภูมิภาค",
+                insight2Desc2: "ตลาดหุ้นในเอเชียมีความแข็งแกร่งในภาคเทคโนโลยี การผลิต และสินค้าอุปโภคบริโภค และความตกลงทางการค้าในภูมิภาค (RCEP) ทำให้การค้าและการลงทุนเพิ่มมากขึ้น การลงทุนในตลาดเอเชียจำเป็นต้องให้ความสำคัญกับเสถียรภาพทางการเมืองในภูมิภาค ความผันผวนของอัตราแลกเปลี่ยน และนโยบายการค้าโลก",
+                insight3Title: "🛢️ ตลาดพลังงานและสินค้าโภคภัณฑ์",
+                insight3Desc: "ราคาน้ำมันดิบและทองคำเป็นตัวชี้วัดพื้นฐานของเศรษฐกิจโลก และความผันผวนของราคามีผลกระทบต่อตลาดหุ้นอื่นๆ ราคาน้ำมันดิบขึ้นอยู่กับการเติบโตทางเศรษฐกิจโลก การตัดสินใจผลิตของ OPEC สถานการณ์ภูมิรัฐศาสตร์ และการเปลี่ยนแปลงสภาพภูมิอากาศ ราคาทองคำขึ้นอยู่กับอัตราเงินเฟ้อ ความไม่มั่นคงของตลาดการเงินโลก และอัตราดอกเบี้ยของธนาคาร",
+                insight3Desc2: "นักลงทุนในตลาดพลังงานและสินค้าโภคภัณฑ์ควรติดตามตัวชี้วัดเศรษฐกิจโลก การเปลี่ยนแปลงนโยบายของธนาคารกลาง และความเสี่ยงทางการเมืองอย่างต่อเนื่อง ทองคำถือเป็นการลงทุนที่ปลอดภัยในช่วงที่ตลาดการเงินไม่มั่นคง ในขณะที่น้ำมันดิบยังคงเป็นเส้นเลือดใหญ่ของเศรษฐกิจโลก",
+                insight4Title: "📊 ผลกระทบของตลาดหุ้นสหรัฐฯ",
+                insight4Desc: "ตลาดหุ้นสหรัฐฯ เช่น Dow Jones, S&P 500 และ Nasdaq เป็นตลาดหลักที่กำหนดทิศทางของตลาดหุ้นโลก การตัดสินใจอัตราดอกเบี้ยของธนาคารกลางสหรัฐ (Fed) ข้อมูลการจ้างงาน และอัตราเงินเฟ้อมีผลโดยตรงต่อการเคลื่อนไหวของตลาดหุ้นสหรัฐฯ และส่งผลกระจายไปยังตลาดอื่นๆ ทั่วโลก",
+                insight4Desc2: "ประสิทธิภาพของบริษัทเทคโนโลยียักษ์ใหญ่ (FAANG) ในตลาดหุ้นสหรัฐฯ มีผลกระทบอย่างมีนัยสำคัญต่อการเคลื่อนไหวของตลาดโดยรวม นอกจากนี้ความผันผวนของเงินดอลลาร์สหรัฐยังส่งผลต่อตลาดหุ้นและราคาสินค้าโภคภัณฑ์ของประเทศอื่นๆ ดังนั้นนักลงทุนทั่วโลกจึงต้องให้ความสำคัญกับตลาดสหรัฐฯ เป็นพิเศษ",
+                insight5Title: "🤖 AI และการคาดการณ์ตลาดหุ้น",
+                insight5Desc: "เทคโนโลยีปัญญาประดิษฐ์ (AI) มีความสำคัญมากขึ้นในการคาดการณ์ตลาดหุ้น ด้วยความสามารถในการวิเคราะห์ชุดข้อมูลขนาดใหญ่ ทำให้สามารถคาดการณ์การเคลื่อนไหวของตลาดได้แม่นยำยิ่งขึ้น อัลกอริธึม Machine Learning และ Deep Learning สามารถรวมข้อมูลประวัติ ข้อมูลตลาด และข่าวสารเพื่อทำนายแนวโน้มของตลาดล่วงหน้าได้",
+                insight5Desc2: "อย่างไรก็ตาม การคาดการณ์ของ AI ไม่สามารถกล่าวได้ว่าแม่นยำ 100% แต่สามารถให้ข้อมูลเชิงลึกที่มีคุณค่าสำหรับนักลงทุน AI สามารถค้นหารูปแบบ แนวโน้ม และความสัมพันธ์ภายในตลาด และช่วยสนับสนุนการตัดสินใจของนักลงทุน Manjomjai เป็นแพลตฟอร์มที่ใช้เทคโนโลยี AI ในการนำเสนอการคาดการณ์ตลาด",
+                insight6Title: "💰 คำแนะนำเกี่ยวกับการลงทุน",
+                insight6Desc: "การลงทุนในตลาดหุ้นต้องพิจารณาปัจจัยสำคัญต่างๆ ได้แก่ ข้อมูลพื้นฐานของตลาด ตัวชี้วัดทางเทคนิค และตัวชี้วัดทางความรู้สึก นักลงทุนควรกำหนดเป้าหมายการลงทุน ระดับความเสี่ยงที่ยอมรับได้ และกรอบเวลาของตนเองล่วงหน้า",
+                insight6Desc2: "ความอดทนในช่วงที่ตลาดผันผวน การกระจายการลงทุน (Diversification) และการศึกษาสภาวะตลาดอย่างต่อเนื่องเป็นลักษณะสำคัญของนักลงทุนที่ประสบความสำเร็จ แม้ว่าการคาดการณ์ของ Manjomjai จะ可以提供ข้อมูลพื้นฐานสำหรับการตัดสินใจลงทุน แต่ก็ควรใช้วิจารณญาณของตนเองและขอคำแนะนำจากผู้เชี่ยวชาญด้วย",
+                modalTitle: "สมัครสมาชิก VIP",
+                modalDesc: "ชำระเงินผ่าน KBZPay, Wave Money หรือ MMQR เพื่อสมัครสมาชิก",
+                submitSlip: "ยืนยันการส่งสลิป",
+                footerNote: "* การคาดการณ์นี้เพื่อความบันเทิงเท่านั้น"
+            },
+            en: {
+                logoSub: "Stock Predictions",
+                vipBtn: "VIP",
+                liveBadge: "⚡ Live Predictions",
+                heroTitle: "Advanced Stock Market Analysis & Most Accurate Predictions",
+                heroDesc: "Manjomjai platform monitors global leading markets in real-time, combining historical statistics to deliver the most accurate predictions.",
+                insightsTitle: "Insights on Thai & Global Stock Markets",
+                insight1Title: "🇹🇭 Current Status of Thai Stock Market (SET)",
+                insight1Desc: "The Stock Exchange of Thailand (SET) is one of the largest and highest quality markets in Southeast Asia. Currently, the SET market depends heavily on regional economic conditions, global financial market changes, and political stability. The performance of Thailand's tourism, export, and manufacturing sectors directly affects the movement of the SET market.",
+                insight1Desc2: "The Thai stock market is an attractive market for foreign investors, especially in the energy, banking, telecommunications, and consumer goods sectors where there are abundant investment opportunities. The SET Index is the main indicator of the overall market performance and reflects investor sentiment.",
+                insight2Title: "🌏 Asian Regional Stock Markets",
+                insight2Desc: "Stock markets in the Asian region have become an important part of the global economy, with markets in China, Japan, South Korea, India, and Southeast Asian countries attracting global investors. In particular, China's economic growth rate, Japan's monetary policy, and India's digital economy growth have a significant impact on regional markets.",
+                insight2Desc2: "Asian stock markets are strong in the technology, manufacturing, and consumer goods sectors, and regional trade agreements (RCEP) are increasing trade and investment. Investing in Asian markets requires attention to regional political stability, currency fluctuations, and global trade policies.",
+                insight3Title: "🛢️ Energy and Commodity Markets",
+                insight3Desc: "Crude oil and gold prices are fundamental indicators of the global economy, and their price fluctuations affect other stock markets. Crude oil prices depend on global economic growth, OPEC production decisions, geopolitical situations, and climate change. Gold prices depend on inflation, global financial market instability, and bank interest rates.",
+                insight3Desc2: "Investors in energy and commodity markets should continuously monitor global economic indicators, central bank policy changes, and political risks. Gold is considered a safe haven investment during financial market instability, while crude oil remains the lifeblood of the global economy.",
+                insight4Title: "📊 Impact of US Stock Markets",
+                insight4Desc: "US stock markets such as Dow Jones, S&P 500, and Nasdaq are the primary markets that set the direction for global stock markets. The US Federal Reserve's interest rate decisions, employment data, and inflation rates directly affect US stock market movements and have ripple effects on other global markets.",
+                insight4Desc2: "The performance of major technology companies (FAANG) in the US stock market significantly affects the overall market movement. Additionally, the fluctuation of the US dollar also affects other countries' stock markets and commodity prices, so global investors need to pay special attention to the US market.",
+                insight5Title: "🤖 AI and Stock Market Predictions",
+                insight5Desc: "Artificial Intelligence (AI) technology is becoming increasingly important in stock market predictions, with the ability to analyze large datasets to predict market movements more accurately. Machine Learning and Deep Learning algorithms can combine historical data, market information, and news to forecast market trends.",
+                insight5Desc2: "However, AI predictions cannot be said to be 100% accurate, but they can provide valuable insights for investors. AI can identify patterns, trends, and correlations within the market and support investors' decision-making. Manjomjai is a platform that uses AI technology to provide market predictions.",
+                insight6Title: "💰 Investment Recommendations",
+                insight6Desc: "Investing in the stock market requires considering key factors such as market fundamentals, technical indicators, and sentiment indicators. Investors should predetermine their investment goals, risk tolerance, and time horizon.",
+                insight6Desc2: "Patience during market volatility, diversification of investments, and continuous study of market conditions are key characteristics of successful investors. While Manjomjai's predictions can provide basic information for investment decisions, you should also use your own judgment and seek advice from experts.",
+                modalTitle: "Join VIP Membership",
+                modalDesc: "Transfer via KBZPay, Wave Money or MMQR to join membership.",
+                submitSlip: "Submit for Verification",
+                footerNote: "* Predictions are for entertainment purposes only."
+            }
+        };
 
         // ============================================================
-        // LANGUAGE, THEME, MODAL (ယခင်အတိုင်း)
+        // LANGUAGE
         // ============================================================
-        // ... 
+        function changeLanguage() {
+            const lang = document.getElementById('langSwitch').value;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang]?.[key]) {
+                    el.innerText = translations[lang][key];
+                }
+            });
+            document.documentElement.lang = lang;
+            localStorage.setItem('manjomjai_lang', lang);
+        }
 
         // ============================================================
-        // CARDS - JSONBin Cloud (API Key အသစ်)
+        // THEME
         // ============================================================
-        const JSONBIN_API_KEY = '$2a$10$4uUGngsWb2sP598etWyRrO9ijJlYBh.zqRwf.wactawO92RT7o3W2';
-        const JSONBIN_BIN_ID = '6a9d7740da38895dfe4004a0';
+        function toggleTheme() {
+            const body = document.getElementById('bodyTheme');
+            const icon = document.getElementById('themeIcon');
+            if (body.classList.contains('dark')) {
+                body.classList.remove('dark');
+                body.classList.add('light');
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+                localStorage.setItem('manjomjai_theme', 'light');
+            } else {
+                body.classList.remove('light');
+                body.classList.add('dark');
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+                localStorage.setItem('manjomjai_theme', 'dark');
+            }
+        }
 
-        async function fetchCardsFromCloud() {
+        // ============================================================
+        // MODAL
+        // ============================================================
+        function openVipModal() {
+            document.getElementById('vipModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeVipModal() {
+            document.getElementById('vipModal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+        document.getElementById('vipModal').addEventListener('click', function(e) {
+            if (e.target === this) closeVipModal();
+        });
+
+        // ============================================================
+        // CARDS - Npoint.io (Read-Only)
+        // ============================================================
+        // 📌 မင်းရဲ့ Npoint URL
+        const NPOINT_URL = 'https://api.npoint.io/530d726853626cde2939';
+
+        async function getCards() {
             try {
-                console.log('📥 Fetching from JSONBin...');
-                console.log('🔑 API Key:', JSONBIN_API_KEY.substring(0, 20) + '...');
-                console.log('📦 Bin ID:', JSONBIN_BIN_ID);
-                
-                const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
-                    headers: { 
-                        'X-Master-Key': JSONBIN_API_KEY,
-                        'Content-Type': 'application/json'
-                    }
-                });
-                
-                console.log('📊 Response status:', response.status);
+                console.log('📥 Fetching cards from Npoint...');
+                const response = await fetch(NPOINT_URL);
                 
                 if (!response.ok) {
-                    const errorText = await response.text();
-                    console.error('❌ Error response:', errorText);
-                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                    throw new Error(`HTTP ${response.status}`);
                 }
                 
                 const data = await response.json();
-                console.log('✅ Fetched data:', data);
-                
-                return data.record?.cards || [];
+                console.log('✅ Cards loaded:', data);
+                return data.cards || [];
             } catch (error) {
-                console.error('❌ Cloud fetch error:', error);
+                console.error('❌ Error loading cards:', error);
                 return [];
             }
         }
@@ -126,9 +638,9 @@
             const count = document.getElementById('cardCount');
 
             try {
-                const cards = await fetchCardsFromCloud();
+                const cards = await getCards();
                 loading.style.display = 'none';
-
+                
                 count.textContent = `${cards.length} ကဒ်`;
 
                 if (cards.length === 0) {
@@ -152,7 +664,7 @@
                             <div class="p-3">
                                 <div class="flex items-center justify-between">
                                     <span class="text-[10px] text-slate-400">
-                                        <i class="fa-regular fa-calendar mr-1"></i> ${new Date(card.createdAt).toLocaleDateString('my-MM', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+                                        <i class="fa-regular fa-calendar mr-1"></i> ${new Date(card.createdAt).toLocaleDateString('my-MM')}
                                     </span>
                                     <span class="text-[9px] text-slate-500">
                                         <i class="fa-regular fa-clock mr-1"></i> ${new Date(card.createdAt).toLocaleTimeString('my-MM', { hour: '2-digit', minute: '2-digit' })}
@@ -187,15 +699,28 @@
         // INIT
         // ============================================================
         function init() {
-            // Language, Theme (ယခင်အတိုင်း)
-            // ...
+            // Load saved language
+            const savedLang = localStorage.getItem('manjomjai_lang') || 'mm';
+            document.getElementById('langSwitch').value = savedLang;
+            changeLanguage();
+
+            // Load saved theme
+            const savedTheme = localStorage.getItem('manjomjai_theme') || 'dark';
+            if (savedTheme === 'light') {
+                document.getElementById('bodyTheme').classList.remove('dark');
+                document.getElementById('bodyTheme').classList.add('light');
+                document.getElementById('themeIcon').classList.remove('fa-sun');
+                document.getElementById('themeIcon').classList.add('fa-moon');
+            }
+
+            // Load cards
+            renderCards();
+
+            // Auto refresh every 15 seconds
+            setInterval(renderCards, 15000);
 
             console.log('✅ Manjomjai initialized!');
-            console.log('☁️ JSONBin Bin ID:', JSONBIN_BIN_ID);
-            console.log('🔑 API Key:', JSONBIN_API_KEY.substring(0, 20) + '...');
-            
-            renderCards();
-            setInterval(renderCards, 15000);
+            console.log('☁️ Using Npoint.io:', NPOINT_URL);
         }
 
         window.onload = init;
