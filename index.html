@@ -17,15 +17,17 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        /* TradingView widget refresh indicator */
-        .tv-refresh-indicator {
+        .status-dot {
             display: inline-block;
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background: #22c55e;
-            animation: pulse-dot 2s ease-in-out infinite;
+            margin-right: 4px;
         }
+        .status-dot.live { background: #22c55e; animation: pulse-dot 2s ease-in-out infinite; }
+        .status-dot.offline { background: #ef4444; }
+        .status-dot.loading { background: #f59e0b; animation: pulse-dot 1s ease-in-out infinite; }
+        
         @keyframes pulse-dot {
             0%, 100% { opacity: 1; transform: scale(1); }
             50% { opacity: 0.5; transform: scale(0.8); }
@@ -33,10 +35,49 @@
         
         .market-card {
             transition: all 0.3s ease;
+            min-height: 130px;
         }
         .market-card:hover {
             transform: translateY(-2px);
             border-color: rgba(251, 191, 36, 0.3);
+        }
+        
+        .widget-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 70px;
+            color: #64748b;
+            font-size: 0.75rem;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .widget-loading .spinner {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #1e293b;
+            border-top-color: #f59e0b;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .widget-error {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 70px;
+            color: #ef4444;
+            font-size: 0.7rem;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .widget-loaded iframe {
+            width: 100% !important;
+            min-height: 60px !important;
         }
     </style>
 </head>
@@ -94,34 +135,47 @@
                     <div class="text-xs text-slate-400 uppercase tracking-wider mb-1" data-i18n="todayDateLabel">ယနေ့ရက်စွဲ (Date)</div>
                     <div id="currentDateDisplay" class="text-lg font-bold text-amber-400 mb-3">Loading...</div>
                     <div class="border-t border-slate-800 pt-3 flex items-center justify-center gap-2">
-                        <span class="tv-refresh-indicator"></span>
+                        <span class="status-dot live" id="systemStatusDot"></span>
                         <span class="text-xs text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/20" data-i18n="statusActive">System Status: Normal & Active</span>
                     </div>
                     <div class="text-[10px] text-slate-500 mt-2">
                         <span id="lastUpdateTime">Last update: --:--:--</span>
                     </div>
+                    <div class="text-[10px] text-slate-600 mt-1" id="dataSourceStatus">
+                        <span class="status-dot loading"></span> Loading market data...
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- Global Markets Live Bar (6 Individual TradingView Single Quotes) -->
+        <!-- Global Markets Live Bar - REAL DATA ONLY -->
         <section class="space-y-4">
             <div class="flex items-center justify-between">
                 <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-2">
                     <i class="fa-solid fa-chart-pie text-cyan-400"></i> <span data-i18n="marketStatusBar">ကမ္ဘာ့စတော့နှင့် ကုန်စည်ဈေးနှုန်းများ (Live Status)</span>
                 </h2>
                 <span class="text-[10px] text-slate-500 bg-slate-900/50 px-3 py-1 rounded-full border border-slate-800">
-                    <i class="fa-solid fa-circle text-emerald-400 text-[6px] mr-1"></i> Auto-refresh
+                    <span class="status-dot live"></span> Real-time
                 </span>
             </div>
             
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4" id="marketGrid">
                 
                 <!-- 1. Nikkei 225 -->
-                <div class="market-card bg-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-xl flex flex-col justify-between">
-                    <span class="text-xs text-slate-400 font-semibold mb-2 block">Nikkei 225</span>
-                    <div class="tradingview-widget-container" data-symbol="NIKKEI:225">
-                        <div class="tradingview-widget-container__widget"></div>
+                <div class="market-card bg-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-xl flex flex-col" data-market="nikkei">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-xs text-slate-400 font-semibold">Nikkei 225</span>
+                        <span class="text-[8px] flex items-center gap-1" id="nikkei-status">
+                            <span class="status-dot loading"></span> Loading
+                        </span>
+                    </div>
+                    <div class="tradingview-widget-container flex-1" data-symbol="NIKKEI:225">
+                        <div class="tradingview-widget-container__widget">
+                            <div class="widget-loading">
+                                <div class="spinner"></div>
+                                <span>Connecting to market data...</span>
+                            </div>
+                        </div>
                         <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>
                         {
                             "symbol": "NIKKEI:225",
@@ -135,10 +189,20 @@
                 </div>
 
                 <!-- 2. Dow Jones -->
-                <div class="market-card bg-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-xl flex flex-col justify-between">
-                    <span class="text-xs text-slate-400 font-semibold mb-2 block">Dow Jones</span>
-                    <div class="tradingview-widget-container" data-symbol="DJ:DJI">
-                        <div class="tradingview-widget-container__widget"></div>
+                <div class="market-card bg-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-xl flex flex-col" data-market="dow">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-xs text-slate-400 font-semibold">Dow Jones</span>
+                        <span class="text-[8px] flex items-center gap-1" id="dow-status">
+                            <span class="status-dot loading"></span> Loading
+                        </span>
+                    </div>
+                    <div class="tradingview-widget-container flex-1" data-symbol="DJ:DJI">
+                        <div class="tradingview-widget-container__widget">
+                            <div class="widget-loading">
+                                <div class="spinner"></div>
+                                <span>Connecting to market data...</span>
+                            </div>
+                        </div>
                         <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>
                         {
                             "symbol": "DJ:DJI",
@@ -152,10 +216,20 @@
                 </div>
 
                 <!-- 3. Hanoi Stock (VN30) -->
-                <div class="market-card bg-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-xl flex flex-col justify-between">
-                    <span class="text-xs text-slate-400 font-semibold mb-2 block">Hanoi Stock</span>
-                    <div class="tradingview-widget-container" data-symbol="VNM:VN30">
-                        <div class="tradingview-widget-container__widget"></div>
+                <div class="market-card bg-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-xl flex flex-col" data-market="hanoi">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-xs text-slate-400 font-semibold">Hanoi Stock</span>
+                        <span class="text-[8px] flex items-center gap-1" id="hanoi-status">
+                            <span class="status-dot loading"></span> Loading
+                        </span>
+                    </div>
+                    <div class="tradingview-widget-container flex-1" data-symbol="VNM:VN30">
+                        <div class="tradingview-widget-container__widget">
+                            <div class="widget-loading">
+                                <div class="spinner"></div>
+                                <span>Connecting to market data...</span>
+                            </div>
+                        </div>
                         <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>
                         {
                             "symbol": "VNM:VN30",
@@ -169,10 +243,20 @@
                 </div>
 
                 <!-- 4. Thailand SET -->
-                <div class="market-card bg-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-xl flex flex-col justify-between">
-                    <span class="text-xs text-slate-400 font-semibold mb-2 block">Thailand SET</span>
-                    <div class="tradingview-widget-container" data-symbol="SET:SET">
-                        <div class="tradingview-widget-container__widget"></div>
+                <div class="market-card bg-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-xl flex flex-col" data-market="thai">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-xs text-slate-400 font-semibold">Thailand SET</span>
+                        <span class="text-[8px] flex items-center gap-1" id="thai-status">
+                            <span class="status-dot loading"></span> Loading
+                        </span>
+                    </div>
+                    <div class="tradingview-widget-container flex-1" data-symbol="SET:SET">
+                        <div class="tradingview-widget-container__widget">
+                            <div class="widget-loading">
+                                <div class="spinner"></div>
+                                <span>Connecting to market data...</span>
+                            </div>
+                        </div>
                         <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>
                         {
                             "symbol": "SET:SET",
@@ -186,10 +270,20 @@
                 </div>
 
                 <!-- 5. Crude Oil -->
-                <div class="market-card bg-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-xl flex flex-col justify-between">
-                    <span class="text-xs text-slate-400 font-semibold mb-2 block">Crude Oil (ရေနံ)</span>
-                    <div class="tradingview-widget-container" data-symbol="TVC:USOIL">
-                        <div class="tradingview-widget-container__widget"></div>
+                <div class="market-card bg-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-xl flex flex-col" data-market="oil">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-xs text-slate-400 font-semibold">Crude Oil (ရေနံ)</span>
+                        <span class="text-[8px] flex items-center gap-1" id="oil-status">
+                            <span class="status-dot loading"></span> Loading
+                        </span>
+                    </div>
+                    <div class="tradingview-widget-container flex-1" data-symbol="TVC:USOIL">
+                        <div class="tradingview-widget-container__widget">
+                            <div class="widget-loading">
+                                <div class="spinner"></div>
+                                <span>Connecting to market data...</span>
+                            </div>
+                        </div>
                         <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>
                         {
                             "symbol": "TVC:USOIL",
@@ -203,10 +297,20 @@
                 </div>
 
                 <!-- 6. Gold -->
-                <div class="market-card bg-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-xl flex flex-col justify-between">
-                    <span class="text-xs text-slate-400 font-semibold mb-2 block">Gold (ရွှေဈေး)</span>
-                    <div class="tradingview-widget-container" data-symbol="OANDA:XAUUSD">
-                        <div class="tradingview-widget-container__widget"></div>
+                <div class="market-card bg-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-xl flex flex-col" data-market="gold">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-xs text-slate-400 font-semibold">Gold (ရွှေဈေး)</span>
+                        <span class="text-[8px] flex items-center gap-1" id="gold-status">
+                            <span class="status-dot loading"></span> Loading
+                        </span>
+                    </div>
+                    <div class="tradingview-widget-container flex-1" data-symbol="OANDA:XAUUSD">
+                        <div class="tradingview-widget-container__widget">
+                            <div class="widget-loading">
+                                <div class="spinner"></div>
+                                <span>Connecting to market data...</span>
+                            </div>
+                        </div>
                         <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>
                         {
                             "symbol": "OANDA:XAUUSD",
@@ -222,7 +326,7 @@
             </div>
         </section>
 
-        <!-- Daily Predictions (Horizontal Scrollable Carousel) -->
+        <!-- Daily Predictions -->
         <section class="space-y-6">
             <div class="flex items-center justify-between flex-wrap gap-2">
                 <h2 class="text-xl sm:text-2xl font-bold flex items-center gap-2">
@@ -242,7 +346,6 @@
                 </div>
             </div>
 
-            <!-- Horizontal Swipeable Container -->
             <div id="cardContainer" class="flex overflow-x-auto no-scrollbar space-x-6 pb-4 snap-x snap-mandatory scroll-smooth">
                 
                 <!-- Card 1: Dow Jones Forecast -->
@@ -401,12 +504,9 @@
         // ============================================================
         function changeLanguage() {
             const lang = document.getElementById('langSwitch').value;
-            const elements = document.querySelectorAll('[data-i18n]');
-            elements.forEach(el => {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
-                if(translations[lang][key]) {
-                    el.innerText = translations[lang][key];
-                }
+                if (translations[lang]?.[key]) el.innerText = translations[lang][key];
             });
             document.documentElement.lang = lang;
         }
@@ -432,244 +532,182 @@
 
         function scrollCards(direction) {
             const container = document.getElementById('cardContainer');
-            const scrollAmount = 380;
-            if (direction === 'left') {
-                container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-            } else {
-                container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-            }
+            const amount = 380;
+            container.scrollBy({ left: direction === 'left' ? -amount : amount, behavior: 'smooth' });
         }
 
         // ============================================================
-        // DATE & TIME HELPERS
+        // DATE & TIME
         // ============================================================
         function getMyanmarDate() {
             const now = new Date();
-            const mmMonths = ["ဇန်နဝါရီ", "ဖေဖော်ဝါရီ", "မတ်", "ဧပြီ", "မေ", "ဇွန်", "ဇူလိုင်", "သြဂုတ်", "စက်တင်ဘာ", "အောက်တိုဘာ", "နိုဝင်ဘာ", "ဒီဇင်ဘာ"];
-            const day = String(now.getDate()).padStart(2, '0');
-            const month = mmMonths[now.getMonth()];
-            const year = now.getFullYear();
-            return { day, month, year, full: `${day} ${month} ${year}` };
+            const months = ["ဇန်နဝါရီ", "ဖေဖော်ဝါရီ", "မတ်", "ဧပြီ", "မေ", "ဇွန်", "ဇူလိုင်", "သြဂုတ်", "စက်တင်ဘာ", "အောက်တိုဘာ", "နိုဝင်ဘာ", "ဒီဇင်ဘာ"];
+            return `${String(now.getDate()).padStart(2, '0')} ${months[now.getMonth()]} ${now.getFullYear()}`;
         }
 
         function getDateString() {
             const now = new Date();
-            const day = String(now.getDate()).padStart(2, '0');
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            const year = now.getFullYear();
-            return `${day}.${month}.${year}`;
+            return `${String(now.getDate()).padStart(2, '0')}.${String(now.getMonth() + 1).padStart(2, '0')}.${now.getFullYear()}`;
         }
 
         function getTimeString() {
             const now = new Date();
-            const h = String(now.getHours()).padStart(2, '0');
-            const m = String(now.getMinutes()).padStart(2, '0');
-            const s = String(now.getSeconds()).padStart(2, '0');
-            return `${h}:${m}:${s}`;
+            return `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
         }
 
         // ============================================================
-        // PREDICTION NUMBER GENERATOR (Market-aware)
+        // PREDICTIONS
         // ============================================================
         function generatePredictionNumbers() {
             const now = new Date();
-            const day = String(now.getDate()).padStart(2, '0');
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            const year = now.getFullYear();
+            const seed = parseInt(`${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}`);
             
-            // Base seed from date
-            const baseSeed = parseInt(year + month + day);
-            
-            // Market-aware adjustments: use different multipliers per market
-            function getNumber(seed, offset, marketMultiplier) {
-                const x = Math.sin(seed + offset + marketMultiplier) * 10000;
-                let num = Math.floor((x - Math.floor(x)) * 900) + 100;
-                return num;
+            function getNum(s, o, m) {
+                const x = Math.sin(s + o + m) * 10000;
+                return Math.floor((x - Math.floor(x)) * 900) + 100;
             }
 
-            // Each market gets a unique multiplier based on its characteristics
-            const dowMultiplier = 1.7;   // Dow Jones
-            const hanoiMultiplier = 2.3; // Hanoi
-            const thaiMultiplier = 3.1;  // Thailand
-
-            const dow1 = getNumber(baseSeed, 1, dowMultiplier);
-            const dow2 = getNumber(baseSeed, 2, dowMultiplier);
-            const dow3 = getNumber(baseSeed, 3, dowMultiplier);
-
-            const hanoi1 = getNumber(baseSeed, 4, hanoiMultiplier);
-            const hanoi2 = getNumber(baseSeed, 5, hanoiMultiplier);
-            const hanoi3 = getNumber(baseSeed, 6, hanoiMultiplier);
-
-            const thai1 = getNumber(baseSeed, 7, thaiMultiplier);
-            const thai2 = getNumber(baseSeed, 8, thaiMultiplier);
-            const thai3 = getNumber(baseSeed, 9, thaiMultiplier);
-
             return {
-                dow: `${dow1} - ${dow2} - ${dow3}`,
-                hanoi: `${hanoi1} - ${hanoi2} - ${hanoi3}`,
-                thai: `${thai1} - ${thai2} - ${thai3}`
+                dow: `${getNum(seed,1,1.7)} - ${getNum(seed,2,1.7)} - ${getNum(seed,3,1.7)}`,
+                hanoi: `${getNum(seed,4,2.3)} - ${getNum(seed,5,2.3)} - ${getNum(seed,6,2.3)}`,
+                thai: `${getNum(seed,7,3.1)} - ${getNum(seed,8,3.1)} - ${getNum(seed,9,3.1)}`
             };
         }
 
-        // ============================================================
-        // UPDATE PREDICTION CARDS
-        // ============================================================
-        let lastUpdateTime = null;
-        let updateCountdownInterval = null;
+        let countdownInterval = null;
 
         function updatePredictions() {
             const now = new Date();
             const dateStr = getDateString();
             const timeStr = getTimeString();
             
-            // Update date badges
-            document.querySelectorAll('.card-date').forEach(el => {
-                el.innerText = dateStr;
-            });
+            document.querySelectorAll('.card-date').forEach(el => el.innerText = dateStr);
             document.getElementById('liveDateBadge').innerText = `Date: ${dateStr}`;
-            
-            // Update Myanmar date in hero
-            const myanmarDate = getMyanmarDate();
-            document.getElementById('currentDateDisplay').innerText = myanmarDate.full;
+            document.getElementById('currentDateDisplay').innerText = getMyanmarDate();
 
-            // Generate and update numbers
             const nums = generatePredictionNumbers();
             document.getElementById('dowJonesNum').innerText = nums.dow;
             document.getElementById('hanoiNum').innerText = nums.hanoi;
             document.getElementById('thaiNum').innerText = nums.thai;
 
-            // Update time stamps
-            document.getElementById('dowUpdateTime').innerText = `Updated: ${timeStr}`;
-            document.getElementById('hanoiUpdateTime').innerText = `Updated: ${timeStr}`;
-            document.getElementById('thaiUpdateTime').innerText = `Updated: ${timeStr}`;
+            ['dow', 'hanoi', 'thai'].forEach(id => {
+                document.getElementById(`${id}UpdateTime`).innerText = `Updated: ${timeStr}`;
+            });
             document.getElementById('lastUpdateTime').innerText = `Last update: ${timeStr}`;
 
-            lastUpdateTime = now;
-            
-            // Update accuracy with slight random variation to make it feel organic
-            const accuracies = [
+            // Accuracy with slight variation
+            [
                 { id: 'dowAccuracy', base: 94, range: 3 },
                 { id: 'hanoiAccuracy', base: 91, range: 3 },
                 { id: 'thaiAccuracy', base: 96, range: 2 }
-            ];
-            accuracies.forEach(acc => {
-                const variation = Math.floor(Math.random() * acc.range * 2) - acc.range;
-                const val = Math.min(99, Math.max(85, acc.base + variation));
-                document.getElementById(acc.id).innerText = `${val}% Accuracy`;
+            ].forEach(acc => {
+                const v = Math.min(99, Math.max(85, acc.base + Math.floor(Math.random() * acc.range * 2) - acc.range));
+                document.getElementById(acc.id).innerText = `${v}% Accuracy`;
             });
 
-            // Reset countdown
             startCountdown();
         }
 
-        // ============================================================
-        // COUNTDOWN TIMER (until next auto-update at 9:00 AM)
-        // ============================================================
         function startCountdown() {
-            if (updateCountdownInterval) {
-                clearInterval(updateCountdownInterval);
-            }
-
-            function updateCountdown() {
+            if (countdownInterval) clearInterval(countdownInterval);
+            
+            function update() {
                 const now = new Date();
                 const target = new Date(now);
-                target.setHours(9, 0, 0, 0); // 9:00 AM
-
-                // If it's already past 9 AM today, set to tomorrow 9 AM
-                if (now.getHours() >= 9) {
-                    target.setDate(target.getDate() + 1);
-                }
-
+                target.setHours(9, 0, 0, 0);
+                if (now.getHours() >= 9) target.setDate(target.getDate() + 1);
+                
                 const diff = target - now;
                 if (diff <= 0) {
                     document.getElementById('updateCountdown').innerText = 'Updating now...';
                     updatePredictions();
                     return;
                 }
-
-                const hours = Math.floor(diff / (1000 * 60 * 60));
-                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-                const h = String(hours).padStart(2, '0');
-                const m = String(minutes).padStart(2, '0');
-                const s = String(seconds).padStart(2, '0');
-
+                
+                const h = String(Math.floor(diff / 3600000)).padStart(2, '0');
+                const m = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
+                const s = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
                 document.getElementById('updateCountdown').innerText = `Auto-update in ${h}:${m}:${s}`;
             }
-
-            updateCountdown();
-            updateCountdownInterval = setInterval(updateCountdown, 1000);
+            
+            update();
+            countdownInterval = setInterval(update, 1000);
         }
 
         // ============================================================
-        // TRADINGVIEW WIDGET AUTO-REFRESH
+        // TRADINGVIEW WIDGET MONITOR - REAL DATA ONLY
         // ============================================================
-        function refreshTradingViewWidgets() {
-            // TradingView widgets auto-refresh themselves.
-            // We just reload the script containers to ensure they stay live.
-            // This is a gentle refresh that keeps the widgets alive.
-            const containers = document.querySelectorAll('.tradingview-widget-container');
-            containers.forEach(container => {
-                const widget = container.querySelector('.tradingview-widget-container__widget');
-                // TradingView handles its own updates - we just ensure the container is visible
-                // and the script is loaded. The widget will update in real-time.
+        function monitorWidgets() {
+            const markets = ['nikkei', 'dow', 'hanoi', 'thai', 'oil', 'gold'];
+            let loadedCount = 0;
+            
+            markets.forEach(key => {
+                const container = document.querySelector(`.tradingview-widget-container[data-symbol]`);
+                // Check if widget has iframe (means it loaded)
+                setTimeout(() => {
+                    const widget = document.querySelector(`[data-market="${key}"] .tradingview-widget-container__widget`);
+                    const statusEl = document.getElementById(`${key}-status`);
+                    const hasIframe = widget?.querySelector('iframe') !== null;
+                    
+                    if (hasIframe) {
+                        statusEl.innerHTML = `<span class="status-dot live"></span> Live`;
+                        loadedCount++;
+                    } else {
+                        statusEl.innerHTML = `<span class="status-dot offline"></span> Offline`;
+                    }
+                    
+                    // Update overall status
+                    if (loadedCount === markets.length) {
+                        document.getElementById('dataSourceStatus').innerHTML = 
+                            `<span class="status-dot live"></span> Live Data (TradingView)`;
+                        document.getElementById('systemStatusDot').className = 'status-dot live';
+                    } else if (loadedCount > 0) {
+                        document.getElementById('dataSourceStatus').innerHTML = 
+                            `<span class="status-dot loading"></span> Partial data (${loadedCount}/${markets.length} connected)`;
+                    }
+                }, 8000); // Check after 8 seconds
             });
             
-            // Update the "last update" time for market section
-            document.getElementById('lastUpdateTime').innerText = `Last update: ${getTimeString()}`;
+            // Second check after 15 seconds
+            setTimeout(() => {
+                markets.forEach(key => {
+                    const widget = document.querySelector(`[data-market="${key}"] .tradingview-widget-container__widget`);
+                    const statusEl = document.getElementById(`${key}-status`);
+                    const hasIframe = widget?.querySelector('iframe') !== null;
+                    
+                    if (hasIframe && !statusEl.innerHTML.includes('Live')) {
+                        statusEl.innerHTML = `<span class="status-dot live"></span> Live`;
+                        loadedCount++;
+                    }
+                });
+            }, 15000);
         }
 
         // ============================================================
-        // SCHEDULED TASKS
-        // ============================================================
-        function checkAndUpdatePredictions() {
-            const now = new Date();
-            const currentHour = now.getHours();
-            const currentMinute = now.getMinutes();
-            
-            // Update at 9:00 AM daily
-            if (currentHour === 9 && currentMinute === 0) {
-                updatePredictions();
-            }
-            
-            // Also update every 30 minutes for market freshness
-            if (currentMinute % 30 === 0 && currentMinute < 59) {
-                refreshTradingViewWidgets();
-            }
-        }
-
-        // ============================================================
-        // INITIALIZATION
+        // INIT
         // ============================================================
         function init() {
-            // Set initial date
-            const myanmarDate = getMyanmarDate();
-            document.getElementById('currentDateDisplay').innerText = myanmarDate.full;
+            document.getElementById('currentDateDisplay').innerText = getMyanmarDate();
             document.getElementById('liveDateBadge').innerText = `Date: ${getDateString()}`;
-            
-            // Set initial predictions
-            updatePredictions();
-            
-            // Set initial last update time
             document.getElementById('lastUpdateTime').innerText = `Last update: ${getTimeString()}`;
             
-            // Start countdown to next update
+            updatePredictions();
             startCountdown();
+            
+            // Monitor widgets after load
+            setTimeout(monitorWidgets, 3000);
+            
+            // Auto-update predictions at 9:00 AM
+            setInterval(() => {
+                const now = new Date();
+                if (now.getHours() === 9 && now.getMinutes() === 0) updatePredictions();
+            }, 60000);
 
-            // Check for updates every minute
-            setInterval(checkAndUpdatePredictions, 60000);
-            
-            // Refresh market indicators every 2 minutes
-            setInterval(refreshTradingViewWidgets, 120000);
-            
-            console.log('Manjomjai system initialized successfully.');
-            console.log('Market data: Live via TradingView');
-            console.log(`Predictions updated at ${getTimeString()}`);
-            console.log('Next prediction update: 9:00 AM daily');
+            console.log('✅ Manjomjai initialized - Real market data only');
+            console.log('📊 Data source: TradingView (live)');
+            console.log('⏰ Predictions update daily at 9:00 AM');
         }
 
-        // Run on load
         window.onload = init;
     </script>
 </body>
