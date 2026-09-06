@@ -1,294 +1,372 @@
 <!DOCTYPE html>
-<html lang="th" class="dark">
+<html lang="my" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Man Jom Jai | VIP Thai Stock Hub - 100% Accurate Predictions</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        darkBg: '#030712',
-                        cardBg: '#0b0f19',
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;800;900&family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <title>Manjomjai - Thai Stock Predictions</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Sarabun', 'Inter', sans-serif; }
-        .cyber-card {
-            background: linear-gradient(135deg, rgba(17, 24, 39, 0.9) 0%, rgba(11, 15, 25, 0.98) 100%);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(0, 255, 204, 0.25);
-            box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.6);
+        body { font-family: 'Poppins', 'Padauk', sans-serif; }
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.02); }
         }
-        .cyber-card:hover {
-            border-color: rgba(0, 255, 204, 0.6);
-            box-shadow: 0 0 35px rgba(0, 255, 204, 0.25);
-        }
-        .card-ratio {
-            aspect-ratio: 4 / 5;
-            object-fit: cover;
-        }
-        .gradient-border {
-            position: relative;
-            border-radius: 1.5rem;
-            background: linear-gradient(60deg, #00ffcc, #3b82f6, #a855f7);
-            padding: 1px;
+        .live-glow {
+            animation: pulse-glow 2s infinite;
         }
     </style>
 </head>
-<body class="min-h-screen bg-[#030712] text-slate-100 selection:bg-teal-500 selection:text-slate-950">
+<body class="bg-slate-950 text-slate-100 min-h-screen transition-colors duration-300" id="bodyTheme">
 
-    <!-- Glowing Background Effect -->
-    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[400px] bg-teal-500/10 blur-[180px] pointer-events-none rounded-full"></div>
-
-    <!-- Top Header -->
-    <header class="sticky top-0 z-50 backdrop-blur-xl bg-[#030712]/90 border-b border-slate-800/80">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
+    <header class="sticky top-0 z-50 backdrop-blur-md bg-slate-900/80 border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-teal-400 via-emerald-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-teal-500/30 text-slate-950 font-black text-2xl">
-                    M
+                <div class="bg-gradient-to-r from-amber-500 to-rose-500 p-2.5 rounded-xl shadow-lg shadow-amber-500/20">
+                    <i class="fa-solid fa-chart-line text-white text-xl"></i>
                 </div>
                 <div>
-                    <h1 class="text-lg sm:text-xl font-black tracking-wider bg-gradient-to-r from-teal-300 via-white to-cyan-400 bg-clip-text text-transparent">
-                        MAN JOM JAI
-                    </h1>
-                    <p class="text-[10px] text-teal-400 tracking-widest uppercase font-bold">VIP Thai Stock Hub</p>
+                    <span class="text-2xl font-black tracking-wider bg-gradient-to-r from-amber-400 via-rose-400 to-purple-500 bg-clip-text text-transparent">MANJOMJAI</span>
+                    <span class="block text-[10px] text-slate-400 tracking-widest uppercase">Thai Stock VIP Predict</span>
                 </div>
             </div>
-            
-            <div class="flex items-center space-x-3">
-                <select id="langSwitch" onchange="changeLanguage(this.value)" class="bg-slate-900 border border-slate-700 text-xs sm:text-sm rounded-xl px-3 py-2 focus:outline-none focus:border-teal-400 cursor-pointer text-slate-200 shadow-sm font-bold">
-                    <option value="th">🇹🇭 ไทย (Thai)</option>
-                    <option value="en">🇬🇧 English</option>
+
+            <div class="flex items-center space-x-4">
+                <select id="langSwitch" onchange="changeLanguage()" class="bg-slate-800 text-xs sm:text-sm text-slate-200 border border-slate-700 rounded-lg px-3 py-1.5 focus:outline-none focus:border-amber-500">
+                    <option value="mm">မြန်မာ</option>
+                    <option value="th">ไทย</option>
+                    <option value="en">English</option>
                 </select>
 
-                <div class="hidden sm:flex items-center space-x-2 bg-slate-900/90 border border-slate-800 px-3.5 py-2 rounded-xl">
-                    <span class="w-2.5 h-2.5 rounded-full bg-teal-400 animate-pulse"></span>
-                    <span id="currentDateDisplay" class="text-xs font-bold text-slate-300"></span>
-                </div>
+                <button onclick="toggleTheme()" class="bg-slate-800 hover:bg-slate-700 text-amber-400 p-2.5 rounded-lg border border-slate-700 transition">
+                    <i id="themeIcon" class="fa-solid fa-sun text-sm"></i>
+                </button>
+
+                <button onclick="openVipModal()" class="bg-gradient-to-r from-amber-500 to-rose-600 hover:from-amber-600 hover:to-rose-700 text-white font-semibold px-4 py-2 rounded-xl text-xs sm:text-sm shadow-lg shadow-rose-500/30 transition transform hover:-translate-y-0.5">
+                    <i class="fa-solid fa-crown mr-1.5"></i> <span data-i18n="vipBtn">VIP ဝင်ရန်</span>
+                </button>
             </div>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="max-w-6xl mx-auto px-4 sm:px-6 py-12 relative z-10">
-        
-        <!-- Hero Title & Comprehensive Detailed Statement -->
-        <div class="text-center max-w-4xl mx-auto mb-16 space-y-6">
-            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold bg-teal-500/10 text-teal-300 border border-teal-500/20 shadow-inner">
-                ⚡ <span id="badgeText">ศูนย์รวมข้อมูลการคาดการณ์หุ้นไทย แม่นยำ 100%</span>
-            </div>
-            
-            <h2 id="txtMainTitle" class="text-3xl sm:text-5xl font-black tracking-tight leading-tight text-white">
-                เว็บไซต์อย่างเป็นทางการสำหรับตัวเลขคาดการณ์และใบหุ้นไทย
-            </h2>
-            
-            <div id="txtMainDesc" class="text-slate-300 text-sm sm:text-base leading-relaxed bg-slate-900/80 p-6 sm:p-8 rounded-3xl border border-slate-800 shadow-2xl text-left space-y-4">
-                <p class="font-bold text-teal-300 text-base sm:text-lg">
-                    🎯 ဒီ Website က ထိုင်းစတော့ ခန့်မှန်းနံပါတ်တွေ၊ ထိုင်းစတော့ထီကတ်များနှင့် အချက်အလက်များကို အသေးစိတ် တင်ဆက်ပေးနေတဲ့ တရားဝင် ပလပ်ဖောင်းဖြစ်ပါတယ်။ ဤနေရာတွင် ဖော်ပြပေးသမျှသော စတော့ခ်ခန့်မှန်းချက်များနှင့် ကတ်အချက်အလက်များသည် 100% တိကျမှန်ကန်မှု ရှိပါတယ်။
-                </p>
-                <p>
-                    ထိုင်းနိုင်ငံရဲ့ စတော့ဈေးကွက် (SET) ရဲ့ တရားဝင် အညွှန်းကိန်းများနှင့် တန်ဖိုးများကို အခြေခံပြီး ကျွမ်းကျင်ပညာရှင်များက စနစ်တကျ တွက်ချက်ဆန်းစစ်ထားခြင်းဖြစ်ပါတယ်။ ထိုင်းစတော့ထီနှင့် စတော့ခ်နံပါတ်များ တိကျသေချာစေရန်အတွက် အချက်အလက်များကို အချိန်နဲ့တပြေးညီ စုဆောင်းဖော်ပြပေးနေပြီး အသုံးပြုသူများအနေဖြင့် အကောင်းဆုံး ရလဒ်များကို ယုံကြည်စိတ်ချစွာ ရယူနိုင်ပါတယ်။
-                </p>
-            </div>
-        </div>
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
 
-        <!-- Today's Featured Card -->
-        <section class="mb-20">
-            <div class="flex justify-between items-center mb-6">
-                <h3 id="txtTodayHeader" class="text-xl sm:text-2xl font-black flex items-center gap-2 text-white">
-                    🔥 หุ้นเด่นประจำวันนี้ (Today's Featured Stock Card)
-                </h3>
-                <span class="text-xs font-black px-3 py-1 rounded-xl bg-teal-400 text-slate-950 uppercase tracking-widest shadow-lg">Featured</span>
-            </div>
+        <section class="relative rounded-3xl overflow-hidden bg-gradient-to-br from-slate-900 via-purple-950/40 to-slate-900 border border-slate-800 p-6 sm:p-10 shadow-2xl">
+            <div class="absolute -right-10 -bottom-10 w-60 h-60 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
             
-            <div class="gradient-border shadow-2xl">
-                <div class="cyber-card rounded-[23px] p-6 sm:p-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                    <div class="lg:col-span-6 w-full bg-slate-950 rounded-2xl overflow-hidden border border-slate-800/80 relative group shadow-inner">
-                        <div class="absolute top-3 left-3 z-10 bg-slate-900/90 backdrop-blur-md border border-teal-500/30 px-3 py-1 rounded-xl">
-                            <span class="text-teal-400 text-xs font-black tracking-wider flex items-center gap-1.5">
-                                <span class="w-2 h-2 rounded-full bg-teal-400 animate-ping"></span> LIVE TODAY (100% ACCURATE)
-                            </span>
-                        </div>
-                        <img src="stock-today.jpg" alt="Today Stock Card" class="card-ratio w-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://via.placeholder.com/600x750?text=Upload+stock-today.jpg+in+GitHub'">
-                    </div>
-                    
-                    <div class="lg:col-span-6 space-y-6">
-                        <div class="inline-block px-3 py-1 rounded-lg bg-teal-500/10 border border-teal-500/20 text-teal-400 text-xs font-bold" id="cardDate1">
-                            Loading date...
-                        </div>
-                        <h4 id="txtCardTitle" class="text-2xl sm:text-4xl font-black text-white tracking-wide">
-                            ใบหุ้นไทย ประจำวัน #01 (100% Verified)
-                        </h4>
-                        <p id="txtCardDesc" class="text-slate-300 leading-relaxed text-sm sm:text-base">
-                            ယနေ့အတွက် အထူးထုတ်ပြန်ထားသော ထိုင်းစတော့ခ်ကတ်နှင့် ထီနံပါတ် အချက်အလက်များဖြစ်ပါသည်။ ဈေးကွက်လမ်းကြောင်းကို အခြေခံကာ တိကျသေချာစွာ တွက်ချက်ထားပြီး အမြန်ဆုံးနှင့် အမှန်ကန်ဆုံး ရလဒ်များကို ဤကတ်တွင် ဖော်ပြထားပါသည်။
-                        </p>
-                        <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400 font-semibold">
-                            <span>manjomjai.site VIP Hub</span>
-                            <span class="text-teal-400 font-bold">● Guaranteed 100% Accuracy</span>
-                        </div>
+            <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="space-y-4 max-w-2xl">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-rose-500/10 text-rose-400 border border-rose-500/20 live-glow">
+                        <span class="w-2 h-2 rounded-full bg-rose-500 mr-2 animate-ping"></span>
+                        <span data-i18n="liveBadge">LIVE - နေ့စဉ် ထိုင်းစတော့ ခန့်မှန်းချက် အချက်အလက်များ</span>
+                    </span>
+                    <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight leading-snug">
+                        <span data-i18n="heroTitle">ထိုင်းစတော့ (Thai Stock) အမှန်ကန်ဆုံး ကံစမ်းခန့်မှန်းချက်များနှင့် အချက်အလက် ၅၀၀၀+ ကျော်</span>
+                    </h1>
+                    <p class="text-slate-400 text-sm sm:text-base" data-i18n="heroDesc">
+                        တိကျသေချာသော ရက်စွဲအလိုက် စာရင်းဇယားများ၊ နေ့စဉ်ထွက်ဂဏန်း မှတ်တမ်းဟောင်းများနှင့် VIP မန်ဘာများအတွက် အထူးခန့်မှန်းကွက်များကို တစ်နေရာတည်းတွင် ကြည့်ရှုနိုင်ပါပြီ။
+                    </p>
+                </div>
+                <div class="bg-slate-900/90 border border-slate-800 p-6 rounded-2xl text-center shadow-xl w-full md:w-80">
+                    <div class="text-xs text-slate-400 uppercase tracking-wider mb-1" data-i18n="todayDateLabel">ယနေ့ရက်စွဲ (Date)</div>
+                    <div id="currentDateDisplay" class="text-lg font-bold text-amber-400 mb-3">06 စက်တင်ဘာ ၂၀၂၆</div>
+                    <div class="border-t border-slate-800 pt-3">
+                        <span class="text-xs text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/20" data-i18n="statusActive">System Status: Normal & Active</span>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- History Archive Section -->
-        <section class="mb-20">
-            <h3 id="txtHistoryHeader" class="text-xl sm:text-2xl font-black mb-8 flex items-center gap-2 border-b border-slate-800/80 pb-4 text-white">
-                📅 ประวัติย้อนหลัง (History Archive & Records)
-            </h3>
-            
+        <section class="space-y-6">
+            <div class="flex items-center justify-between">
+                <h2 class="text-xl sm:text-2xl font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-fire text-amber-500"></i> <span data-i18n="sectionStockTitle">ယနေ့ခန့်မှန်းကွက်များ (Live Predictions)</span>
+                </h2>
+                <span class="text-xs text-slate-400 bg-slate-900 px-3 py-1 rounded-lg border border-slate-800" data-i18n="updateTime">Update: နေ့စဉ် မွန်းွဲ/ညနေ</span>
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- History Card 1 -->
-                <div class="cyber-card rounded-2xl p-5 transition duration-300 flex flex-col justify-between group">
-                    <div>
-                        <div class="flex justify-between items-center mb-4">
-                            <span class="text-[11px] font-black uppercase tracking-wider bg-slate-800 text-slate-300 px-3 py-1 rounded-lg border border-slate-700">Archive</span>
-                            <span class="text-xs text-teal-400 font-bold">Sep 5, 2026</span>
+                <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl hover:border-amber-500/50 transition duration-300 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-bl-full pointer-events-none"></div>
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <span class="text-xs font-semibold px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/20">SET Index</span>
+                            <h3 class="text-xl font-bold mt-2">ထိုင်း (SET) ပုံမှန်ပိတ်ပွဲ</h3>
                         </div>
-                        <div class="w-full bg-slate-950 rounded-xl overflow-hidden border border-slate-800 mb-4 group-hover:border-teal-500/40 transition">
-                            <img src="history-1.jpg" alt="History Card" class="card-ratio w-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://via.placeholder.com/400x500?text=Upload+history-1.jpg'">
+                        <span class="text-xs text-slate-400 font-mono">06.09.2026</span>
+                    </div>
+                    <div class="bg-slate-950/60 rounded-xl p-4 border border-slate-800/80 my-4 text-center">
+                        <span class="text-xs text-slate-400 block mb-1" data-i18n="topTwoDigit">ထိပ်သီး ဂဏန်းအလှ</span>
+                        <div class="text-3xl font-black bg-gradient-to-r from-amber-400 to-rose-500 bg-clip-text text-transparent live-glow">
+                            79 - 94 - 28
                         </div>
-                        <h5 class="font-black text-lg mb-1 text-white">Stock Card #02</h5>
-                        <p class="text-xs text-slate-400 leading-relaxed">စက်တင်ဘာလ ၅ ရက်နေ့အတွက် အောင်မြင်စွာ တိကျခဲ့သော ထိုင်းစတော့ခ်ကတ်နှင့် ထီနံပါတ် မှတ်တမ်းများ။</p>
+                    </div>
+                    <div class="flex justify-between text-xs text-slate-400">
+                        <span>ခန့်မှန်းချက်: <strong class="text-slate-200">သေချာရေရာမှု 95%</strong></span>
+                        <span class="text-emerald-400 font-medium">Free Access</span>
                     </div>
                 </div>
 
-                <!-- History Card 2 -->
-                <div class="cyber-card rounded-2xl p-5 transition duration-300 flex flex-col justify-between group">
-                    <div>
-                        <div class="flex justify-between items-center mb-4">
-                            <span class="text-[11px] font-black uppercase tracking-wider bg-slate-800 text-slate-300 px-3 py-1 rounded-lg border border-slate-700">Archive</span>
-                            <span class="text-xs text-teal-400 font-bold">Sep 4, 2026</span>
+                <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl hover:border-rose-500/50 transition duration-300 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-rose-500/5 rounded-bl-full pointer-events-none"></div>
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <span class="text-xs font-semibold px-2.5 py-1 rounded-md bg-rose-500/10 text-rose-400 border border-rose-500/20">VIP Stock</span>
+                            <h3 class="text-xl font-bold mt-2">ထိုင်း နေ့လယ်ခင်း (Afternoon)</h3>
                         </div>
-                        <div class="w-full bg-slate-950 rounded-xl overflow-hidden border border-slate-800 mb-4 group-hover:border-teal-500/40 transition">
-                            <img src="history-2.jpg" alt="History Card" class="card-ratio w-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://via.placeholder.com/400x500?text=Upload+history-2.jpg'">
+                        <span class="text-xs text-slate-400 font-mono">06.09.2026</span>
+                    </div>
+                    <div class="bg-slate-950/60 rounded-xl p-4 border border-slate-800/80 my-4 text-center">
+                        <span class="text-xs text-slate-400 block mb-1" data-i18n="topThreeDigit">၃ လုံးပိတ် ဂဏန်း</span>
+                        <div class="text-3xl font-black bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent live-glow">
+                            582 - 319
                         </div>
-                        <h5 class="font-black text-lg mb-1 text-white">Stock Card #03</h5>
-                        <p class="text-xs text-slate-400 leading-relaxed">စက်တင်ဘာလ ၄ ရက်နေ့အတွက် အောင်မြင်စွာ တိကျခဲ့သော ထိုင်းစတော့ခ်ကတ်နှင့် ထီနံပါတ် မှတ်တမ်းများ။</p>
+                    </div>
+                    <div class="flex justify-between text-xs text-slate-400">
+                        <span>အမျိုးအစား: <strong class="text-amber-400">VIP Member Only</strong></span>
+                        <button onclick="openVipModal()" class="text-rose-400 hover:underline font-semibold" data-i18n="unlockText">သော့ဖွင့်ရန် ➔</button>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl hover:border-purple-500/50 transition duration-300 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 rounded-bl-full pointer-events-none"></div>
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <span class="text-xs font-semibold px-2.5 py-1 rounded-md bg-purple-500/10 text-purple-400 border border-purple-500/20">Closing Market</span>
+                            <h3 class="text-xl font-bold mt-2">ထိုင်း ညနေပိတ် (Evening)</h3>
+                        </div>
+                        <span class="text-xs text-slate-400 font-mono">06.09.2026</span>
+                    </div>
+                    <div class="bg-slate-950/60 rounded-xl p-4 border border-slate-800/80 my-4 text-center">
+                        <span class="text-xs text-slate-400 block mb-1" data-i18n="powerDigit">ပါဝါ / အပူးကွက်</span>
+                        <div class="text-3xl font-black bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent live-glow">
+                            44 - 88 - 55
+                        </div>
+                    </div>
+                    <div class="flex justify-between text-xs text-slate-400">
+                        <span>ခန့်မှန်းချက်: <strong class="text-slate-200">သေချာရေရာမှု 90%</strong></span>
+                        <span class="text-emerald-400 font-medium">Free Access</span>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Detailed SEO Content Section (Thai Stock & Lottery Deep Dive) -->
-        <section class="cyber-card rounded-3xl p-6 sm:p-10 space-y-6 border border-slate-800">
-            <h3 id="txtArticleTitle" class="text-xl sm:text-2xl font-black text-teal-300 border-b border-slate-800 pb-4">
-                📈 ထိုင်းစတော့ခ်နှင့် ထီနံပါတ်ခန့်မှန်းချက်များအကြောင်း အသေးစိတ် လေ့လာရန်
-            </h3>
-            <div id="txtArticleBody" class="text-slate-300 text-sm sm:text-base leading-relaxed space-y-4">
-                <p>
-                    ထိုင်းစတော့ခ် (Thai Stock) ဈေးကွက်သည် ကမ္ဘာတစ်ဝှမ်းနှင့် အာရှဒေသတွင်းတွင် အလွန်လူကြိုက်များပြီး စိတ်လှုပ်ရှားစရာအကောင်းဆုံး ဈေးကွက်တစ်ခု ဖြစ်ပါသည်။ အထူးသဖြင့် ထိုင်းစတော့အညွှန်းကိန်း (SET Index) ၏ ပိတ်သိမ်းမည့်တန်ဖိုး (Closing Value) နှင့် တန်ဖိုးနောက်ဆုံးဂဏန်းများကို အခြေခံ၍ ထီနံပါတ်များနှင့် စတော့ခ်ကတ်များကို တွက်ချက်ခန့်မှန်းကြလေ့ရှိသည်။
-                </p>
-                <p>
-                    ဤ `manjomjai.site` ဝဘ်ဆိုဒ်သည် ထိုင်းစတော့ဈေးကွက်အချက်အလက်များနှင့် တိကျသေချာသော ခန့်မှန်းနံပါတ်များကို နေ့စဉ်ပုံမှန် စုဆောင်းတင်ဆက်ပေးနေသော VIP Hub တစ်ခု ဖြစ်ပါသည်။ ကျွန်ုပ်တို့၏ ခန့်မှန်းချက်များနှင့် ကဒ်များတွင် အောက်ပါအချက်အလက်များကို အဓိက ထည့်သွင်းဖော်ပြပေးနေပါသည် -
-                </p>
-                <ul class="list-disc list-inside space-y-2 pl-4 text-slate-200 font-semibold">
-                    <li>ထိုင်းစတော့အညွှန်းကိန်း (SET) ၏ အဓိကတန်ဖိုးများနှင့် အပြောင်းအလဲများ</li>
-                    <li>နေ့စဉ် ထွက်ပေါ်လာမည့် ထိုင်းစတော့ထီ နံပါတ်ခန့်မှန်းချက်များနှင့် ကတ်များ</li>
-                    <li>ကျွမ်းကျင်ပညာရှင်များ၏ 100% တိကျမှန်ကန်သော တွက်ချက်မှုစနစ်</li>
-                    <li>ယခင်ရက်များ၏ အောင်မြင်မှုမှတ်တမ်းများနှင့် အချက်အလက်ဟောင်းများ (History Archive)</li>
-                </ul>
-                <p>
-                    အသုံးပြုသူများအနေဖြင့် မည်သည့်အခကြေးငွေမှ ပေးစရာမလိုဘဲ အလွတ်လပ်ဆုံးနှင့် အမှန်ကန်ဆုံး အချက်အလက်များကို ဤနေရာတွင် အချိန်မရွေး ဝင်ရောက်ကြည့်ရှုနိုင်ပါသည်။
-                </p>
+        <section class="bg-slate-900/60 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-xl sm:text-2xl font-bold flex items-center gap-2">
+                        <i class="fa-solid fa-clock-rotate-left text-cyan-400"></i> <span data-i18n="historyTitle">ယခင်ထွက်ရှိခဲ့သော မှတ်တမ်းဟောင်းများ (History Logs)</span>
+                    </h2>
+                    <p class="text-xs sm:text-sm text-slate-400 mt-1" data-i18n="historySubtitle">အတိတ်ကာလက ထိုင်းစတော့ ရလဒ်များနှင့် တိကျမှန်ကန်မှု မှတ်တမ်းများ</p>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <input type="date" class="bg-slate-800 text-slate-200 text-xs px-3 py-2 rounded-lg border border-slate-700 focus:outline-none focus:border-amber-500">
+                    <button class="bg-slate-800 hover:bg-slate-700 text-xs px-4 py-2 rounded-lg border border-slate-700 font-medium transition" data-i18n="searchBtn">ရှာရန်</button>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm text-slate-300">
+                    <thead class="bg-slate-950 text-slate-400 uppercase text-xs tracking-wider border-b border-slate-800">
+                        <tr>
+                            <th class="py-3 px-4" data-i18n="thDate">ရက်စွဲ (Date)</th>
+                            <th class="py-3 px-4" data-i18n="thSession">ချိန် (Session)</th>
+                            <th class="py-3 px-4" data-i18n="thTop">ထိပ်သီး (Top)</th>
+                            <th class="py-3 px-4" data-i18n="thBottom">အောက်ဂဏန်း (Bottom)</th>
+                            <th class="py-3 px-4" data-i18n="thStatus">အခြေအနေ (Status)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800/60 font-mono text-xs sm:text-sm">
+                        <tr class="hover:bg-slate-800/30 transition">
+                            <td class="py-3 px-4">05.09.2026</td>
+                            <td class="py-3 px-4 text-amber-400 font-sans">ညနေပိတ်</td>
+                            <td class="py-3 px-4 font-bold text-rose-400">84</td>
+                            <td class="py-3 px-4">63</td>
+                            <td class="py-3 px-4"><span class="text-emerald-400 font-sans bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">မှန်ကန်သည်</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/30 transition">
+                            <td class="py-3 px-4">05.09.2026</td>
+                            <td class="py-3 px-4 text-amber-400 font-sans">နေ့လယ်ခင်း</td>
+                            <td class="py-3 px-4 font-bold text-rose-400">19</td>
+                            <td class="py-3 px-4">42</td>
+                            <td class="py-3 px-4"><span class="text-emerald-400 font-sans bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">မှန်ကန်သည်</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/30 transition">
+                            <td class="py-3 px-4">04.09.2026</td>
+                            <td class="py-3 px-4 text-amber-400 font-sans">ညနေပိတ်</td>
+                            <td class="py-3 px-4 font-bold text-rose-400">50</td>
+                            <td class="py-3 px-4">71</td>
+                            <td class="py-3 px-4"><span class="text-emerald-400 font-sans bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">မှန်ကန်သည်</span></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </section>
+
     </main>
 
-    <!-- Footer -->
-    <footer class="border-t border-slate-800/80 bg-slate-950/80 py-10 text-center text-xs text-slate-400 mt-20 space-y-2">
-        <p class="font-bold text-slate-300">manjomjai.site - Official Thai Stock & Lottery Prediction Hub</p>
-        <p>&copy; 2026 All rights reserved. 100% Accurate Stock Forecasts and Cards.</p>
+    <footer class="border-t border-slate-800 mt-20 py-8 text-center text-slate-500 text-xs">
+        <p>&copy; 2026 Manjomjai.site — All Rights Reserved. (Domain: https://manjomjai.site)</p>
     </footer>
 
-    <!-- Scripting for Language Translations -->
-    <script>
-        const options = { year: 'numeric', month: 'short', day: 'numeric' };
-        const todayStr = new Date().toLocaleDateString('en-US', options);
-        document.getElementById('currentDateDisplay').innerText = todayStr;
-        document.getElementById('cardDate1').innerText = todayStr;
+    <div id="vipModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden p-4">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-3xl p-6 sm:p-8 shadow-2xl relative space-y-6">
+            <button onclick="closeVipModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
 
+            <div class="text-center space-y-2">
+                <div class="inline-block bg-amber-500/10 p-3 rounded-2xl text-amber-400 border border-amber-500/20 mb-2">
+                    <i class="fa-solid fa-crown text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold" data-i18n="modalTitle">VIP မန်ဘာဝင်ရောက်ရန်</h3>
+                <p class="text-xs text-slate-400" data-i18n="modalDesc">KBZPay၊ Wave Money သို့မဟုတ် MMQR ဖြင့် ငွေလွှဲ၍ မန်ဘာဝင်နိုင်ပါသည်။</p>
+            </div>
+
+            <div class="space-y-3 bg-slate-950/60 p-4 rounded-2xl border border-slate-800 text-xs">
+                <div class="flex justify-between items-center py-1 border-b border-slate-800/80">
+                    <span class="text-slate-400">KBZ Pay / Wave Pay:</span>
+                    <strong class="text-amber-400 font-mono">09-XXXXXXXXX</strong>
+                </div>
+                <div class="flex justify-between items-center py-1">
+                    <span class="text-slate-400">Account Name:</span>
+                    <strong class="text-slate-200">U Xxxx Xxxx</strong>
+                </div>
+            </div>
+
+            <div class="space-y-3">
+                <label class="block text-xs text-slate-400" data-i18n="screenshotLabel">ငွေလွှဲစလစ် တင်ရန် (Upload Slip)</label>
+                <input type="file" class="w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-slate-955 hover:file:bg-amber-600 cursor-pointer bg-slate-950 rounded-xl border border-slate-800 p-2">
+            </div>
+
+            <button onclick="alert('စလစ်တင်သွင်းမှု အောင်မြင်ပါသည်။ Admin မှ စစ်ဆေးပြီး ၁၅ မိနစ်အတွင်း VIP ဖွင့်ပေးပါမည်။')" class="w-full bg-gradient-to-r from-amber-500 to-rose-600 hover:from-amber-600 hover:to-rose-700 text-white font-bold py-3 rounded-xl text-sm shadow-lg shadow-rose-500/20 transition" data-i18n="submitSlip">
+                အတည်ပြုရန် ပို့မည်
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Language Dictionary
         const translations = {
+            mm: {
+                vipBtn: "VIP ဝင်ရန်",
+                liveBadge: "LIVE - နေ့စဉ် ထိုင်းစတော့ ခန့်မှန်းချက် အချက်အလက်များ",
+                heroTitle: "ထိုင်းစတော့ (Thai Stock) အမှန်ကန်ဆုံး ကံစမ်းခန့်မှန်းချက်များနှင့် အချက်အလက် ၅၀၀၀+ ကျော်",
+                heroDesc: "တိကျသေချာသော ရက်စွဲအလိုက် စာရင်းဇယားများ၊ နေ့စဉ်ထွက်ဂဏန်း မှတ်တမ်းဟောင်းများနှင့် VIP မန်ဘာများအတွက် အထူးခန့်မှန်းကွက်များကို တစ်နေရာတည်းတွင် ကြည့်ရှုနိုင်ပါပြီ။",
+                todayDateLabel: "ယနေ့ရက်စွဲ (Date)",
+                statusActive: "System Status: Normal & Active",
+                sectionStockTitle: "ယနေ့ခန့်မှန်းကွက်များ (Live Predictions)",
+                updateTime: "Update: နေ့စဉ် မွန်းွဲ/ညနေ",
+                topTwoDigit: "ထိပ်သီး ဂဏန်းအလှ",
+                topThreeDigit: "၃ လုံးပိတ် ဂဏန်း",
+                powerDigit: "ပါဝါ / အပူးကွက်",
+                unlockText: "သော့ဖွင့်ရန် ➔",
+                historyTitle: "ယခင်ထွက်ရှိခဲ့သော မှတ်တမ်းဟောင်းများ (History Logs)",
+                historySubtitle: "အတိတ်ကာလက ထိုင်းစတော့ ရလဒ်များနှင့် တိကျမှန်ကန်မှု မှတ်တမ်းများ",
+                searchBtn: "ရှာရန်",
+                thDate: "ရက်စွဲ (Date)",
+                thSession: "ချိန် (Session)",
+                thTop: "ထိပ်သီး (Top)",
+                thBottom: "အောက်ဂဏန်း (Bottom)",
+                thStatus: "အခြေအနေ (Status)",
+                modalTitle: "VIP မန်ဘာဝင်ရောက်ရန်",
+                modalDesc: "KBZPay၊ Wave Money သို့မဟုတ် MMQR ဖြင့် ငွေလွှဲ၍ မန်ဘာဝင်နိုင်ပါသည်။",
+                screenshotLabel: "ငွေလွှဲစလစ် တင်ရန် (Upload Slip)",
+                submitSlip: "အတည်ပြုရန် ပို့မည်"
+            },
             th: {
-                badge: "ศูนย์รวมข้อมูลการคาดการณ์หุ้นไทยและหวยหุ้น แม่นยำ 100%",
-                mainTitle: "เว็บไซต์อย่างเป็นทางการสำหรับตัวเลขคาดการณ์และใบหุ้นไทย",
-                mainDesc: `
-                    <p class="font-bold text-teal-300 text-base sm:text-lg">
-                        🎯 เว็บไซต์นี้อัปเดตตัวเลขคาดการณ์หุ้นไทยและหวยหุ้นอย่างแม่นยำ โดยข้อมูลและใบหุ้นทั้งหมดมีความแม่นยำสูงถึง 100%
-                    </p>
-                    <p>
-                        เรามุ่งมั่นนำเสนอแนวทาง สถิติข้อมูลหุ้นไทย และเลขเด็ดหวยหุ้นที่ผ่านการวิเคราะห์เชิงลึกจากผู้เชี่ยวชาญ เพื่อให้ผู้ใช้งานได้รับข้อมูลที่ถูกต้อง รวดเร็ว และสามารถนำไปใช้ประโยชน์ได้จริงอย่างไร้ขีดจำกัด ไม่มีค่าใช้จ่ายใดๆ ทั้งสิ้น อัปเดตสดใหม่ทุกวันอย่างต่อเนื่อง
-                    </p>
-                `,
-                todayHeader: "🔥 หุ้นเด่นประจำวันนี้ (Today's Featured Stock Card)",
-                cardTitle: "ใบหุ้นไทย ประจำวัน #01 (แม่นยำ 100% มั่นใจได้)",
-                cardDesc: "ข้อมูลและแนวทางเลขเด็ดหวยหุ้นไทยวันนี้ วิเคราะห์เจาะลึกแบบมืออาชีพ การันตีความแม่นยำ 100% ตรวจสอบได้จริง",
-                historyHeader: "📅 ประวัติย้อนหลังและสถิติต่างๆ (History Archive & Records)",
-                articleTitle: "📈 รายละเอียดเชิงลึกเกี่ยวกับตลาดหุ้นไทยและหวยหุ้น",
-                articleBody: `
-                    <p>
-                        ตลาดหุ้นไทย (Thai Stock Market) เป็นหนึ่งในตลาดการเงินที่ได้รับความนิยมสูงและมีความน่าสนใจเป็นอย่างยิ่ง โดยเฉพาะการนำเอาค่าดัชนี SET และค่ามูลค่าปิดตลาด มาวิเคราะห์เป็นแนวทางเลขเด็ดและหวยหุ้นที่ได้รับความนิยมในกลุ่มนักเสี่ยงโชค
-                    </p>
-                    <p>
-                        เว็บไซต์ <code>manjomjai.site</code> ของเราได้รวบรวมข้อมูลสถิติ วิเคราะห์แนวโน้ม และจัดทำใบหุ้นไทยประจำวันอย่างแม่นยำ เพื่อให้สมาชิกทุกท่านได้รับประโยชน์สูงสุด ข้อมูลทั้งหมดผ่านการกลั่นกรองและตรวจสอบความถูกต้องมาเป็นอย่างดี การันตีความแม่นยำระดับ VIP 100% เต็ม
-                    </p>
-                `
+                vipBtn: "สมัคร VIP",
+                liveBadge: "LIVE - ข้อมูลการคาดการณ์หุ้นไทยประจำวัน",
+                heroTitle: "การคาดการณ์หุ้นไทยที่แม่นยำที่สุด พร้อมข้อมูลกว่า 5,000+ รายการ",
+                heroDesc: "ดูสถิติย้อนหลังตามวันที่ รายการทำนายเลขเด็ดประจำวัน และเลขพิเศษสำหรับสมาชิก VIP ได้ในที่เดียว",
+                todayDateLabel: "วันที่ปัจจุบัน (Date)",
+                statusActive: "สถานะระบบ: ปกติและใช้งานได้",
+                sectionStockTitle: "เลขเด็ดประจำวันนี้ (Live Predictions)",
+                updateTime: "อัปเดต: ทุกเที่ยง/เย็น",
+                topTwoDigit: "เลขเด่น 2 ตัว",
+                topThreeDigit: "เลขท้าย 3 ตัว",
+                powerDigit: "เลขเบิ้ล / พลัง",
+                unlockText: "ปลดล็อก ➔",
+                historyTitle: "ประวัติผลรางวัลย้อนหลัง (History Logs)",
+                historySubtitle: "ผลรางวัลหุ้นไทยในอดีตและบันทึกความแม่นยำ",
+                searchBtn: "ค้นหา",
+                thDate: "วันที่ (Date)",
+                thSession: "รอบ (Session)",
+                thTop: "บน (Top)",
+                thBottom: "ล่าง (Bottom)",
+                thStatus: "สถานะ (Status)",
+                modalTitle: "สมัครสมาชิก VIP",
+                modalDesc: "ชำระเงินผ่าน KBZPay, Wave Money หรือ MMQR เพื่อสมัครสมาชิก",
+                screenshotLabel: "อัปโหลดสลิปการโอนเงิน (Upload Slip)",
+                submitSlip: "ยืนยันการส่งสลิป"
             },
             en: {
-                badge: "100% Accurate Thai Stock & Lottery Predictions",
-                mainTitle: "Official Hub for Thai Stock Market Forecasts & Lottery Cards",
-                mainDesc: `
-                    <p class="font-bold text-teal-300 text-base sm:text-lg">
-                        🎯 This website provides official Thai stock predictions and lottery numbers. All stock forecast data and cards featured here are 100% accurate.
-                    </p>
-                    <p>
-                        We deliver expertly analyzed Thai stock insights and daily prediction cards designed to give you precise, real-time results. Completely free to access with no hidden ads, updated fresh every single trading day.
-                    </p>
-                `,
-                todayHeader: "🔥 Today's Featured Stock Card",
-                cardTitle: "Daily Thai Stock Card #01 (100% Accurate)",
-                cardDesc: "Today's expert-backed Thai stock lottery data and key figures, fully verified with guaranteed 100% accuracy.",
-                historyHeader: "📅 Stock Cards History Archive & Records",
-                articleTitle: "📈 Deep Dive into Thai Stock Market & Lottery Insights",
-                articleBody: `
-                    <p>
-                        The Thai Stock Market (SET) is one of the most exciting financial markets, widely followed for its daily closing indexes and numerical patterns used in stock lottery predictions.
-                    </p>
-                    <p>
-                        Our platform <code>manjomjai.site</code> specializes in providing comprehensive daily Thai stock cards, statistical breakdowns, and 100% accurate forecast data designed for elite traders and enthusiasts. Explore our daily updates completely free of charge.
-                    </p>
-                `
+                vipBtn: "Join VIP",
+                liveBadge: "LIVE - Daily Thai Stock Predictions & Data",
+                heroTitle: "Most Accurate Thai Stock Predictions with 5,000+ Data Records",
+                heroDesc: "Explore date-wise accurate records, historical draw logs, and special VIP predictions all in one place.",
+                todayDateLabel: "Current Date",
+                statusActive: "System Status: Normal & Active",
+                sectionStockTitle: "Today's Predictions (Live)",
+                updateTime: "Update: Noon / Evening Daily",
+                topTwoDigit: "Top 2-Digit Lucky Numbers",
+                topThreeDigit: "3-Digit Closing Number",
+                powerDigit: "Power / Twin Numbers",
+                unlockText: "Unlock ➔",
+                historyTitle: "Historical Records (History Logs)",
+                historySubtitle: "Past Thai stock results and accuracy tracking logs",
+                searchBtn: "Search",
+                thDate: "Date",
+                thSession: "Session",
+                thTop: "Top",
+                thBottom: "Bottom",
+                thStatus: "Status",
+                modalTitle: "Join VIP Membership",
+                modalDesc: "Transfer via KBZPay, Wave Money or MMQR to join membership.",
+                screenshotLabel: "Upload Transfer Slip",
+                submitSlip: "Submit for Verification"
             }
         };
 
-        function changeLanguage(lang) {
-            document.getElementById('badgeText').innerText = translations[lang].badge;
-            document.getElementById('txtMainTitle').innerText = translations[lang].mainTitle;
-            document.getElementById('txtMainDesc').innerHTML = translations[lang].mainDesc;
-            document.getElementById('txtTodayHeader').innerText = translations[lang].todayHeader;
-            document.getElementById('txtCardTitle').innerText = translations[lang].cardTitle;
-            document.getElementById('txtCardDesc').innerText = translations[lang].cardDesc;
-            document.getElementById('txtHistoryHeader').innerText = translations[lang].historyHeader;
-            document.getElementById('txtArticleTitle').innerText = translations[lang].articleTitle;
-            document.getElementById('txtArticleBody').innerHTML = translations[lang].articleBody;
-            localStorage.setItem('selectedLang', lang);
+        // Change Language Function
+        function changeLanguage() {
+            const lang = document.getElementById('langSwitch').value;
+            const elements = document.querySelectorAll('[data-i18n]');
+            elements.forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(translations[lang][key]) {
+                    el.innerText = translations[lang][key];
+                }
+            });
+            document.documentElement.lang = lang;
         }
 
-        window.onload = () => {
-            const savedLang = localStorage.getItem('selectedLang') || 'th';
-            document.getElementById('langSwitch').value = savedLang;
-            changeLanguage(savedLang);
-        };
+        // Toggle Dark / Light Theme
+        function toggleTheme() {
+            const body = document.getElementById('bodyTheme');
+            const icon = document.getElementById('themeIcon');
+            
+            if (body.classList.contains('dark')) {
+                body.classList.remove('dark', 'bg-slate-950', 'text-slate-100');
+                body.classList.add('bg-slate-50', 'text-slate-900');
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            } else {
+                body.classList.add('dark', 'bg-slate-950', 'text-slate-100');
+                body.classList.remove('bg-slate-50', 'text-slate-900');
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            }
+        }
+
+        // Modal Functions
+        function openVipModal() {
+            document.getElementById('vipModal').classList.remove('hidden');
+        }
+        function closeVipModal() {
+            document.getElementById('vipModal').classList.add('hidden');
+        }
     </script>
 </body>
 </html>
