@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manjomjai - Thai Stock Predictions</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Poppins', 'Padauk', sans-serif; }
@@ -20,6 +23,7 @@
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen transition-colors duration-300" id="bodyTheme">
 
+    <!-- Top Navigation Bar -->
     <header class="sticky top-0 z-50 backdrop-blur-md bg-slate-900/80 border-b border-slate-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
             <div class="flex items-center space-x-3">
@@ -52,6 +56,7 @@
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
 
+        <!-- 1. Hero Section (5000+ Data & Description) -->
         <section class="relative rounded-3xl overflow-hidden bg-gradient-to-br from-slate-900 via-purple-950/40 to-slate-900 border border-slate-800 p-6 sm:p-10 shadow-2xl">
             <div class="absolute -right-10 -bottom-10 w-60 h-60 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
             
@@ -78,6 +83,52 @@
             </div>
         </section>
 
+        <!-- 2. Global Markets & Commodities Live Bar (Nikkei, Dow Jones, Hanoi, Thailand, Oil, Gold) -->
+        <section class="space-y-4">
+            <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                <i class="fa-solid fa-chart-pie text-cyan-400"></i> <span data-i18n="marketStatusBar">ကမ္ဘာ့စတော့နှင့် ကုန်စည်ဈေးနှုန်းများ (Live Status)</span>
+            </h2>
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+                <!-- Nikkei -->
+                <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl shadow-md text-center">
+                    <span class="text-[11px] text-slate-400 block mb-1">Nikkei 225</span>
+                    <div class="text-sm font-bold text-slate-200 font-mono">32,680.50</div>
+                    <span class="text-[10px] text-emerald-400 font-medium">+1.24% ▲</span>
+                </div>
+                <!-- Dow Jones -->
+                <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl shadow-md text-center">
+                    <span class="text-[11px] text-slate-400 block mb-1">Dow Jones</span>
+                    <div class="text-sm font-bold text-slate-200 font-mono">34,837.20</div>
+                    <span class="text-[10px] text-emerald-400 font-medium">+0.85% ▲</span>
+                </div>
+                <!-- Hanoi -->
+                <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl shadow-md text-center">
+                    <span class="text-[11px] text-slate-400 block mb-1">Hanoi Stock</span>
+                    <div class="text-sm font-bold text-slate-200 font-mono">245.10</div>
+                    <span class="text-[10px] text-rose-400 font-medium">-0.32% ▼</span>
+                </div>
+                <!-- Thailand -->
+                <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl shadow-md text-center">
+                    <span class="text-[11px] text-slate-400 block mb-1">Thailand SET</span>
+                    <div class="text-sm font-bold text-slate-200 font-mono">1,524.60</div>
+                    <span class="text-[10px] text-emerald-400 font-medium">+0.45% ▲</span>
+                </div>
+                <!-- Crude Oil -->
+                <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl shadow-md text-center">
+                    <span class="text-[11px] text-slate-400 block mb-1">Crude Oil (ရေနံ)</span>
+                    <div class="text-sm font-bold text-amber-400 font-mono">$85.40</div>
+                    <span class="text-[10px] text-emerald-400 font-medium">+1.10% ▲</span>
+                </div>
+                <!-- Gold -->
+                <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl shadow-md text-center">
+                    <span class="text-[11px] text-slate-400 block mb-1">Gold (ရွှေဈေး)</span>
+                    <div class="text-sm font-bold text-amber-400 font-mono">$2,035.80</div>
+                    <span class="text-[10px] text-emerald-400 font-medium">+0.15% ▲</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Daily Stock Cards Section (Live Predictions) -->
         <section class="space-y-6">
             <div class="flex items-center justify-between">
                 <h2 class="text-xl sm:text-2xl font-bold flex items-center gap-2">
@@ -87,6 +138,7 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Card 1 -->
                 <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl hover:border-amber-500/50 transition duration-300 relative overflow-hidden group">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-bl-full pointer-events-none"></div>
                     <div class="flex justify-between items-start mb-4">
@@ -108,6 +160,7 @@
                     </div>
                 </div>
 
+                <!-- Card 2 -->
                 <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl hover:border-rose-500/50 transition duration-300 relative overflow-hidden group">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-rose-500/5 rounded-bl-full pointer-events-none"></div>
                     <div class="flex justify-between items-start mb-4">
@@ -129,6 +182,7 @@
                     </div>
                 </div>
 
+                <!-- Card 3 -->
                 <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl hover:border-purple-500/50 transition duration-300 relative overflow-hidden group">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 rounded-bl-full pointer-events-none"></div>
                     <div class="flex justify-between items-start mb-4">
@@ -152,6 +206,7 @@
             </div>
         </section>
 
+        <!-- 4. History Section -->
         <section class="bg-slate-900/60 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl space-y-6">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
@@ -210,6 +265,7 @@
         <p>&copy; 2026 Manjomjai.site — All Rights Reserved. (Domain: https://manjomjai.site)</p>
     </footer>
 
+    <!-- VIP Membership Modal -->
     <div id="vipModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden p-4">
         <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-3xl p-6 sm:p-8 shadow-2xl relative space-y-6">
             <button onclick="closeVipModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white text-lg">
@@ -246,8 +302,8 @@
         </div>
     </div>
 
+    <!-- JavaScript -->
     <script>
-        // Language Dictionary
         const translations = {
             mm: {
                 vipBtn: "VIP ဝင်ရန်",
@@ -256,6 +312,7 @@
                 heroDesc: "တိကျသေချာသော ရက်စွဲအလိုက် စာရင်းဇယားများ၊ နေ့စဉ်ထွက်ဂဏန်း မှတ်တမ်းဟောင်းများနှင့် VIP မန်ဘာများအတွက် အထူးခန့်မှန်းကွက်များကို တစ်နေရာတည်းတွင် ကြည့်ရှုနိုင်ပါပြီ။",
                 todayDateLabel: "ယနေ့ရက်စွဲ (Date)",
                 statusActive: "System Status: Normal & Active",
+                marketStatusBar: "ကမ္ဘာ့စတော့နှင့် ကုန်စည်ဈေးနှုန်းများ (Live Status)",
                 sectionStockTitle: "ယနေ့ခန့်မှန်းကွက်များ (Live Predictions)",
                 updateTime: "Update: နေ့စဉ် မွန်းွဲ/ညနေ",
                 topTwoDigit: "ထိပ်သီး ဂဏန်းအလှ",
@@ -282,6 +339,7 @@
                 heroDesc: "ดูสถิติย้อนหลังตามวันที่ รายการทำนายเลขเด็ดประจำวัน และเลขพิเศษสำหรับสมาชิก VIP ได้ในที่เดียว",
                 todayDateLabel: "วันที่ปัจจุบัน (Date)",
                 statusActive: "สถานะระบบ: ปกติและใช้งานได้",
+                marketStatusBar: "สถานะตลาดโลกและสินค้าโภคภัณฑ์ (Live)",
                 sectionStockTitle: "เลขเด็ดประจำวันนี้ (Live Predictions)",
                 updateTime: "อัปเดต: ทุกเที่ยง/เย็น",
                 topTwoDigit: "เลขเด่น 2 ตัว",
@@ -308,6 +366,7 @@
                 heroDesc: "Explore date-wise accurate records, historical draw logs, and special VIP predictions all in one place.",
                 todayDateLabel: "Current Date",
                 statusActive: "System Status: Normal & Active",
+                marketStatusBar: "Global Markets & Commodities Live Status",
                 sectionStockTitle: "Today's Predictions (Live)",
                 updateTime: "Update: Noon / Evening Daily",
                 topTwoDigit: "Top 2-Digit Lucky Numbers",
@@ -329,7 +388,6 @@
             }
         };
 
-        // Change Language Function
         function changeLanguage() {
             const lang = document.getElementById('langSwitch').value;
             const elements = document.querySelectorAll('[data-i18n]');
@@ -342,11 +400,9 @@
             document.documentElement.lang = lang;
         }
 
-        // Toggle Dark / Light Theme
         function toggleTheme() {
             const body = document.getElementById('bodyTheme');
             const icon = document.getElementById('themeIcon');
-            
             if (body.classList.contains('dark')) {
                 body.classList.remove('dark', 'bg-slate-950', 'text-slate-100');
                 body.classList.add('bg-slate-50', 'text-slate-900');
@@ -360,7 +416,6 @@
             }
         }
 
-        // Modal Functions
         function openVipModal() {
             document.getElementById('vipModal').classList.remove('hidden');
         }
