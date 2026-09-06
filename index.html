@@ -14,6 +14,9 @@
             50% { opacity: 0.6; transform: scale(1.02); }
         }
         .live-glow { animation: pulse-glow 2s infinite; }
+        /* Hide scrollbar for clean horizontal swipe */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen" id="bodyTheme">
@@ -115,18 +118,29 @@
             </div>
         </section>
 
-        <!-- Today's Predictions (Auto Date & Auto Number Changing) -->
+        <!-- Daily Predictions (Horizontal Scrollable Carousel for Admin Cards) -->
         <section class="space-y-6">
             <div class="flex items-center justify-between">
                 <h2 class="text-xl sm:text-2xl font-bold flex items-center gap-2">
                     <i class="fa-solid fa-bolt text-amber-500"></i> <span data-i18n="sectionStockTitle">နေ့စဉ်စတော့ ခန့်မှန်းချက်များနှင့် ကစားရန်ဂဏန်းများ</span>
                 </h2>
-                <span class="text-xs text-slate-400 bg-slate-900 px-3 py-1 rounded-lg border border-slate-800" id="liveDateBadge">Date: --.--.----</span>
+                <div class="flex items-center space-x-2">
+                    <span class="text-xs text-slate-400 bg-slate-900 px-3 py-1 rounded-lg border border-slate-800" id="liveDateBadge">Date: --.--.----</span>
+                    <!-- Scroll Navigation Buttons for Desktop Users -->
+                    <button onclick="scrollCards('left')" class="bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 w-8 h-8 rounded-lg flex items-center justify-center transition">
+                        <i class="fa-solid fa-chevron-left text-xs"></i>
+                    </button>
+                    <button onclick="scrollCards('right')" class="bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 w-8 h-8 rounded-lg flex items-center justify-center transition">
+                        <i class="fa-solid fa-chevron-right text-xs"></i>
+                    </button>
+                </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Dow Jones Forecast -->
-                <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl hover:border-amber-500/50 transition duration-300 relative overflow-hidden">
+            <!-- Horizontal Swipeable Container -->
+            <div id="cardContainer" class="flex overflow-x-auto no-scrollbar space-x-6 pb-4 snap-x snap-mandatory scroll-smooth">
+                
+                <!-- Card 1: Dow Jones Forecast -->
+                <div class="min-w-[300px] sm:min-w-[360px] md:min-w-[380px] bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl hover:border-amber-500/50 transition duration-300 relative overflow-hidden snap-start shrink-0">
                     <div class="flex justify-between items-start mb-4">
                         <div>
                             <span class="text-xs font-semibold px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/20">Dow Jones</span>
@@ -146,8 +160,8 @@
                     </div>
                 </div>
 
-                <!-- Hanoi Forecast -->
-                <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl hover:border-rose-500/50 transition duration-300 relative overflow-hidden">
+                <!-- Card 2: Hanoi Forecast -->
+                <div class="min-w-[300px] sm:min-w-[360px] md:min-w-[380px] bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl hover:border-rose-500/50 transition duration-300 relative overflow-hidden snap-start shrink-0">
                     <div class="flex justify-between items-start mb-4">
                         <div>
                             <span class="text-xs font-semibold px-2.5 py-1 rounded-md bg-rose-500/10 text-rose-400 border border-rose-500/20">Hanoi Stock</span>
@@ -167,8 +181,8 @@
                     </div>
                 </div>
 
-                <!-- Thailand Forecast -->
-                <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl hover:border-purple-500/50 transition duration-300 relative overflow-hidden">
+                <!-- Card 3: Thailand Forecast -->
+                <div class="min-w-[300px] sm:min-w-[360px] md:min-w-[380px] bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl hover:border-purple-500/50 transition duration-300 relative overflow-hidden snap-start shrink-0">
                     <div class="flex justify-between items-start mb-4">
                         <div>
                             <span class="text-xs font-semibold px-2.5 py-1 rounded-md bg-purple-500/10 text-purple-400 border border-purple-500/20">Thailand SET</span>
@@ -187,6 +201,8 @@
                         <span class="text-emerald-400 font-medium" data-i18n="autoUpdateLabel">Auto-Update</span>
                     </div>
                 </div>
+
+                <!-- Admin can append more cards here in the future -->
             </div>
         </section>
 
@@ -213,7 +229,7 @@
         </div>
     </div>
 
-    <!-- JavaScript for Auto-Update & Multi-Language -->
+    <!-- JavaScript for Auto-Update, Multi-Language & Card Scrolling -->
     <script>
         const translations = {
             mm: {
@@ -300,6 +316,17 @@
         function openVipModal() { document.getElementById('vipModal').classList.remove('hidden'); }
         function closeVipModal() { document.getElementById('vipModal').classList.add('hidden'); }
 
+        // Function for smooth horizontal card sliding via buttons
+        function scrollCards(direction) {
+            const container = document.getElementById('cardContainer');
+            const scrollAmount = 380;
+            if (direction === 'left') {
+                container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+            } else {
+                container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            }
+        }
+
         function updateDailyContent() {
             const now = new Date();
             const day = String(now.getDate()).padStart(2, '0');
@@ -307,7 +334,6 @@
             const year = now.getFullYear();
             const dateString = `${day}.${month}.${year}`;
 
-            // Format Month names in Burmese for main box
             const mmMonths = ["ဇန်နဝါရီ", "ဖေဖော်ဝါရီ", "မတ်", "ဧပြီ", "မေ", "ဇွန်", "ဇူလိုင်", "သဂုတ်", "စက်တင်ဘာ", "အောက်တိုဘာ", "နိုဝင်ဘာ", "ဒီဇင်ဘာ"];
             document.getElementById('currentDateDisplay').innerText = `${day} ${mmMonths[now.getMonth()]} ${year}`;
             document.getElementById('liveDateBadge').innerText = `Date: ${dateString}`;
@@ -316,7 +342,6 @@
                 el.innerText = dateString;
             });
 
-            // Generate Auto Numbers based on Date Seed
             const seed = parseInt(year + month + day);
             function pseudoRandom(seedVal, index) {
                 const x = Math.sin(seedVal + index) * 10000;
