@@ -23,15 +23,9 @@
             0% { background-position: -200% center; }
             100% { background-position: 200% center; }
         }
-        @keyframes numberPop {
-            0% { transform: scale(0.5); opacity: 0; }
-            70% { transform: scale(1.1); opacity: 1; }
-            100% { transform: scale(1); opacity: 1; }
-        }
         
         .float-animation { animation: float 4s ease-in-out infinite; }
         .live-glow { animation: pulse-glow 2s infinite; }
-        .number-pop { animation: numberPop 0.6s ease-out forwards; }
         
         .gradient-text {
             background: linear-gradient(135deg, #f59e0b, #ef4444, #8b5cf6, #3b82f6);
@@ -140,53 +134,6 @@
             font-size: 1.1rem;
         }
         
-        /* Daily Number Card */
-        .daily-number-card {
-            background: linear-gradient(145deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .daily-number-card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(251, 191, 36, 0.3);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
-        }
-        .daily-number-card .big-number {
-            font-size: 2.8rem;
-            font-weight: 900;
-            background: linear-gradient(135deg, #f59e0b, #ef4444, #8b5cf6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: 4px;
-        }
-        @media (min-width: 640px) {
-            .daily-number-card .big-number { font-size: 3.5rem; }
-        }
-        .daily-number-card .market-label {
-            font-size: 0.65rem;
-            color: #94a3b8;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-        .daily-number-card .accuracy-ring {
-            display: inline-block;
-            padding: 2px 14px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            background: rgba(34, 197, 94, 0.12);
-            color: #22c55e;
-            border: 1px solid rgba(34, 197, 94, 0.2);
-        }
-        .daily-number-card .date-badge {
-            font-size: 0.6rem;
-            color: #64748b;
-            background: rgba(100, 116, 139, 0.15);
-            padding: 2px 12px;
-            border-radius: 12px;
-        }
-        
         /* Scrollbar styling */
         ::-webkit-scrollbar { width: 4px; height: 4px; }
         ::-webkit-scrollbar-track { background: rgba(30, 41, 59, 0.3); border-radius: 10px; }
@@ -216,8 +163,6 @@
         body.light .insight-card { border-left-color: rgba(0,0,0,0.06); }
         body.light .insight-card:hover { border-left-color: #f59e0b; }
         body.light .footer-text { background: linear-gradient(135deg, #94a3b8, #64748b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        body.light .daily-number-card { background: linear-gradient(145deg, rgba(255,255,255,0.9), rgba(241,245,249,0.95)); border: 1px solid rgba(0,0,0,0.06); }
-        body.light .daily-number-card .date-badge { background: rgba(0,0,0,0.05); color: #64748b; }
         body.light ::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); }
         
         /* Mobile optimizations */
@@ -228,20 +173,11 @@
             .lang-select { padding: 5px 10px; font-size: 0.65rem; }
             .insight-card { padding: 0.75rem !important; }
             .insight-card .icon-circle { width: 32px; height: 32px; font-size: 0.9rem; }
-            .daily-number-card .big-number { font-size: 2.2rem !important; }
         }
         @media (max-width: 480px) {
             .gradient-text { font-size: 1.5rem !important; }
             .nav-blur .flex { gap: 0.5rem; }
             .nav-blur .space-x-3 { gap: 0.4rem; }
-            .daily-number-card .big-number { font-size: 1.8rem !important; }
-            .daily-number-grid { grid-template-columns: 1fr !important; }
-        }
-        @media (min-width: 481px) and (max-width: 768px) {
-            .daily-number-grid { grid-template-columns: repeat(2, 1fr) !important; }
-        }
-        @media (min-width: 769px) {
-            .daily-number-grid { grid-template-columns: repeat(3, 1fr) !important; }
         }
     </style>
 </head>
@@ -312,63 +248,6 @@
             <!-- Decorative floating elements -->
             <div class="absolute top-10 left-10 w-16 h-16 sm:w-24 sm:h-24 rounded-full bg-purple-500/5 blur-2xl"></div>
             <div class="absolute bottom-10 right-10 w-20 h-20 sm:w-32 sm:h-32 rounded-full bg-rose-500/5 blur-2xl"></div>
-        </section>
-
-        <!-- ========================================================== -->
-        <!-- DAILY NUMBERS SECTION - Auto Update Daily -->
-        <!-- ========================================================== -->
-        <section class="space-y-4">
-            <div class="flex items-center gap-3">
-                <div class="w-1 h-8 bg-gradient-to-b from-amber-500 to-rose-500 rounded-full"></div>
-                <h2 class="text-xl sm:text-2xl font-bold" data-i18n="dailyNumbersTitle">📅 ယနေ့အတွက် ဈေးကွက်ကစားရန် ဂဏန်းများ</h2>
-                <span class="text-[10px] text-slate-500 bg-slate-800/50 px-3 py-1 rounded-full border border-slate-700/50 ml-auto" id="dailyDateDisplay"></span>
-            </div>
-            
-            <div class="grid daily-number-grid gap-4" id="dailyNumbersContainer">
-                <!-- Card 1: Dow Jones -->
-                <div class="daily-number-card rounded-2xl p-5 sm:p-6 text-center glow-border">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="market-label">🇺🇸 Dow Jones</span>
-                        <span class="date-badge" id="dowDate">Today</span>
-                    </div>
-                    <div class="big-number" id="dowNumber">---</div>
-                    <div class="flex items-center justify-center gap-3 mt-2">
-                        <span class="accuracy-ring" id="dowAccuracy">94%</span>
-                        <span class="text-[10px] text-emerald-400" data-i18n="autoUpdateLabel">🔄 Auto-Update</span>
-                    </div>
-                </div>
-                
-                <!-- Card 2: Hanoi Stock -->
-                <div class="daily-number-card rounded-2xl p-5 sm:p-6 text-center glow-border">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="market-label">🇻🇳 Hanoi Stock</span>
-                        <span class="date-badge" id="hanoiDate">Today</span>
-                    </div>
-                    <div class="big-number" id="hanoiNumber">---</div>
-                    <div class="flex items-center justify-center gap-3 mt-2">
-                        <span class="accuracy-ring" id="hanoiAccuracy">91%</span>
-                        <span class="text-[10px] text-emerald-400" data-i18n="autoUpdateLabel">🔄 Auto-Update</span>
-                    </div>
-                </div>
-                
-                <!-- Card 3: Thailand SET -->
-                <div class="daily-number-card rounded-2xl p-5 sm:p-6 text-center glow-border">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="market-label">🇹🇭 Thailand SET</span>
-                        <span class="date-badge" id="thaiDate">Today</span>
-                    </div>
-                    <div class="big-number" id="thaiNumber">---</div>
-                    <div class="flex items-center justify-center gap-3 mt-2">
-                        <span class="accuracy-ring" id="thaiAccuracy">96%</span>
-                        <span class="text-[10px] text-emerald-400" data-i18n="autoUpdateLabel">🔄 Auto-Update</span>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Update time -->
-            <div class="text-center text-[10px] text-slate-500 mt-2">
-                <span data-i18n="lastUpdateLabel">🕐 နောက်ဆုံးအပ်ဒိတ်:</span> <span id="dailyUpdateTime">--:--:--</span>
-            </div>
         </section>
 
         <!-- ========================================================== -->
@@ -548,9 +427,6 @@
                 liveBadge: "⚡ Live Predictions",
                 heroTitle: "စတော့ဈေးကွက်များကို နက်နက်နဲနဲ ခွဲခြမ်းစိတ်ဖြာပြီး အတိကျဆုံး ခန့်မှန်းချက်များကို ဖော်ပြပေးနေသော ပလပ်ဖောင်း",
                 heroDesc: "Manjomjai ဝဘ်ဆိုဒ်သည် ကမ္ဘာ့ထိပ်တန်း စတော့ဈေးကွက်များကို အချိန်နှင့်တပြေးညီ စောင့်ကြည့်စစ်ဆေးကာ ကိန်းဂဏန်းဆိုင်ရာ သမိုင်းကြောင်းအချက်အလက်များနှင့် တွက်ချက်မှုပုံစံများကို ပေါင်းစပ်၍ အသေချာဆုံး ကံစမ်းခန့်မှန်းကွက်များကို တိကျမှန်ကန်စွာ ထုတ်ပြန်ပေးနေပါသည်။",
-                dailyNumbersTitle: "📅 ယနေ့အတွက် ဈေးကွက်ကစားရန် ဂဏန်းများ",
-                autoUpdateLabel: "🔄 Auto-Update",
-                lastUpdateLabel: "🕐 နောက်ဆုံးအပ်ဒိတ်:",
                 insightsTitle: "ထိုင်းစတော့နှင့် ကမ္ဘာ့စတော့ဈေးကွက်များဆိုင်ရာ အကြံပြုချက်များ",
                 insight1Title: "🇹🇭 ထိုင်းစတော့ဈေးကွက် (SET) ၏ လက်ရှိအခြေအနေ",
                 insight1Desc: "ထိုင်းနိုင်ငံ၏ စတော့ဈေးကွက်ဖြစ်သော SET (Stock Exchange of Thailand) သည် အရှေ့တောင်အာရှဒေသတွင် အကြီးဆုံးနှင့် အရည်အသွေးအမြင့်ဆုံး ဈေးကွက်များထဲမှ တစ်ခုဖြစ်ပါသည်။ လက်ရှိအချိန်တွင် SET ဈေးကွက်သည် ဒေသတွင်းစီးပွားရေးအခြေအနေ၊ ကမ္ဘာ့ငွေကြေးဈေးကွက်အပြောင်းအလဲများနှင့် နိုင်ငံရေးတည်ငြိမ်အေးချမ်းမှုတို့အပေါ် များစွာမူတည်လျက်ရှိပါသည်။ ထိုင်းနိုင်ငံ၏ ခရီးသွားလုပ်ငန်း၊ ပို့ကုန်လုပ်ငန်းနှင့် ကုန်ထုတ်လုပ်ငန်းများ၏ စွမ်းဆောင်ရည်သည် SET ဈေးကွက်၏ လှုပ်ရှားမှုကို တိုက်ရိုက်သက်ရောက်မှုရှိပါသည်။",
@@ -581,9 +457,6 @@
                 liveBadge: "⚡ Live Predictions",
                 heroTitle: "แพลตฟอร์มวิเคราะห์ตลาดหุ้นเชิงลึกและการคาดการณ์ที่แม่นยำที่สุด",
                 heroDesc: "เว็บไซต์ Manjomjai ติดตามตลาดหุ้นชั้นนำระดับโลกแบบเรียลไทม์ พร้อมผสานข้อมูลสถิติย้อนหลังและแนวทางที่แม่นยำที่สุดเพื่อคุณ",
-                dailyNumbersTitle: "📅 ตัวเลขสำหรับเล่นตลาดวันนี้",
-                autoUpdateLabel: "🔄 Auto-Update",
-                lastUpdateLabel: "🕐 อัปเดตล่าสุด:",
                 insightsTitle: "คำแนะนำเกี่ยวกับตลาดหุ้นไทยและตลาดหุ้นโลก",
                 insight1Title: "🇹🇭 สถานะปัจจุบันของตลาดหุ้นไทย (SET)",
                 insight1Desc: "ตลาดหลักทรัพย์แห่งประเทศไทย (SET) เป็นหนึ่งในตลาดหุ้นที่ใหญ่ที่สุดและมีคุณภาพสูงสุดในภูมิภาคเอเชียตะวันออกเฉียงใต้ ในปัจจุบันตลาด SET ขึ้นอยู่กับสภาพเศรษฐกิจในภูมิภาค การเปลี่ยนแปลงของตลาดการเงินโลก และเสถียรภาพทางการเมืองเป็นอย่างมาก ประสิทธิภาพของภาคการท่องเที่ยว การส่งออก และการผลิตของไทยมีผลโดยตรงต่อการเคลื่อนไหวของตลาด SET",
@@ -614,9 +487,6 @@
                 liveBadge: "⚡ Live Predictions",
                 heroTitle: "Advanced Stock Market Analysis & Most Accurate Predictions",
                 heroDesc: "Manjomjai platform monitors global leading markets in real-time, combining historical statistics to deliver the most accurate predictions.",
-                dailyNumbersTitle: "📅 Today's Market Trading Numbers",
-                autoUpdateLabel: "🔄 Auto-Update",
-                lastUpdateLabel: "🕐 Last Update:",
                 insightsTitle: "Insights on Thai & Global Stock Markets",
                 insight1Title: "🇹🇭 Current Status of Thai Stock Market (SET)",
                 insight1Desc: "The Stock Exchange of Thailand (SET) is one of the largest and highest quality markets in Southeast Asia. Currently, the SET market depends heavily on regional economic conditions, global financial market changes, and political stability. The performance of Thailand's tourism, export, and manufacturing sectors directly affects the movement of the SET market.",
@@ -695,69 +565,6 @@
         });
 
         // ============================================================
-        // DAILY NUMBERS - Auto Update Daily
-        // ============================================================
-        function generateDailyNumbers() {
-            const now = new Date();
-            const dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
-            
-            // Display date
-            document.getElementById('dailyDateDisplay').textContent = `📅 ${dateStr}`;
-            document.querySelectorAll('.date-badge').forEach(el => {
-                el.textContent = dateStr;
-            });
-            
-            // Seed based on date
-            const seed = parseInt(`${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}`);
-            
-            function getNumber(seedVal, offset, multiplier) {
-                const x = Math.sin(seedVal + offset + multiplier) * 10000;
-                return Math.floor((x - Math.floor(x)) * 900) + 100;
-            }
-            
-            // Generate numbers for each market
-            const dowNum = `${getNumber(seed, 1, 1.7)} - ${getNumber(seed, 2, 1.7)} - ${getNumber(seed, 3, 1.7)}`;
-            const hanoiNum = `${getNumber(seed, 4, 2.3)} - ${getNumber(seed, 5, 2.3)} - ${getNumber(seed, 6, 2.3)}`;
-            const thaiNum = `${getNumber(seed, 7, 3.1)} - ${getNumber(seed, 8, 3.1)} - ${getNumber(seed, 9, 3.1)}`;
-            
-            // Update DOM with animation
-            const dowEl = document.getElementById('dowNumber');
-            const hanoiEl = document.getElementById('hanoiNumber');
-            const thaiEl = document.getElementById('thaiNumber');
-            
-            // Remove old animation class and re-add for pop effect
-            [dowEl, hanoiEl, thaiEl].forEach(el => {
-                el.classList.remove('number-pop');
-                // Force reflow
-                void el.offsetWidth;
-            });
-            
-            dowEl.textContent = dowNum;
-            hanoiEl.textContent = hanoiNum;
-            thaiEl.textContent = thaiNum;
-            
-            [dowEl, hanoiEl, thaiEl].forEach(el => {
-                el.classList.add('number-pop');
-            });
-            
-            // Update accuracies with slight variation
-            const accuracies = [
-                { id: 'dowAccuracy', base: 94, range: 3 },
-                { id: 'hanoiAccuracy', base: 91, range: 3 },
-                { id: 'thaiAccuracy', base: 96, range: 2 }
-            ];
-            accuracies.forEach(acc => {
-                const variation = Math.floor(Math.random() * acc.range * 2) - acc.range;
-                const val = Math.min(99, Math.max(85, acc.base + variation));
-                document.getElementById(acc.id).textContent = `${val}%`;
-            });
-            
-            // Update time
-            const timeStr = now.toLocaleTimeString('en-US', { hour12: false });
-            document.getElementById('dailyUpdateTime').textContent = timeStr;
-        }
-
-        // ============================================================
         // INIT
         // ============================================================
         function init() {
@@ -775,29 +582,10 @@
                 document.getElementById('themeIcon').classList.add('fa-moon');
             }
             
-            // Generate daily numbers
-            generateDailyNumbers();
-            
-            // Auto-update daily numbers every minute (but only changes once per day)
-            setInterval(() => {
-                const now = new Date();
-                // Check if date has changed (midnight)
-                const currentDate = now.toLocaleDateString('en-GB');
-                const storedDate = localStorage.getItem('manjomjai_last_date');
-                if (storedDate !== currentDate) {
-                    generateDailyNumbers();
-                    localStorage.setItem('manjomjai_last_date', currentDate);
-                } else {
-                    // Just update time
-                    document.getElementById('dailyUpdateTime').textContent = now.toLocaleTimeString('en-US', { hour12: false });
-                }
-            }, 60000);
-            
             console.log('✅ Manjomjai initialized successfully!');
             console.log('🌙 Night mode available');
             console.log('🌍 Languages: Myanmar, Thai, English');
             console.log('📱 Fully responsive for all devices');
-            console.log('📊 Daily numbers auto-update daily');
         }
 
         window.onload = init;
