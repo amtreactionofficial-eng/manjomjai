@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Man Jom Jai - Thai Stock Card</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -18,19 +19,26 @@
             }
         }
     </script>
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Pyidaungsu:wght@400;700&family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Sarabun', 'Inter', 'Pyidaungsu', sans-serif;
+        body { font-family: 'Sarabun', 'Inter', 'Pyidaungsu', sans-serif; }
+        /* Stock Card Ratio Container (e.g., 4:3 or 16:9 suitable for cards) */
+        .card-ratio {
+            aspect-ratio: 4 / 5;
+            object-fit: cover;
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col bg-lightBg dark:bg-darkBg text-slate-800 dark:text-slate-100 transition-colors duration-300">
 
+    <!-- Header Section -->
     <header class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-3">
-                <span class="text-2xl font-black bg-gradient-to-r from-emerald-500 to-cyan-500 bg-clip-text text-transparent">manjomjai.site</span>
+                <!-- Logo Image Support -->
+                <img src="logo.png" alt="Logo" class="w-10 h-10 rounded-full border border-emerald-500 object-cover" onerror="this.src='https://via.placeholder.com/40'">
+                <span class="text-xl font-black bg-gradient-to-r from-emerald-500 to-cyan-500 bg-clip-text text-transparent">manjomjai.site</span>
             </div>
             
             <div class="flex items-center space-x-4">
@@ -41,81 +49,112 @@
                 </select>
 
                 <button onclick="toggleDarkMode()" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:text-emerald-500 transition">
-                    <svg id="themeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        </svg>
+                    <svg id="themeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"></svg>
                 </button>
             </div>
         </div>
     </header>
 
-    <main class="flex-grow max-w-7xl mx-auto px-4 py-10 w-full">
-        <div class="text-center mb-12">
-            <h1 id="txtTitle" class="text-3xl md:text-5xl font-bold mb-4">ใบหุ้นไทยรายวัน (Thai Stock Cards)</h1>
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 py-8 w-full">
+        <!-- Hero Section -->
+        <div class="text-center mb-10">
+            <h1 id="txtTitle" class="text-3xl md:text-5xl font-bold mb-3">ใบหุ้นไทยรายวัน (Thai Stock Cards)</h1>
             <p id="txtSub" class="text-slate-600 dark:text-slate-400 text-sm md:text-base">รวมใบหุ้นไทยที่แม่นยำและวิเคราะห์ข้อมูลทุกวันอย่างมืออาชีพ</p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 shadow-xl hover:border-emerald-500 transition duration-300">
+        <!-- Today's Featured Stock Card Section -->
+        <section class="mb-12">
+            <div class="flex justify-between items-center mb-6">
+                <h2 id="txtTodayTitle" class="text-xl font-bold flex items-center gap-2">🔥 ယနေ့ခေတ်စားနေသော စတော့ခ်ကတ် (Today's Card)</h2>
+                <span id="currentDateDisplay" class="text-sm font-semibold text-emerald-500 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/25"></span>
+            </div>
+            
+            <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 md:p-6 shadow-xl max-w-2xl mx-auto">
                 <div class="flex justify-between items-center mb-4">
-                    <span class="bg-emerald-500/10 text-emerald-500 text-xs font-semibold px-3 py-1 rounded-full border border-emerald-500/20">LIVE</span>
-                    <span class="text-xs text-slate-500 dark:text-slate-400">Date: Sep 6, 2026</span>
+                    <span class="bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">LIVE</span>
+                    <span id="cardDate1" class="text-xs text-slate-500 dark:text-slate-400"></span>
                 </div>
-                <h3 class="text-xl font-bold mb-2">Stock Card #01</h3>
-                <p class="card-desc text-slate-600 dark:text-slate-400 text-sm mb-4">ข้อมูลและแนวทางใบหุ้นไทยประจำวันนี้ วิเคราะห์โดยผู้เชี่ยวชาญ。</p>
-                <div class="bg-slate-100 dark:bg-slate-900 rounded-xl p-4 border border-slate-200 dark:border-slate-800 text-center text-slate-400 text-sm py-8">
-                    [ Stock Card Image / Data Here ]
+                <!-- Card Image with Perfect Ratio -->
+                <div class="w-full bg-slate-100 dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 flex items-center justify-center">
+                    <!-- Change src to your actual image path when uploading -->
+                    <img src="stock-today.jpg" alt="Today Stock Card" class="card-ratio w-full object-cover" onerror="this.src='https://via.placeholder.com/600x750?text=Upload+Stock+Card+Image'">
                 </div>
             </div>
+        </section>
 
-            <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 shadow-xl hover:border-emerald-500 transition duration-300">
-                <div class="flex justify-between items-center mb-4">
-                    <span class="bg-emerald-500/10 text-emerald-500 text-xs font-semibold px-3 py-1 rounded-full border border-emerald-500/20">LIVE</span>
-                    <span class="text-xs text-slate-500 dark:text-slate-400">Date: Sep 5, 2026</span>
+        <!-- History Section -->
+        <section>
+            <h2 id="txtHistoryTitle" class="text-xl font-bold mb-6 border-b border-slate-200 dark:border-slate-800 pb-3">📅 ယခင်ရက်စွဲအလိုက် မှတ်တမ်းများ (History)</h2>
+            <div id="historyGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- History Item 1 -->
+                <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 shadow-lg">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-semibold text-slate-400 bg-slate-100 dark:bg-slate-700 px-2.5 py-1 rounded">History</span>
+                        <span class="history-date text-xs text-slate-500 dark:text-slate-400">Sep 5, 2026</span>
+                    </div>
+                    <div class="w-full bg-slate-100 dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800">
+                        <img src="history-1.jpg" alt="History Card" class="card-ratio w-full object-cover" onerror="this.src='https://via.placeholder.com/400x500?text=History+Card+02'">
+                    </div>
                 </div>
-                <h3 class="text-xl font-bold mb-2">Stock Card #02</h3>
-                <p class="card-desc text-slate-600 dark:text-slate-400 text-sm mb-4">ข้อมูลและแนวทางใบหุ้นไทยประจำวันนี้ วิเคราะห์โดยผู้เชี่ยวชาญ。</p>
-                <div class="bg-slate-100 dark:bg-slate-900 rounded-xl p-4 border border-slate-200 dark:border-slate-800 text-center text-slate-400 text-sm py-8">
-                    [ Stock Card Image / Data Here ]
+
+                <!-- History Item 2 -->
+                <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 shadow-lg">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-semibold text-slate-400 bg-slate-100 dark:bg-slate-700 px-2.5 py-1 rounded">History</span>
+                        <span class="history-date text-xs text-slate-500 dark:text-slate-400">Sep 4, 2026</span>
+                    </div>
+                    <div class="w-full bg-slate-100 dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800">
+                        <img src="history-2.jpg" alt="History Card" class="card-ratio w-full object-cover" onerror="this.src='https://via.placeholder.com/400x500?text=History+Card+03'">
+                    </div>
                 </div>
             </div>
-        </div>
+        </section>
     </main>
 
+    <!-- Footer -->
     <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-6 text-center text-xs text-slate-500">
         <p>&copy; 2026 manjomjai.site. All rights reserved.</p>
     </footer>
 
+    <!-- JavaScript Support -->
     <script>
-        // Translations Data
+        // Automatic Dynamic Date Display
+        const options = { year: 'numeric', month: 'short', day: 'numeric' };
+        const todayStr = new Date().toLocaleDateString('en-US', options);
+        document.getElementById('currentDateDisplay').innerText = todayStr;
+        document.getElementById('cardDate1').innerText = todayStr;
+
+        // Translations
         const translations = {
             th: {
                 title: "ใบหุ้นไทยรายวัน (Thai Stock Cards)",
                 subtitle: "รวมใบหุ้นไทยที่แม่นยำและวิเคราะห์ข้อมูลทุกวันอย่างมืออาชีพ",
-                desc: "ข้อมูลและแนวทางใบหุ้นไทยประจำวันนี้ วิเคราะห์โดยผู้เชี่ยวชาญ。"
+                todayTitle: "🔥 หุ้นเด่นประจำวันนี้ (Today's Card)",
+                historyTitle: "📅 ประวัติย้อนหลัง (History)"
             },
             en: {
                 title: "Daily Thai Stock Cards",
                 subtitle: "Accurate Thai stock cards and professional daily analysis.",
-                desc: "Today's Thai stock card data and analysis, expert-backed."
+                todayTitle: "🔥 Today's Featured Card",
+                historyTitle: "📅 Stock Cards History"
             },
             my: {
                 title: "ထိုင်းစတော့ခ်ကတ် နေ့စဉ်အချက်အလက်များ",
                 subtitle: "တိကျမှန်ကန်သော ထိုင်းစတော့ခ်ကတ်များနှင့် ကျွမ်းကျင်သူများ၏ နေ့စဉ်သုံးသပ်ချက်များ",
-                desc: "ယနေ့အတွက် ထိုင်းစတော့ခ်ကတ် အချက်အလက်နှင့် ခွဲခြမ်းစိတ်ဖြာချက်များ။"
+                todayTitle: "🔥 ယနေ့ခေတ်စားနေသော စတော့ခ်ကတ်",
+                historyTitle: "📅 ယခင်ရက်စွဲအလိုက် မှတ်တမ်းများ (History)"
             }
         };
 
-        // Language Switcher Function
         function changeLanguage(lang) {
             document.getElementById('txtTitle').innerText = translations[lang].title;
             document.getElementById('txtSub').innerText = translations[lang].subtitle;
-            document.querySelectorAll('.card-desc').forEach(el => {
-                el.innerText = translations[lang].desc;
-            });
+            document.getElementById('txtTodayTitle').innerText = translations[lang].todayTitle;
+            document.getElementById('txtHistoryTitle').innerText = translations[lang].historyTitle;
             localStorage.setItem('selectedLang', lang);
         }
 
-        // Dark/Light Mode Function
         const themeIcon = document.getElementById('themeIcon');
         function updateThemeIcon() {
             if (document.documentElement.classList.contains('dark')) {
@@ -126,7 +165,7 @@
         }
 
         function toggleDarkMode() {
-            if (document.documentElement.classList.contains('dark')) {
+            if (document.documentElement.classList.500classnames || document.documentElement.classList.contains('dark')) {
                 document.documentElement.classList.remove('dark');
                 localStorage.setItem('theme', 'light');
             } else {
@@ -136,7 +175,6 @@
             updateThemeIcon();
         }
 
-        // Load saved preferences on startup
         window.onload = () => {
             const savedLang = localStorage.getItem('selectedLang') || 'th';
             document.getElementById('langSwitch').value = savedLang;
