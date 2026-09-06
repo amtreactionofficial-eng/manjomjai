@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="my" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Manjomjai - Admin Panel</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', 'Padauk', sans-serif; }
+        
+        @keyframes shimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #f59e0b, #ef4444, #8b5cf6, #3b82f6);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmer 4s ease-in-out infinite;
+        }
+        
+        .card-gradient {
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.92));
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        
+        .glow-border {
+            position: relative;
+        }
+        .glow-border::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: 20px;
+            padding: 1.5px;
+            background: linear-gradient(135deg, #f59e0b, #ef4444, #8b5cf6, #3b82f6);
+            background-size: 300% 300%;
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0.25;
+            transition: opacity 0.5s;
+            animation: shimmer 4s ease-in-out infinite;
+        }
+        .glow-border:hover::before { opacity: 0.7; }
+        
+        .nav-blur {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        
+        .vip-btn {
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            box-shadow: 0 4px 25px rgba(239, 68, 68, 0.3);
+            transition: all 0.4s;
+        }
+        .vip-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 40px rgba(239, 68, 68, 0.45);
+        }
+        
+        .admin-btn {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            box-shadow: 0 4px 25px rgba(59, 130, 246, 0.3);
+            transition: all 0.4s;
+        }
+        .admin-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 40px rgba(59, 130, 246, 0.45);
+        }
+        
+        .insight-card {
+            transition: all 0.4s;
+            border-left: 3px solid transparent;
+        }
+        .insight-card:hover {
+            transform: translateX(6px);
+            border-left-color: #f59e0b;
+        }
+        .insight-card .icon-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 1.1rem;
+        }
+        
+        .login-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 999;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(16px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        .login-overlay .login-box {
+            max-width: 400px;
+            width: 100%;
+        }
+        
+        .admin-badge {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 50;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            background: rgba(59, 130, 246, 0.15);
+            color: #3b82f6;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(8px);
+        }
+        .admin-badge:hover {
+            background: rgba(59, 130, 246, 0.25);
+            transform: scale(1.05);
+        }
+        
+        .hidden { display: none !important; }
+        
+        /* Light theme */
+        body.light {
+            background: #f0f4f8;
+            color: #0f172a;
+        }
+        body.light .card-gradient {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(241, 245, 249, 0.96));
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        body.light .nav-blur { background: rgba(255, 255, 255, 0.88) !important; border-bottom: 1px solid rgba(0,0,0,0.06) !important; }
+        body.light .login-overlay { background: rgba(255, 255, 255, 0.95); }
+        body.light .admin-badge { background: rgba(59, 130, 246, 0.1); color: #2563eb; border-color: rgba(59, 130, 246, 0.2); }
+        body.light .admin-badge:hover { background: rgba(59, 130, 246, 0.2); }
+        
+        @media (max-width: 640px) {
+            .vip-btn { padding: 0.4rem 0.8rem !important; font-size: 0.65rem !important; }
+            .admin-badge { padding: 4px 12px; font-size: 0.5rem; bottom: 12px; right: 12px; }
+        }
+    </style>
+</head>
+<body class="dark bg-slate-950 text-slate-100 min-h-screen transition-colors duration-300" id="bodyTheme">
+
+    <!-- ============================================================ -->
+    <!-- ADMIN LOGIN OVERLAY -->
+    <!-- ============================================================ -->
+    <div id="loginOverlay" class="login-overlay">
+        <div class="login-box card-gradient rounded-3xl p-8 shadow-2xl glow-border">
+            <div class="text-center space-y-4">
+                <div class="w-20 h-20 mx-auto rounded-full bg-gradient-to-r from-amber-500 to-rose-500 flex items-center justify-center text-3xl shadow-lg shadow-amber-500/20">
+                    <i class="fa-solid fa-lock text-white"></i>
+                </div>
+                <h2 class="text-2xl font-bold gradient-text">Admin Panel</h2>
+                <p class="text-xs text-slate-400">အက်ဒမင်အကောင့်ဖြင့် ဝင်ရောက်ပါ</p>
+                
+                <div class="space-y-3 text-left mt-4">
+                    <div>
+                        <label class="text-xs text-slate-400 block mb-1">Username</label>
+                        <input type="text" id="adminUsername" placeholder="Enter username" 
+                               class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-amber-500 transition">
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400 block mb-1">Password</label>
+                        <input type="password" id="adminPassword" placeholder="Enter password" 
+                               class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-amber-500 transition">
+                    </div>
+                </div>
+                
+                <button onclick="adminLogin()" class="w-full admin-btn text-white font-bold py-3 rounded-xl text-sm transition-all">
+                    <i class="fa-solid fa-arrow-right-to-bracket mr-2"></i> ဝင်ရောက်မည်
+                </button>
+                
+                <div id="loginError" class="text-xs text-rose-400 hidden">❌ Username သို့မဟုတ် Password မှားနေပါသည်။</div>
+                
+                <div class="text-[10px] text-slate-500 pt-2 border-t border-slate-700/50">
+                    <span class="text-amber-400">Demo:</span> admin / admin123
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- TOP NAVIGATION BAR -->
+    <!-- ============================================================ -->
+    <header class="sticky top-0 z-40 nav-blur bg-slate-900/80 border-b border-slate-800/50 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <div class="bg-gradient-to-r from-amber-500 to-rose-500 p-2 sm:p-2.5 rounded-xl shadow-lg shadow-amber-500/20">
+                    <i class="fa-solid fa-chart-line text-white text-sm sm:text-xl"></i>
+                </div>
+                <div>
+                    <span class="text-lg sm:text-2xl font-black tracking-wider gradient-text">MANJOMJAI</span>
+                    <span class="block text-[8px] sm:text-[10px] text-slate-400 tracking-widest uppercase" id="headerSub">Admin Panel</span>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <span class="text-[10px] text-emerald-400 hidden sm:inline-block" id="adminStatusBadge">
+                    <i class="fa-solid fa-circle text-[6px] mr-1"></i> Admin
+                </span>
+                <button onclick="adminLogout()" class="text-xs text-slate-400 hover:text-rose-400 transition px-2 py-1 rounded-lg border border-slate-700/50 hover:border-rose-500/30" id="logoutBtn">
+                    <i class="fa-solid fa-right-from-bracket mr-1"></i> <span class="hidden sm:inline">ထွက်မည်</span>
+                </button>
+                <button onclick="toggleTheme()" class="theme-toggle bg-slate-800 hover:bg-slate-700 text-amber-400 p-2 sm:p-2.5 rounded-xl border border-slate-700 transition-all duration-300 text-xs sm:text-sm">
+                    <i id="themeIcon" class="fa-solid fa-sun"></i>
+                </button>
+                <button onclick="openVipModal()" class="vip-btn text-white font-bold px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-[10px] sm:text-xs transition-all duration-300">
+                    <i class="fa-solid fa-crown mr-1"></i> VIP
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ============================================================ -->
+    <!-- MAIN CONTENT -->
+    <!-- ============================================================ -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-8 sm:space-y-12" id="mainContent">
+
+        <!-- ========================================================== -->
+        <!-- ADMIN DASHBOARD -->
+        <!-- ========================================================== -->
+        <section class="space-y-6">
+            <!-- Stats -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="card-gradient rounded-2xl p-5 text-center glow-border">
+                    <div class="text-3xl font-bold text-amber-400" id="insightCount">0</div>
+                    <div class="text-xs text-slate-400 mt-1">📝 အကြံပြုချက်များ</div>
+                </div>
+                <div class="card-gradient rounded-2xl p-5 text-center glow-border">
+                    <div class="text-3xl font-bold text-blue-400" id="numberCount">0</div>
+                    <div class="text-xs text-slate-400 mt-1">🔢 နံပါတ်များ</div>
+                </div>
+                <div class="card-gradient rounded-2xl p-5 text-center glow-border">
+                    <div class="text-3xl font-bold text-emerald-400" id="lastUpdateDisplay">--:--</div>
+                    <div class="text-xs text-slate-400 mt-1">🕐 နောက်ဆုံးအပ်ဒိတ်</div>
+                </div>
+            </div>
+
+            <!-- Admin Actions -->
+            <div class="flex flex-wrap gap-3">
+                <button onclick="openAddInsightModal()" class="admin-btn text-white font-bold px-5 py-2.5 rounded-xl text-sm transition-all">
+                    <i class="fa-solid fa-plus mr-2"></i> အကြံပြုချက်အသစ်ထည့်
+                </button>
+                <button onclick="openAddNumberModal()" class="vip-btn text-white font-bold px-5 py-2.5 rounded-xl text-sm transition-all">
+                    <i class="fa-solid fa-plus mr-2"></i> နံပါတ်အသစ်ထည့်
+                </button>
+                <button onclick="refreshData()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-5 py-2.5 rounded-xl text-sm transition-all border border-slate-700">
+                    <i class="fa-solid fa-refresh mr-2"></i> Refresh
+                </button>
+            </div>
+
+            <!-- Insights List -->
+            <div class="space-y-3">
+                <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-list text-amber-400"></i> အကြံပြုချက်များစာရင်း
+                </h3>
+                <div id="insightsList" class="space-y-3">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Numbers List -->
+            <div class="space-y-3 mt-6">
+                <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-list text-blue-400"></i> နံပါတ်များစာရင်း
+                </h3>
+                <div id="numbersList" class="space-y-3">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================== -->
+        <!-- USER VIEW (Preview) -->
+        <!-- ========================================================== -->
+        <section class="space-y-6 border-t border-slate-800/50 pt-8">
+            <div class="flex items-center gap-3">
+                <div class="w-1 h-8 bg-gradient-to-b from-amber-500 to-rose-500 rounded-full"></div>
+                <h2 class="text-xl sm:text-2xl font-bold">👁️ User View (ပရိသတ်မြင်ရမည့်ပုံ)</h2>
+                <span class="text-[10px] text-slate-500 bg-slate-800/50 px-3 py-1 rounded-full border border-slate-700/50">Preview</span>
+            </div>
+            
+            <div class="card-gradient rounded-2xl p-5 sm:p-8 glow-border">
+                <div id="userViewContent" class="space-y-6">
+                    <!-- Insights from admin will appear here -->
+                    <div id="userInsights" class="space-y-4">
+                        <p class="text-xs text-slate-500 text-center">အကြံပြုချက်မရှိသေးပါ။</p>
+                    </div>
+                    <!-- Numbers from admin will appear here -->
+                    <div id="userNumbers" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <p class="text-xs text-slate-500 text-center col-span-3">နံပါတ်မရှိသေးပါ။</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ============================================================ -->
+    <!-- ADD INSIGHT MODAL -->
+    <!-- ============================================================ -->
+    <div id="addInsightModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm hidden p-4">
+        <div class="card-gradient w-full max-w-2xl rounded-3xl p-6 sm:p-8 shadow-2xl relative space-y-6 glow-border max-h-[90vh] overflow-y-auto">
+            <button onclick="closeAddInsightModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl transition-colors">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h3 class="text-xl font-bold gradient-text">📝 အကြံပြုချက်အသစ်ထည့်ရန်</h3>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="text-xs text-slate-400 block mb-1">ခေါင်းစဉ် (Title) *</label>
+                    <input type="text" id="insightTitle" placeholder="ခေါင်းစဉ်ထည့်ပါ" 
+                           class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-amber-500 transition">
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 block mb-1">အကြောင်းအရာ (Content) *</label>
+                    <textarea id="insightContent" rows="6" placeholder="အကြောင်းအရာရေးပါ..." 
+                              class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-amber-500 transition resize-none"></textarea>
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 block mb-1">အိုင်ကွန် (Icon)</label>
+                    <select id="insightIcon" class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-amber-500 transition">
+                        <option value="fa-landmark">🏛️ fa-landmark</option>
+                        <option value="fa-globe-asia">🌏 fa-globe-asia</option>
+                        <option value="fa-oil-can">🛢️ fa-oil-can</option>
+                        <option value="fa-chart-line">📊 fa-chart-line</option>
+                        <option value="fa-robot">🤖 fa-robot</option>
+                        <option value="fa-hand-holding-usd">💰 fa-hand-holding-usd</option>
+                        <option value="fa-building">🏢 fa-building</option>
+                        <option value="fa-money-bill-trend-up">📈 fa-money-bill-trend-up</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 block mb-1">အရောင် (Color)</label>
+                    <select id="insightColor" class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-amber-500 transition">
+                        <option value="amber">🟡 Amber</option>
+                        <option value="blue">🔵 Blue</option>
+                        <option value="emerald">🟢 Emerald</option>
+                        <option value="rose">🔴 Rose</option>
+                        <option value="purple">🟣 Purple</option>
+                        <option value="indigo">🔷 Indigo</option>
+                    </select>
+                </div>
+            </div>
+            
+            <button onclick="saveInsight()" class="w-full admin-btn text-white font-bold py-3 rounded-xl text-sm transition-all">
+                <i class="fa-solid fa-save mr-2"></i> သိမ်းမည်
+            </button>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- ADD NUMBER MODAL -->
+    <!-- ============================================================ -->
+    <div id="addNumberModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm hidden p-4">
+        <div class="card-gradient w-full max-w-md rounded-3xl p-6 sm:p-8 shadow-2xl relative space-y-6 glow-border">
+            <button onclick="closeAddNumberModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl transition-colors">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h3 class="text-xl font-bold gradient-text">🔢 နံပါတ်အသစ်ထည့်ရန်</h3>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="text-xs text-slate-400 block mb-1">ဈေးကွက်အမည် *</label>
+                    <input type="text" id="numberMarket" placeholder="ဥပမာ - Dow Jones" 
+                           class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-amber-500 transition">
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 block mb-1">နံပါတ် ၃ လုံး *</label>
+                    <input type="text" id="numberValue" placeholder="ဥပမာ - 123 - 456 - 789" 
+                           class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-amber-500 transition">
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 block mb-1">သေချာမှုနှုန်း (Accuracy %)</label>
+                    <input type="number" id="numberAccuracy" placeholder="ဥပမာ - 94" value="94"
+                           class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-amber-500 transition">
+                </div>
+            </div>
+            
+            <button onclick="saveNumber()" class="w-full vip-btn text-white font-bold py-3 rounded-xl text-sm transition-all">
+                <i class="fa-solid fa-save mr-2"></i> သိမ်းမည်
+            </button>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- EDIT INSIGHT MODAL -->
+    <!-- ============================================================ -->
+    <div id="editInsightModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm hidden p-4">
+        <div class="card-gradient w-full max-w-2xl rounded-3xl p-6 sm:p-8 shadow-2xl relative space-y-6 glow-border max-h-[90vh] overflow-y-auto">
+            <button onclick="closeEditInsightModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl transition-colors">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h3 class="text-xl font-bold gradient-text">✏️ အကြံပြုချက်တည်းဖြတ်ရန်</h3>
+            <input type="hidden" id="editInsightId">
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="text-xs text-slate-400 block mb-1">ခေါင်းစဉ် (Title) *</label>
+                    <input type="text" id="editInsightTitle" placeholder="ခေါင်းစဉ်ထည့်ပါ" 
+                           class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-amber-500 transition">
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 block mb-1">အကြောင်းအရာ (Content) *</label>
+                    <textarea id="editInsightContent" rows="6" placeholder="အကြောင်းအရာရေးပါ..." 
+                              class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-amber-500 transition resize-none"></textarea>
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 block mb-1">အိုင်ကွန် (Icon)</label>
+                    <select id="editInsightIcon" class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-amber-500 transition">
+                        <option value="fa-landmark">🏛️ fa-landmark</option>
+                        <option value="fa-globe-asia">🌏 fa-globe-asia</option>
+                        <option value="fa-oil-can">🛢️ fa-oil-can</option>
+                        <option value="fa-chart-line">📊 fa-chart-line</option>
+                        <option value="fa-robot">🤖 fa-robot</option>
+                        <option value="fa-hand-holding-usd">💰 fa-hand-holding-usd</option>
+                        <option value="fa-building">🏢 fa-building</option>
+                        <option value="fa-money-bill-trend-up">📈 fa-money-bill-trend-up</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 block mb-1">အရောင် (Color)</label>
+                    <select id="editInsightColor" class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-amber-500 transition">
+                        <option value="amber">🟡 Amber</option>
+                        <option value="blue">🔵 Blue</option>
+                        <option value="emerald">🟢 Emerald</option>
+                        <option value="rose">🔴 Rose</option>
+                        <option value="purple">🟣 Purple</option>
+                        <option value="indigo">🔷 Indigo</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="flex gap-3">
+                <button onclick="updateInsight()" class="flex-1 admin-btn text-white font-bold py-3 rounded-xl text-sm transition-all">
+                    <i class="fa-solid fa-save mr-2"></i> သိမ်းမည်
+                </button>
+                <button onclick="deleteInsightFromEdit()" class="flex-1 bg-rose-500/20 hover:bg-rose-500/30 text-rose-400 font-bold py-3 rounded-xl text-sm transition-all border border-rose-500/20">
+                    <i class="fa-solid fa-trash mr-2"></i> ဖျက်မည်
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- FOOTER -->
+    <!-- ============================================================ -->
+    <footer class="border-t border-slate-800/50 mt-12 sm:mt-20 py-6 sm:py-8 text-center transition-colors duration-300">
+        <p class="text-xs footer-text">&copy; 2026 Manjomjai.site — All Rights Reserved.</p>
+        <p class="text-[10px] text-slate-600 mt-1">* Admin Panel v1.0</p>
+    </footer>
+
+    <!-- ============================================================ -->
+    <!-- ADMIN BADGE (Open Login) -->
+    <!-- ============================================================ -->
+    <div class="admin-badge" onclick="openLogin()">
+        <i class="fa-solid fa-user-shield mr-1"></i> Admin
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- VIP MODAL -->
+    <!-- ============================================================ -->
+    <div id="vipModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm hidden p-4">
+        <div class="card-gradient w-full max-w-md rounded-3xl p-6 sm:p-8 shadow-2xl relative space-y-6 glow-border">
+            <button onclick="closeVipModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl transition-colors">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="text-center space-y-3">
+                <div class="inline-block bg-amber-500/10 p-3 rounded-2xl text-amber-400 border border-amber-500/20">
+                    <i class="fa-solid fa-crown text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold">VIP မန်ဘာဝင်ရောက်ရန်</h3>
+                <p class="text-xs text-slate-400 leading-relaxed">
+                    KBZPay၊ Wave Money သို့မဟုတ် MMQR ဖြင့် ငွေလွှဲ၍ မန်ဘာဝင်နိုင်ပါသည်။
+                </p>
+            </div>
+            <button onclick="closeVipModal()" class="w-full vip-btn text-white font-bold py-3 rounded-xl text-sm transition-all">
+                အတည်ပြုရန် ပို့မည်
+            </button>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- JAVASCRIPT -->
+    <!-- ============================================================ -->
+    <script>
+        // ============================================================
+        // ADMIN CREDENTIALS
+        // ============================================================
+        const ADMIN_USERNAME = 'admin';
+        const ADMIN_PASSWORD = 'admin123';
+
+        // ============================================================
+        // STATE
+        // ============================================================
+        let isAdminLoggedIn = false;
+        let insights = [];
+        let numbers = [];
+        let editInsightId = null;
+
+        // ============================================================
+        // INIT - Load from localStorage
+       
