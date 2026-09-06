@@ -78,36 +78,116 @@
             </div>
         </section>
 
-        <!-- Global Markets Live Bar (TradingView Market Overview Widget) -->
+        <!-- Global Markets Live Bar (6 Individual TradingView Single Quotes for exact Layout) -->
         <section class="space-y-4">
             <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-2">
                 <i class="fa-solid fa-chart-pie text-cyan-400"></i> <span data-i18n="marketStatusBar">ကမ္ဘာ့စတော့နှင့် ကုန်စည်ဈေးနှုန်းများ (Live Status)</span>
             </h2>
             
-            <div class="tradingview-widget-container rounded-2xl overflow-hidden border border-slate-800 shadow-xl bg-slate-900/40 p-2">
-                <div class="tradingview-widget-container__widget"></div>
-                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
-                {
-                    "width": "100%",
-                    "height": "175",
-                    "symbolsGroups": [
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
+                
+                <!-- 1. Nikkei 225 -->
+                <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-xl flex flex-col justify-between">
+                    <span class="text-xs text-slate-400 font-semibold mb-2 block">Nikkei 225</span>
+                    <div class="tradingview-widget-container">
+                        <div class="tradingview-widget-container__widget"></div>
+                        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>
                         {
-                            "name": "Global Markets",
-                            "symbols": [
-                                { "name": "NIKKEI:225", "displayName": "Nikkei 225" },
-                                { "name": "DJ:DJI", "displayName": "Dow Jones" },
-                                { "name": "SET:SET", "displayName": "Thailand SET" },
-                                { "name": "TVC:USOIL", "displayName": "Crude Oil" },
-                                { "name": "OANDA:XAUUSD", "displayName": "Gold" }
-                            ]
+                            "symbol": "NIKKEI:225",
+                            "width": "100%",
+                            "colorTheme": "dark",
+                            "isTransparent": true,
+                            "locale": "en"
                         }
-                    ],
-                    "showSymbolLogo": true,
-                    "isTransparent": true,
-                    "colorTheme": "dark",
-                    "locale": "en"
-                }
-                </script>
+                        </script>
+                    </div>
+                </div>
+
+                <!-- 2. Dow Jones -->
+                <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-xl flex flex-col justify-between">
+                    <span class="text-xs text-slate-400 font-semibold mb-2 block">Dow Jones</span>
+                    <div class="tradingview-widget-container">
+                        <div class="tradingview-widget-container__widget"></div>
+                        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>
+                        {
+                            "symbol": "DJ:DJI",
+                            "width": "100%",
+                            "colorTheme": "dark",
+                            "isTransparent": true,
+                            "locale": "en"
+                        }
+                        </script>
+                    </div>
+                </div>
+
+                <!-- 3. Hanoi Stock (VN30) -->
+                <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-xl flex flex-col justify-between">
+                    <span class="text-xs text-slate-400 font-semibold mb-2 block">Hanoi Stock</span>
+                    <div class="tradingview-widget-container">
+                        <div class="tradingview-widget-container__widget"></div>
+                        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>
+                        {
+                            "symbol": "VNM:VN30",
+                            "width": "100%",
+                            "colorTheme": "dark",
+                            "isTransparent": true,
+                            "locale": "en"
+                        }
+                        </script>
+                    </div>
+                </div>
+
+                <!-- 4. Thailand SET -->
+                <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-xl flex flex-col justify-between">
+                    <span class="text-xs text-slate-400 font-semibold mb-2 block">Thailand SET</span>
+                    <div class="tradingview-widget-container">
+                        <div class="tradingview-widget-container__widget"></div>
+                        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>
+                        {
+                            "symbol": "SET:SET",
+                            "width": "100%",
+                            "colorTheme": "dark",
+                            "isTransparent": true,
+                            "locale": "en"
+                        }
+                        </script>
+                    </div>
+                </div>
+
+                <!-- 5. Crude Oil -->
+                <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-xl flex flex-col justify-between">
+                    <span class="text-xs text-slate-400 font-semibold mb-2 block">Crude Oil (ရေနံ)</span>
+                    <div class="tradingview-widget-container">
+                        <div class="tradingview-widget-container__widget"></div>
+                        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>
+                        {
+                            "symbol": "TVC:USOIL",
+                            "width": "100%",
+                            "colorTheme": "dark",
+                            "isTransparent": true,
+                            "locale": "en"
+                        }
+                        </script>
+                    </div>
+                </div>
+
+                <!-- 6. Gold -->
+                <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-xl flex flex-col justify-between">
+                    <span class="text-xs text-slate-400 font-semibold mb-2 block">Gold (ရွှေဈေး)</span>
+                    <div class="tradingview-widget-container">
+                        <div class="tradingview-widget-container__widget"></div>
+                        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>
+                        {
+                            "symbol": "OANDA:XAUUSD",
+                            "width": "100%",
+                            "colorTheme": "dark",
+                            "isTransparent": true,
+                            "locale": "en"
+                        }
+                        </script>
+                    </div>
+                </div>
+
             </div>
         </section>
 
