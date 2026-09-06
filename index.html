@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>Manjomjai - Stock Predictions</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
@@ -134,7 +134,6 @@
             font-size: 1.1rem;
         }
 
-        /* Horizontal Scroll */
         #cardContainer {
             scrollbar-width: thin;
             scrollbar-color: rgba(245, 158, 11, 0.3) transparent;
@@ -157,22 +156,14 @@
             width: 280px;
             scroll-snap-align: start;
         }
-        @media (min-width: 640px) {
-            .card-item { width: 320px; }
-        }
-        @media (min-width: 768px) {
-            .card-item { width: 360px; }
-        }
-        @media (min-width: 1024px) {
-            .card-item { width: 400px; }
-        }
+        @media (min-width: 640px) { .card-item { width: 320px; } }
+        @media (min-width: 768px) { .card-item { width: 360px; } }
+        @media (min-width: 1024px) { .card-item { width: 400px; } }
 
-        /* Scrollbar styling */
         ::-webkit-scrollbar { width: 4px; height: 4px; }
         ::-webkit-scrollbar-track { background: rgba(30, 41, 59, 0.3); border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #f59e0b, #ef4444); border-radius: 10px; }
 
-        /* Light theme */
         body.light {
             background: #f0f4f8;
             color: #0f172a;
@@ -200,7 +191,17 @@
         body.light #cardContainer::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); }
         body.light .card-item .bg-slate-800\/40 { background: rgba(241, 245, 249, 0.8); border-color: rgba(0,0,0,0.06); }
 
-        /* Mobile optimizations */
+        .loading-spinner-sm {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 50%;
+            border-top-color: #f59e0b;
+            animation: spin 0.8s ease-in-out infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
         @media (max-width: 640px) {
             .hero-gradient { padding: 1.5rem !important; }
             .gradient-text { font-size: 1.8rem !important; }
@@ -220,9 +221,7 @@
 </head>
 <body class="dark bg-slate-950 text-slate-100 min-h-screen transition-colors duration-300" id="bodyTheme">
 
-    <!-- ============================================================ -->
     <!-- TOP NAVIGATION BAR -->
-    <!-- ============================================================ -->
     <header class="sticky top-0 z-50 nav-blur bg-slate-900/80 border-b border-slate-800/50 transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
             <div class="flex items-center space-x-2 sm:space-x-3">
@@ -253,43 +252,30 @@
         </div>
     </header>
 
-    <!-- ============================================================ -->
     <!-- MAIN CONTENT -->
-    <!-- ============================================================ -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-8 sm:space-y-12">
 
-        <!-- ========================================================== -->
         <!-- HERO SECTION -->
-        <!-- ========================================================== -->
         <section class="relative rounded-2xl sm:rounded-3xl overflow-hidden hero-gradient border border-slate-800/50 p-5 sm:p-10 shadow-2xl transition-colors duration-300">
             <div class="relative z-10">
                 <div class="space-y-4 max-w-4xl mx-auto text-center">
-                    <!-- Badge -->
                     <div class="inline-flex items-center px-3 py-1 rounded-full text-[10px] sm:text-xs font-medium bg-rose-500/10 text-rose-400 border border-rose-500/20 live-glow">
                         <span class="w-1.5 h-1.5 rounded-full bg-rose-500 mr-1.5 animate-ping"></span>
                         <span data-i18n="liveBadge">⚡ Live Predictions</span>
                     </div>
-
-                    <!-- Title -->
                     <h1 class="text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-snug gradient-text">
                         <span data-i18n="heroTitle">စတော့ဈေးကွက်များကို နက်နက်နဲနဲ ခွဲခြမ်းစိတ်ဖြာပြီး အတိကျဆုံး ခန့်မှန်းချက်များကို ဖော်ပြပေးနေသော ပလပ်ဖောင်း</span>
                     </h1>
-
-                    <!-- Description -->
                     <p class="text-slate-400 text-xs sm:text-sm leading-relaxed max-w-2xl mx-auto" data-i18n="heroDesc">
                         Manjomjai ဝဘ်ဆိုဒ်သည် ကမ္ဘာ့ထိပ်တန်း စတော့ဈေးကွက်များကို အချိန်နှင့်တပြေးညီ စောင့်ကြည့်စစ်ဆေးကာ ကိန်းဂဏန်းဆိုင်ရာ သမိုင်းကြောင်းအချက်အလက်များနှင့် တွက်ချက်မှုပုံစံများကို ပေါင်းစပ်၍ အသေချာဆုံး ကံစမ်းခန့်မှန်းကွက်များကို တိကျမှန်ကန်စွာ ထုတ်ပြန်ပေးနေပါသည်။
                     </p>
                 </div>
             </div>
-
-            <!-- Decorative floating elements -->
             <div class="absolute top-10 left-10 w-16 h-16 sm:w-24 sm:h-24 rounded-full bg-purple-500/5 blur-2xl"></div>
             <div class="absolute bottom-10 right-10 w-20 h-20 sm:w-32 sm:h-32 rounded-full bg-rose-500/5 blur-2xl"></div>
         </section>
 
-        <!-- ========================================================== -->
-        <!-- CARDS SECTION - Admin ကတင်တဲ့ကဒ်တွေ -->
-        <!-- ========================================================== -->
+        <!-- CARDS SECTION -->
         <section class="space-y-4">
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
@@ -301,13 +287,14 @@
                 </span>
             </div>
 
-            <!-- Horizontal Scroll Container -->
             <div class="relative">
                 <div id="cardContainer" class="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scroll-smooth">
-                    <!-- Cards will be rendered here -->
+                    <div id="loadingCards" class="flex items-center justify-center w-full py-8">
+                        <span class="loading-spinner-sm mr-2"></span>
+                        <span class="text-slate-400 text-sm">ကဒ်များကို ယူနေပါသည်...</span>
+                    </div>
                 </div>
 
-                <!-- Scroll Buttons -->
                 <button onclick="scrollCards('left')" class="absolute left-0 top-1/2 -translate-y-1/2 bg-slate-800/80 backdrop-blur-sm text-white p-2 rounded-full border border-slate-700/50 hover:bg-slate-700 transition-all hidden md:flex items-center justify-center w-8 h-8 z-10">
                     <i class="fa-solid fa-chevron-left text-xs"></i>
                 </button>
@@ -316,16 +303,13 @@
                 </button>
             </div>
 
-            <!-- Empty State -->
-            <div id="emptyCards" class="text-center py-8 text-slate-500 card-gradient rounded-2xl p-8">
+            <div id="emptyCards" class="text-center py-8 text-slate-500 card-gradient rounded-2xl p-8 hidden">
                 <i class="fa-solid fa-images text-3xl mb-3 block opacity-30"></i>
                 <p>ကဒ်မရှိသေးပါ။ မကြာခင်လာပါမည်။</p>
             </div>
         </section>
 
-        <!-- ========================================================== -->
         <!-- MARKET INSIGHTS SECTION -->
-        <!-- ========================================================== -->
         <section class="space-y-6">
             <div class="flex items-center gap-3">
                 <div class="w-1 h-8 bg-gradient-to-b from-amber-500 to-rose-500 rounded-full"></div>
@@ -334,10 +318,8 @@
 
             <div class="card-gradient rounded-2xl p-5 sm:p-8 glow-border transition-colors duration-300">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
                     <!-- Left Column -->
                     <div class="space-y-4">
-                        <!-- Insight 1 -->
                         <div class="insight-card bg-slate-800/30 dark:bg-slate-800/20 rounded-xl p-4 sm:p-5 transition-all duration-300">
                             <div class="flex items-start gap-3">
                                 <div class="icon-circle bg-amber-500/10 text-amber-400">
@@ -355,7 +337,6 @@
                             </div>
                         </div>
 
-                        <!-- Insight 2 -->
                         <div class="insight-card bg-slate-800/30 dark:bg-slate-800/20 rounded-xl p-4 sm:p-5 transition-all duration-300">
                             <div class="flex items-start gap-3">
                                 <div class="icon-circle bg-blue-500/10 text-blue-400">
@@ -373,7 +354,6 @@
                             </div>
                         </div>
 
-                        <!-- Insight 3 -->
                         <div class="insight-card bg-slate-800/30 dark:bg-slate-800/20 rounded-xl p-4 sm:p-5 transition-all duration-300">
                             <div class="flex items-start gap-3">
                                 <div class="icon-circle bg-emerald-500/10 text-emerald-400">
@@ -394,7 +374,6 @@
 
                     <!-- Right Column -->
                     <div class="space-y-4">
-                        <!-- Insight 4 -->
                         <div class="insight-card bg-slate-800/30 dark:bg-slate-800/20 rounded-xl p-4 sm:p-5 transition-all duration-300">
                             <div class="flex items-start gap-3">
                                 <div class="icon-circle bg-rose-500/10 text-rose-400">
@@ -412,7 +391,6 @@
                             </div>
                         </div>
 
-                        <!-- Insight 5 -->
                         <div class="insight-card bg-slate-800/30 dark:bg-slate-800/20 rounded-xl p-4 sm:p-5 transition-all duration-300">
                             <div class="flex items-start gap-3">
                                 <div class="icon-circle bg-purple-500/10 text-purple-400">
@@ -430,7 +408,6 @@
                             </div>
                         </div>
 
-                        <!-- Insight 6 -->
                         <div class="insight-card bg-slate-800/30 dark:bg-slate-800/20 rounded-xl p-4 sm:p-5 transition-all duration-300">
                             <div class="flex items-start gap-3">
                                 <div class="icon-circle bg-indigo-500/10 text-indigo-400">
@@ -454,17 +431,13 @@
 
     </main>
 
-    <!-- ============================================================ -->
     <!-- FOOTER -->
-    <!-- ============================================================ -->
     <footer class="border-t border-slate-800/50 mt-12 sm:mt-20 py-6 sm:py-8 text-center transition-colors duration-300">
         <p class="text-xs footer-text">&copy; 2026 Manjomjai.site — All Rights Reserved.</p>
         <p class="text-[10px] text-slate-600 mt-1" data-i18n="footerNote">* ခန့်မှန်းချက်များသည် ဖျော်ဖြေရေးအတွက်သာ ရည်ရွယ်ပါသည်။</p>
     </footer>
 
-    <!-- ============================================================ -->
     <!-- VIP MODAL -->
-    <!-- ============================================================ -->
     <div id="vipModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm hidden p-4 transition-opacity duration-300">
         <div class="card-gradient w-full max-w-md rounded-3xl p-6 sm:p-8 shadow-2xl relative space-y-6 glow-border transition-colors duration-300">
             <button onclick="closeVipModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl transition-colors">
@@ -486,9 +459,6 @@
         </div>
     </div>
 
-    <!-- ============================================================ -->
-    <!-- JAVASCRIPT -->
-    <!-- ============================================================ -->
     <script>
         // ============================================================
         // TRANSLATIONS
@@ -629,7 +599,6 @@
             document.getElementById('vipModal').classList.remove('hidden');
             document.body.style.overflow = 'hidden';
         }
-
         function closeVipModal() {
             document.getElementById('vipModal').classList.add('hidden');
             document.body.style.overflow = '';
@@ -639,57 +608,72 @@
         });
 
         // ============================================================
-        // CARDS - Admin ကတင်တဲ့ကဒ်တွေကို ပြသရန်
+        // CARDS - JSONBin Cloud
         // ============================================================
-        const STORAGE_KEY = 'manjomjai_cards';
+        const JSONBIN_API_KEY = '$2a$10$MOWcSjLFZl7bm8GA2SoqcepS/1cWIp/vpKrVGFLPokRpGAC4jshCq';
+        const JSONBIN_BIN_ID = '6a9d7740da38895dfe4004a0';
 
-        function getCards() {
+        async function fetchCardsFromCloud() {
             try {
-                return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-            } catch {
+                const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
+                    headers: { 'X-Master-Key': JSONBIN_API_KEY }
+                });
+                if (!response.ok) throw new Error('Failed to fetch');
+                const data = await response.json();
+                return data.record?.cards || [];
+            } catch (error) {
+                console.error('Cloud fetch error:', error);
                 return [];
             }
         }
 
-        function renderCards() {
-            const cards = getCards();
+        async function renderCards() {
             const container = document.getElementById('cardContainer');
+            const loading = document.getElementById('loadingCards');
             const empty = document.getElementById('emptyCards');
             const count = document.getElementById('cardCount');
 
-            count.textContent = `${cards.length} ကဒ်`;
+            try {
+                const cards = await fetchCardsFromCloud();
+                loading.style.display = 'none';
 
-            if (cards.length === 0) {
-                container.innerHTML = '';
-                empty.style.display = 'block';
-                return;
-            }
-            empty.style.display = 'none';
+                count.textContent = `${cards.length} ကဒ်`;
 
-            container.innerHTML = cards.map(card => `
-                <div class="card-item snap-start">
-                    <div class="bg-slate-800/40 dark:bg-slate-800/40 rounded-2xl overflow-hidden border border-slate-700/30 hover:border-amber-500/30 transition-all duration-300 h-full">
-                        <div class="relative">
-                            <img src="${card.image}" alt="Stock Card" 
-                                 class="w-full h-auto object-contain bg-slate-900"
-                                 onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22600%22 height=%22338%22%3E%3Crect fill=%22%231e293b%22 width=%22600%22 height=%22338%22/%3E%3Ctext x=%22300%22 y=%22169%22 text-anchor=%22middle%22 fill=%22%2364748b%22 font-size=%2220%22 font-family=%22sans-serif%22%3ENo Image%3C/text%3E%3C/svg%3E'">
-                            <div class="absolute top-2 right-2 bg-black/60 backdrop-blur-sm px-2.5 py-1 rounded-lg text-[9px] text-amber-400 border border-amber-500/20">
-                                <i class="fa-solid fa-qrcode mr-1"></i> SCAN ME
+                if (cards.length === 0) {
+                    container.innerHTML = '';
+                    empty.style.display = 'block';
+                    return;
+                }
+                empty.style.display = 'none';
+
+                container.innerHTML = cards.map(card => `
+                    <div class="card-item snap-start">
+                        <div class="bg-slate-800/40 dark:bg-slate-800/40 rounded-2xl overflow-hidden border border-slate-700/30 hover:border-amber-500/30 transition-all duration-300 h-full">
+                            <div class="relative">
+                                <img src="${card.image}" alt="Stock Card" 
+                                     class="w-full h-auto object-contain bg-slate-900"
+                                     onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22600%22 height=%22338%22%3E%3Crect fill=%22%231e293b%22 width=%22600%22 height=%22338%22/%3E%3Ctext x=%22300%22 y=%22169%22 text-anchor=%22middle%22 fill=%22%2364748b%22 font-size=%2220%22 font-family=%22sans-serif%22%3ENo Image%3C/text%3E%3C/svg%3E'">
+                                <div class="absolute top-2 right-2 bg-black/60 backdrop-blur-sm px-2.5 py-1 rounded-lg text-[9px] text-amber-400 border border-amber-500/20">
+                                    <i class="fa-solid fa-qrcode mr-1"></i> SCAN ME
+                                </div>
                             </div>
-                        </div>
-                        <div class="p-3">
-                            <div class="flex items-center justify-between">
-                                <span class="text-[10px] text-slate-400">
-                                    <i class="fa-regular fa-calendar mr-1"></i> ${new Date(card.createdAt).toLocaleDateString('my-MM', { day: '2-digit', month: '2-digit', year: 'numeric' })}
-                                </span>
-                                <span class="text-[9px] text-slate-500">
-                                    <i class="fa-regular fa-clock mr-1"></i> ${new Date(card.createdAt).toLocaleTimeString('my-MM', { hour: '2-digit', minute: '2-digit' })}
-                                </span>
+                            <div class="p-3">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-[10px] text-slate-400">
+                                        <i class="fa-regular fa-calendar mr-1"></i> ${new Date(card.createdAt).toLocaleDateString('my-MM', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+                                    </span>
+                                    <span class="text-[9px] text-slate-500">
+                                        <i class="fa-regular fa-clock mr-1"></i> ${new Date(card.createdAt).toLocaleTimeString('my-MM', { hour: '2-digit', minute: '2-digit' })}
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            `).join('');
+                `).join('');
+
+            } catch (error) {
+                loading.innerHTML = `<span class="text-rose-400 text-sm">❌ ကဒ်များကို ယူ၍မရပါ။ နောက်မှကြိုးစားပါ။</span>`;
+            }
         }
 
         // ============================================================
@@ -705,29 +689,6 @@
             } else {
                 container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
             }
-        }
-
-        // ============================================================
-        // INIT CARDS
-        // ============================================================
-        function initCards() {
-            renderCards();
-
-            // Listen for storage changes (Admin က တင်တာနဲ့ auto update)
-            window.addEventListener('storage', function(e) {
-                if (e.key === STORAGE_KEY) {
-                    renderCards();
-                }
-            });
-
-            // Check for updates every 3 seconds (for same tab)
-            setInterval(function() {
-                const currentCards = getCards();
-                const renderedCards = document.querySelectorAll('#cardContainer .card-item').length;
-                if (currentCards.length !== renderedCards) {
-                    renderCards();
-                }
-            }, 3000);
         }
 
         // ============================================================
@@ -748,14 +709,15 @@
                 document.getElementById('themeIcon').classList.add('fa-moon');
             }
 
-            // Init Cards
-            initCards();
+            // Load cards
+            renderCards();
+
+            // Auto refresh every 10 seconds
+            setInterval(renderCards, 10000);
 
             console.log('✅ Manjomjai initialized successfully!');
-            console.log('🌙 Night mode available');
-            console.log('🌍 Languages: Myanmar, Thai, English');
-            console.log('📱 Fully responsive for all devices');
-            console.log('📊 Cards auto-sync with Admin panel');
+            console.log('☁️ Using JSONBin for cloud storage');
+            console.log('📦 Bin ID:', JSONBIN_BIN_ID);
         }
 
         window.onload = init;
