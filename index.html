@@ -14,7 +14,6 @@
             50% { opacity: 0.6; transform: scale(1.02); }
         }
         .live-glow { animation: pulse-glow 2s infinite; }
-        /* Hide scrollbar for clean horizontal swipe */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
@@ -79,43 +78,34 @@
             </div>
         </section>
 
-        <!-- Global Markets Live Bar -->
+        <!-- Global Markets Live Bar (Powered by TradingView Real-Time Widget) -->
         <section class="space-y-4">
             <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-2">
                 <i class="fa-solid fa-chart-pie text-cyan-400"></i> <span data-i18n="marketStatusBar">ကမ္ဘာ့စတော့နှင့် ကုန်စည်ဈေးနှုန်းများ (Live Status)</span>
             </h2>
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-                <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl shadow-md text-center">
-                    <span class="text-[11px] text-slate-400 block mb-1">Nikkei 225</span>
-                    <div class="text-sm font-bold text-slate-200 font-mono">32,680.50</div>
-                    <span class="text-[10px] text-emerald-400 font-medium">+1.24% ▲</span>
-                </div>
-                <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl shadow-md text-center">
-                    <span class="text-[11px] text-slate-400 block mb-1">Dow Jones</span>
-                    <div class="text-sm font-bold text-slate-200 font-mono">34,837.20</div>
-                    <span class="text-[10px] text-emerald-400 font-medium">+0.85% ▲</span>
-                </div>
-                <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl shadow-md text-center">
-                    <span class="text-[11px] text-slate-400 block mb-1">Hanoi Stock</span>
-                    <div class="text-sm font-bold text-slate-200 font-mono">245.10</div>
-                    <span class="text-[10px] text-rose-400 font-medium">-0.32% ▼</span>
-                </div>
-                <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl shadow-md text-center">
-                    <span class="text-[11px] text-slate-400 block mb-1">Thailand SET</span>
-                    <div class="text-sm font-bold text-slate-200 font-mono">1,524.60</div>
-                    <span class="text-[10px] text-emerald-400 font-medium">+0.45% ▲</span>
-                </div>
-                <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl shadow-md text-center">
-                    <span class="text-[11px] text-slate-400 block mb-1">Crude Oil (ရေနံ)</span>
-                    <div class="text-sm font-bold text-amber-400 font-mono">$85.40</div>
-                    <span class="text-[10px] text-emerald-400 font-medium">+1.10% ▲</span>
-                </div>
-                <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl shadow-md text-center">
-                    <span class="text-[11px] text-slate-400 block mb-1">Gold (ရွှေဈေး)</span>
-                    <div class="text-sm font-bold text-amber-400 font-mono">$2,035.80</div>
-                    <span class="text-[10px] text-emerald-400 font-medium">+0.15% ▲</span>
-                </div>
+            
+            <!-- TradingView Widget BEGIN -->
+            <div class="tradingview-widget-container rounded-2xl overflow-hidden border border-slate-800 shadow-md">
+                <div class="tradingview-widget-container__widget"></div>
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+                {
+                    "symbols": [
+                        { "proName": "NIKKEI:225", "title": "Nikkei 225" },
+                        { "proName": "DJ:DJI", "title": "Dow Jones" },
+                        { "proName": "VNM:VN30", "title": "Hanoi Stock" },
+                        { "proName": "SET:SET", "title": "Thailand SET" },
+                        { "proName": "TVC:USOIL", "title": "Crude Oil" },
+                        { "proName": "OANDA:XAUUSD", "title": "Gold" }
+                    ],
+                    "showSymbolLogo": true,
+                    "isTransparent": true,
+                    "displayMode": "adaptive",
+                    "colorTheme": "dark",
+                    "locale": "en"
+                }
+                </script>
             </div>
+            <!-- TradingView Widget END -->
         </section>
 
         <!-- Daily Predictions (Horizontal Scrollable Carousel for Admin Cards) -->
@@ -126,7 +116,6 @@
                 </h2>
                 <div class="flex items-center space-x-2">
                     <span class="text-xs text-slate-400 bg-slate-900 px-3 py-1 rounded-lg border border-slate-800" id="liveDateBadge">Date: --.--.----</span>
-                    <!-- Scroll Navigation Buttons for Desktop Users -->
                     <button onclick="scrollCards('left')" class="bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 w-8 h-8 rounded-lg flex items-center justify-center transition">
                         <i class="fa-solid fa-chevron-left text-xs"></i>
                     </button>
@@ -202,7 +191,6 @@
                     </div>
                 </div>
 
-                <!-- Admin can append more cards here in the future -->
             </div>
         </section>
 
@@ -229,7 +217,7 @@
         </div>
     </div>
 
-    <!-- JavaScript for Auto-Update, Multi-Language & Card Scrolling -->
+    <!-- JavaScript -->
     <script>
         const translations = {
             mm: {
@@ -316,7 +304,6 @@
         function openVipModal() { document.getElementById('vipModal').classList.remove('hidden'); }
         function closeVipModal() { document.getElementById('vipModal').classList.add('hidden'); }
 
-        // Function for smooth horizontal card sliding via buttons
         function scrollCards(direction) {
             const container = document.getElementById('cardContainer');
             const scrollAmount = 380;
