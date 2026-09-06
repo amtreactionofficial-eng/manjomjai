@@ -1,524 +1,169 @@
 <!DOCTYPE html>
-<html lang="my" class="dark">
+<html lang="my">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Manjomjai - Stock Predictions</title>
+    <title>Manjomjai Stock Predictions</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Poppins', 'Padauk', sans-serif; }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-        @keyframes pulse-glow {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.6; transform: scale(1.02); }
-        }
-        @keyframes shimmer {
-            0% { background-position: -200% center; }
-            100% { background-position: 200% center; }
-        }
-
-        .float-animation { animation: float 4s ease-in-out infinite; }
-        .live-glow { animation: pulse-glow 2s infinite; }
-
-        .gradient-text {
-            background: linear-gradient(135deg, #f59e0b, #ef4444, #8b5cf6, #3b82f6);
-            background-size: 300% 300%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: shimmer 4s ease-in-out infinite;
-        }
-
-        .hero-gradient {
-            background: radial-gradient(ellipse at 20% 50%, rgba(139, 92, 246, 0.12), transparent 50%),
-                        radial-gradient(ellipse at 80% 50%, rgba(239, 68, 68, 0.08), transparent 50%),
-                        radial-gradient(ellipse at 50% 100%, rgba(59, 130, 246, 0.06), transparent 40%),
-                        #0f172a;
-        }
-
-        .card-gradient {
-            background: linear-gradient(145deg, rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.92));
+        body { font-family: 'Poppins', 'Padauk', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; }
+        .glass-card {
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.95));
             backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-        }
-
-        .glow-border {
-            position: relative;
-        }
-        .glow-border::before {
-            content: '';
-            position: absolute;
-            inset: -1px;
+            border: 1px solid rgba(255,255,255,0.06);
             border-radius: 20px;
-            padding: 1.5px;
-            background: linear-gradient(135deg, #f59e0b, #ef4444, #8b5cf6, #3b82f6);
-            background-size: 300% 300%;
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            opacity: 0.25;
-            transition: opacity 0.5s, transform 0.5s;
-            animation: shimmer 4s ease-in-out infinite;
         }
-        .glow-border:hover::before { opacity: 0.7; }
-
-        .nav-blur {
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-        }
-
-        .theme-toggle {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .theme-toggle:hover { transform: rotate(30deg) scale(1.12); }
-
-        .lang-select {
-            background: rgba(30, 41, 59, 0.8);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            color: #e2e8f0;
-            padding: 7px 14px;
+        .card-image-container {
+            width: 100%;
+            background: #0f172a;
             border-radius: 12px;
-            font-size: 0.75rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            appearance: none;
-            -webkit-appearance: none;
-        }
-        .lang-select:hover { border-color: rgba(251, 191, 36, 0.35); background: rgba(30, 41, 59, 0.95); }
-        .lang-select:focus { outline: none; border-color: #f59e0b; box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15); }
-        .lang-select option { background: #1e293b; }
-
-        .vip-btn {
-            background: linear-gradient(135deg, #f59e0b, #ef4444);
-            box-shadow: 0 4px 25px rgba(239, 68, 68, 0.3);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .vip-btn:hover {
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 8px 40px rgba(239, 68, 68, 0.45);
-        }
-        .vip-btn:active { transform: scale(0.97); }
-
-        .footer-text {
-            background: linear-gradient(135deg, #475569, #94a3b8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .insight-card {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            border-left: 3px solid transparent;
-        }
-        .insight-card:hover {
-            transform: translateX(6px);
-            border-left-color: #f59e0b;
-        }
-        .insight-card .icon-circle {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
+            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0;
-            font-size: 1.1rem;
+            min-height: 250px;
+            border: 1px solid rgba(255,255,255,0.05);
         }
-
-        #cardContainer {
-            scrollbar-width: thin;
-            scrollbar-color: rgba(245, 158, 11, 0.3) transparent;
-            -webkit-overflow-scrolling: touch;
+        .card-image-container img {
+            max-width: 100%;
+            max-height: 800px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            display: block;
         }
-        #cardContainer::-webkit-scrollbar {
-            height: 4px;
+        /* Ticker Animation */
+        .ticker-wrap {
+            width: 100%;
+            overflow: hidden;
+            background: rgba(15, 23, 42, 0.8);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding: 10px 0;
+            white-space: nowrap;
         }
-        #cardContainer::-webkit-scrollbar-track {
-            background: rgba(30, 41, 59, 0.3);
-            border-radius: 10px;
-        }
-        #cardContainer::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, #f59e0b, #ef4444);
-            border-radius: 10px;
-        }
-
-        .card-item {
-            flex-shrink: 0;
-            width: 280px;
-            scroll-snap-align: start;
-        }
-        @media (min-width: 640px) { .card-item { width: 320px; } }
-        @media (min-width: 768px) { .card-item { width: 360px; } }
-        @media (min-width: 1024px) { .card-item { width: 400px; } }
-
-        ::-webkit-scrollbar { width: 4px; height: 4px; }
-        ::-webkit-scrollbar-track { background: rgba(30, 41, 59, 0.3); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #f59e0b, #ef4444); border-radius: 10px; }
-
-        body.light {
-            background: #f0f4f8;
-            color: #0f172a;
-        }
-        body.light .card-gradient {
-            background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(241, 245, 249, 0.96));
-            border: 1px solid rgba(0, 0, 0, 0.05);
-        }
-        body.light .hero-gradient {
-            background: radial-gradient(ellipse at 20% 50%, rgba(139, 92, 246, 0.06), transparent 50%),
-                        radial-gradient(ellipse at 80% 50%, rgba(239, 68, 68, 0.04), transparent 50%),
-                        #f0f4f8;
-        }
-        body.light .nav-blur { background: rgba(255, 255, 255, 0.88) !important; border-bottom: 1px solid rgba(0,0,0,0.06) !important; }
-        body.light .lang-select { background: rgba(255, 255, 255, 0.9); color: #0f172a; border: 1px solid rgba(0,0,0,0.08); }
-        body.light .lang-select option { background: #ffffff; }
-        body.light .glow-border::before { opacity: 0.12; }
-        body.light .glow-border:hover::before { opacity: 0.45; }
-        body.light .text-slate-400 { color: #64748b; }
-        body.light .text-slate-500 { color: #94a3b8; }
-        body.light .insight-card { border-left-color: rgba(0,0,0,0.06); }
-        body.light .insight-card:hover { border-left-color: #f59e0b; }
-        body.light .footer-text { background: linear-gradient(135deg, #94a3b8, #64748b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        body.light ::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); }
-        body.light #cardContainer::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); }
-        body.light .card-item .bg-slate-800\/40 { background: rgba(241, 245, 249, 0.8); border-color: rgba(0,0,0,0.06); }
-
-        .loading-spinner-sm {
+        .ticker {
             display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(255,255,255,0.1);
-            border-radius: 50%;
-            border-top-color: #f59e0b;
-            animation: spin 0.8s ease-in-out infinite;
+            animation: ticker 30s linear infinite;
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        .ticker-item {
+            display: inline-flex;
+            align-items: center;
+            padding: 0 2rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        @keyframes ticker {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-50%, 0, 0); }
+        }
     </style>
 </head>
-<body class="dark bg-slate-950 text-slate-100 min-h-screen transition-colors duration-300" id="bodyTheme">
+<body>
 
-    <!-- TOP NAVIGATION BAR -->
-    <header class="sticky top-0 z-50 nav-blur bg-slate-900/80 border-b border-slate-800/50 transition-colors duration-300">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
-            <div class="flex items-center space-x-2 sm:space-x-3">
-                <div class="bg-gradient-to-r from-amber-500 to-rose-500 p-2 sm:p-2.5 rounded-xl shadow-lg shadow-amber-500/20">
-                    <i class="fa-solid fa-chart-line text-white text-sm sm:text-xl"></i>
-                </div>
-                <div>
-                    <span class="text-lg sm:text-2xl font-black tracking-wider gradient-text">MANJOMJAI</span>
-                    <span class="block text-[8px] sm:text-[10px] text-slate-400 tracking-widest uppercase" data-i18n="logoSub">Stock Predictions</span>
-                </div>
-            </div>
+    <!-- REAL-TIME STOCK TICKER BAR -->
+    <div class="ticker-wrap">
+        <div class="ticker" id="stockTicker">
+            <span class="ticker-item text-slate-400">🌍 Live Global Markets Loading...</span>
+        </div>
+    </div>
 
-            <div class="flex items-center space-x-2 sm:space-x-3">
-                <select id="langSwitch" onchange="changeLanguage()" class="lang-select">
-                    <option value="mm">🇲🇲 မြန်မာ</option>
-                    <option value="th">🇹🇭 ไทย</option>
-                    <option value="en">🇬🇧 English</option>
-                </select>
-
-                <button onclick="toggleTheme()" class="theme-toggle bg-slate-800 hover:bg-slate-700 text-amber-400 p-2 sm:p-2.5 rounded-xl border border-slate-700 transition-all duration-300 text-xs sm:text-sm">
-                    <i id="themeIcon" class="fa-solid fa-sun"></i>
-                </button>
-
-                <button onclick="openVipModal()" class="vip-btn text-white font-bold px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-[10px] sm:text-xs transition-all duration-300">
-                    <i class="fa-solid fa-crown mr-1"></i> <span data-i18n="vipBtn">VIP</span>
-                </button>
+    <!-- HEADER -->
+    <header class="sticky top-0 z-50 bg-slate-900/80 backdrop-blur-xl border-b border-slate-800/50">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+            <span class="text-xl font-black text-amber-400 tracking-wider">MANJOMJAI</span>
+            <div class="flex items-center space-x-2 text-xs text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-full border border-emerald-500/20">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>Live Update</span>
             </div>
         </div>
     </header>
 
     <!-- MAIN CONTENT -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-8 sm:space-y-12">
+    <main class="max-w-7xl mx-auto px-4 py-8 space-y-6">
+        <div class="text-center mb-8">
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-white mb-2">Thai Stock Predictions & Cards</h1>
+            <p class="text-slate-400 text-sm">နေ့စဉ် ထိုင်းစတော့ခ် ခန့်မှန်းချက် ကဒ်ပြားများ</p>
+        </div>
 
-        <!-- HERO SECTION -->
-        <section class="relative rounded-2xl sm:rounded-3xl overflow-hidden hero-gradient border border-slate-800/50 p-5 sm:p-10 shadow-2xl transition-colors duration-300">
-            <div class="relative z-10">
-                <div class="space-y-4 max-w-4xl mx-auto text-center">
-                    <div class="inline-flex items-center px-3 py-1 rounded-full text-[10px] sm:text-xs font-medium bg-rose-500/10 text-rose-400 border border-rose-500/20 live-glow">
-                        <span class="w-1.5 h-1.5 rounded-full bg-rose-500 mr-1.5 animate-ping"></span>
-                        <span data-i18n="liveBadge">⚡ Live Predictions</span>
-                    </div>
-                    <h1 class="text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-snug gradient-text">
-                        <span data-i18n="heroTitle">စတော့ဈေးကွက်များကို နက်နက်နဲနဲ ခွဲခြမ်းစိတ်ဖြာပြီး အတိကျဆုံး ခန့်မှန်းချက်များကို ဖော်ပြပေးနေသော ပလပ်ဖောင်း</span>
-                    </h1>
-                    <p class="text-slate-400 text-xs sm:text-sm leading-relaxed max-w-2xl mx-auto" data-i18n="heroDesc">
-                        Manjomjai ဝဘ်ဆိုဒ်သည် ကမ္ဘာ့ထိပ်တန်း စတော့ဈေးကွက်များကို အချိန်နှင့်တပြေးညီ စောင့်ကြည့်စစ်ဆေးကာ ကိန်းဂဏန်းဆိုင်ရာ သမိုင်းကြောင်းအချက်အလက်များနှင့် တွက်ချက်မှုပုံစံများကို ပေါင်းစပ်၍ အသေချာဆုံး ကံစမ်းခန့်မှန်းကွက်များကို တိကျမှန်ကန်စွာ ထုတ်ပြန်ပေးနေပါသည်။
-                    </p>
-                </div>
+        <!-- CARDS FEED -->
+        <div id="publicCardHistory" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="glass-card p-6 text-center text-slate-500 col-span-full">
+                <i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i>
+                <p>ကဒ်များကို ရှာဖွေနေပါသည်...</p>
             </div>
-        </section>
-
-        <!-- CARDS SECTION -->
-        <section class="space-y-4">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-1 h-8 bg-gradient-to-b from-amber-500 to-rose-500 rounded-full"></div>
-                    <h2 class="text-xl sm:text-2xl font-bold">📊 Thai Stock Cards</h2>
-                </div>
-                <span id="cardCount" class="text-xs text-slate-400 bg-slate-800/50 px-3 py-1 rounded-full border border-slate-700/30">
-                    0 ကဒ်
-                </span>
-            </div>
-
-            <div class="relative">
-                <div id="cardContainer" class="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scroll-smooth">
-                    <div id="loadingCards" class="flex items-center justify-center w-full py-8">
-                        <span class="loading-spinner-sm mr-2"></span>
-                        <span class="text-slate-400 text-sm">ကဒ်များကို ယူနေပါသည်...</span>
-                    </div>
-                </div>
-
-                <button onclick="scrollCards('left')" class="absolute left-0 top-1/2 -translate-y-1/2 bg-slate-800/80 backdrop-blur-sm text-white p-2 rounded-full border border-slate-700/50 hover:bg-slate-700 transition-all hidden md:flex items-center justify-center w-8 h-8 z-10">
-                    <i class="fa-solid fa-chevron-left text-xs"></i>
-                </button>
-                <button onclick="scrollCards('right')" class="absolute right-0 top-1/2 -translate-y-1/2 bg-slate-800/80 backdrop-blur-sm text-white p-2 rounded-full border border-slate-700/50 hover:bg-slate-700 transition-all hidden md:flex items-center justify-center w-8 h-8 z-10">
-                    <i class="fa-solid fa-chevron-right text-xs"></i>
-                </button>
-            </div>
-
-            <div id="emptyCards" class="text-center py-8 text-slate-500 card-gradient rounded-2xl p-8 hidden">
-                <i class="fa-solid fa-images text-3xl mb-3 block opacity-30"></i>
-                <p>ကဒ်မရှိသေးပါ။ မကြာခင်လာပါမည်။</p>
-            </div>
-        </section>
-
-        <!-- MARKET INSIGHTS SECTION -->
-        <section class="space-y-6">
-            <div class="flex items-center gap-3">
-                <div class="w-1 h-8 bg-gradient-to-b from-amber-500 to-rose-500 rounded-full"></div>
-                <h2 class="text-xl sm:text-2xl font-bold" data-i18n="insightsTitle">ထိုင်းစတော့နှင့် ကမ္ဘာ့စတော့ဈေးကွက်များဆိုင်ရာ အကြံပြုချက်များ</h2>
-            </div>
-
-            <div class="card-gradient rounded-2xl p-5 sm:p-8 glow-border transition-colors duration-300">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div class="space-y-4">
-                        <div class="insight-card bg-slate-800/30 dark:bg-slate-800/20 rounded-xl p-4 sm:p-5 transition-all duration-300">
-                            <div class="flex items-start gap-3">
-                                <div class="icon-circle bg-amber-500/10 text-amber-400">
-                                    <i class="fa-solid fa-landmark"></i>
-                                </div>
-                                <div>
-                                    <h3 class="font-semibold text-sm sm:text-base" data-i18n="insight1Title">🇹🇭 ထိုင်းစတော့ဈေးကွက် (SET) ၏ လက်ရှိအခြေအနေ</h3>
-                                    <p class="text-slate-400 text-xs sm:text-sm leading-relaxed mt-1" data-i18n="insight1Desc">
-                                        ထိုင်းနိုင်ငံ၏ စတော့ဈေးကွက်ဖြစ်သော SET (Stock Exchange of Thailand) သည် အရှေ့တောင်အာရှဒေသတွင် အကြီးဆုံးနှင့် အရည်အသွေးအမြင့်ဆုံး ဈေးကွက်များထဲမှ တစ်ခုဖြစ်ပါသည်။
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
+        </div>
     </main>
 
-    <!-- FOOTER -->
-    <footer class="border-t border-slate-800/50 mt-12 sm:mt-20 py-6 sm:py-8 text-center transition-colors duration-300">
-        <p class="text-xs footer-text">&copy; 2026 Manjomjai.site — All Rights Reserved.</p>
-        <p class="text-[10px] text-slate-600 mt-1" data-i18n="footerNote">* ခန့်မှန်းချက်များသည် ဖျော်ဖြေရေးအတွက်သာ ရည်ရွယ်ပါသည်။</p>
-    </footer>
-
-    <!-- VIP MODAL -->
-    <div id="vipModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm hidden p-4 transition-opacity duration-300">
-        <div class="card-gradient w-full max-w-md rounded-3xl p-6 sm:p-8 shadow-2xl relative space-y-6 glow-border transition-colors duration-300">
-            <button onclick="closeVipModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl transition-colors">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-            <div class="text-center space-y-3">
-                <div class="inline-block bg-amber-500/10 p-3 rounded-2xl text-amber-400 border border-amber-500/20">
-                    <i class="fa-solid fa-crown text-2xl"></i>
-                </div>
-                <h3 class="text-xl font-bold" data-i18n="modalTitle">VIP မန်ဘာဝင်ရောက်ရန်</h3>
-                <p class="text-xs text-slate-400 leading-relaxed" data-i18n="modalDesc">
-                    KBZPay၊ Wave Money သို့မဟုတ် MMQR ဖြင့် ငွေလွှဲ၍ မန်ဘာဝင်နိုင်ပါသည်။
-                </p>
-            </div>
-            <button onclick="closeVipModal()" class="w-full vip-btn text-white font-bold py-3 rounded-xl text-sm transition-all duration-300">
-                <span data-i18n="submitSlip">အတည်ပြုရန် ပို့မည်</span>
-            </button>
-        </div>
-    </div>
-
     <script>
-        const translations = {
-            mm: {
-                logoSub: "Stock Predictions",
-                vipBtn: "VIP",
-                liveBadge: "⚡ Live Predictions",
-                heroTitle: "စတော့ဈေးကွက်များကို နက်နက်နဲနဲ ခွဲခြမ်းစိတ်ဖြာပြီး အတိကျဆုံး ခန့်မှန်းချက်များကို ဖော်ပြပေးနေသော ပလပ်ဖောင်း",
-                heroDesc: "Manjomjai ဝဘ်ဆိုဒ်သည် ကမ္ဘာ့ထိပ်တန်း စတော့ဈေးကွက်များကို အချိန်နှင့်တပြေးညီ စောင့်ကြည့်စစ်ဆေးကာ ကိန်းဂဏန်းဆိုင်ရာ သမိုင်းကြောင်းအချက်အလက်များနှင့် တွက်ချက်မှုပုံစံများကို ပေါင်းစပ်၍ အသေချာဆုံး ကံစမ်းခန့်မှန်းကွက်များကို တိကျမှန်ကန်စွာ ထုတ်ပြန်ပေးနေပါသည်။",
-                insightsTitle: "ထိုင်းစတော့နှင့် ကမ္ဘာ့စတော့ဈေးကွက်များဆိုင်ရာ အကြံပြုချက်များ",
-                modalTitle: "VIP မန်ဘာဝင်ရောက်ရန်",
-                modalDesc: "KBZPay၊ Wave Money သို့မဟုတ် MMQR ဖြင့် ငွေလွှဲ၍ မန်ဘာဝင်နိုင်ပါသည်။",
-                submitSlip: "အတည်ပြုရန် ပို့မည်",
-                footerNote: "* ခန့်မှန်းချက်များသည် ဖျော်ဖြေရေးအတွက်သာ ရည်ရွယ်ပါသည်။"
-            },
-            th: {
-                logoSub: "Stock Predictions",
-                vipBtn: "VIP",
-                liveBadge: "⚡ Live Predictions",
-                heroTitle: "แพลตฟอร์มวิเคราะห์ตลาดหุ้นเชิงลึกและการคาดการณ์ที่แม่นยำที่สุด",
-                heroDesc: "เว็บไซต์ Manjomjai ติดตามตลาดหุ้นชั้นนำระดับโลกแบบเรียลไทม์",
-                insightsTitle: "คำแนะนำเกี่ยวกับตลาดหุ้นไทยและตลาดหุ้นโลก",
-                modalTitle: "สมัครสมาชิก VIP",
-                modalDesc: "ชำระเงินผ่าน KBZPay, Wave Money หรือ MMQR เพื่อสมัครสมาชิก",
-                submitSlip: "ยืนยันการส่งสลิป",
-                footerNote: "* การคาดการณ์นี้เพื่อความบันเทิงเท่านั้น"
-            },
-            en: {
-                logoSub: "Stock Predictions",
-                vipBtn: "VIP",
-                liveBadge: "⚡ Live Predictions",
-                heroTitle: "Advanced Stock Market Analysis & Most Accurate Predictions",
-                heroDesc: "Manjomjai platform monitors global leading markets in real-time.",
-                insightsTitle: "Insights on Thai & Global Stock Markets",
-                modalTitle: "Join VIP Membership",
-                modalDesc: "Transfer via KBZPay, Wave Money or MMQR to join membership.",
-                submitSlip: "Submit for Verification",
-                footerNote: "* Predictions are for entertainment purposes only."
-            }
-        };
+        // GitHub Config (amtreactionofficial-eng / stock-app)
+        const GH_USER = 'amtreactionofficial-eng';
+        const GH_REPO = 'stock-app';
 
-        function changeLanguage() {
-            const lang = document.getElementById('langSwitch').value;
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (translations[lang]?.[key]) {
-                    el.innerText = translations[lang][key];
-                }
-            });
-            document.documentElement.lang = lang;
-            localStorage.setItem('manjomjai_lang', lang);
+        // Fetch Global Stock Market Data (Mock Live Ticker for major indices)
+        function loadMarketTicker() {
+            const markets = [
+                { name: 'SET (Thailand)', val: '1,348.20', change: '+0.45%', up: true },
+                { name: 'S&P 500', val: '5,648.40', change: '+0.82%', up: true },
+                { name: 'NASDAQ', val: '17,855.10', change: '+1.12%', up: true },
+                { name: 'FTSE 100', val: '8,280.50', change: '-0.15%', up: false },
+                { name: 'NIKKEI 225', val: '38,700.30', change: '+0.64%', up: true },
+                { name: 'HANG SENG', val: '17,650.80', change: '-0.38%', up: false }
+            ];
+
+            const tickerContent = markets.concat(markets).map(m => `
+                <span class="ticker-item">
+                    <span class="text-slate-300 mr-2">${m.name}</span>
+                    <span class="text-white mr-2">${m.val}</span>
+                    <span class="${m.up ? 'text-emerald-400' : 'text-rose-400'}">
+                        <i class="fa-solid fa-arrow-${m.up ? 'up' : 'down'} mr-1"></i>${m.change}
+                    </span>
+                </span>
+            `).join('');
+
+            document.getElementById('stockTicker').innerHTML = tickerContent;
         }
 
-        function toggleTheme() {
-            const body = document.getElementById('bodyTheme');
-            const icon = document.getElementById('themeIcon');
-            if (body.classList.contains('dark')) {
-                body.classList.remove('dark');
-                body.classList.add('light');
-                icon.classList.remove('fa-sun');
-                icon.classList.add('fa-moon');
-                localStorage.setItem('manjomjai_theme', 'light');
-            } else {
-                body.classList.remove('light');
-                body.classList.add('dark');
-                icon.classList.remove('fa-moon');
-                icon.classList.add('fa-sun');
-                localStorage.setItem('manjomjai_theme', 'dark');
-            }
-        }
-
-        function openVipModal() {
-            document.getElementById('vipModal').classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        }
-        function closeVipModal() {
-            document.getElementById('vipModal').classList.add('hidden');
-            document.body.style.overflow = '';
-        }
-
-        const NPOINT_URL = 'https://api.npoint.io/530d726853626cde2939';
-
-        async function getCards() {
+        // Fetch Cards from GitHub Repository
+        async function loadPublicCards() {
             try {
-                const response = await fetch(NPOINT_URL);
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                const data = await response.json();
-                return data.cards || [];
-            } catch (error) {
-                console.error('❌ Error loading cards:', error);
-                return [];
+                const res = await fetch(`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/cards.json`);
+                if(res.ok) {
+                    const data = await res.json();
+                    const content = JSON.parse(atob(data.content));
+                    renderPublicCards(content.cards || []);
+                } else {
+                    document.getElementById('publicCardHistory').innerHTML = '<div class="glass-card p-6 text-center text-slate-500 col-span-full">ယခုလောလောဆယ် တင်ထားသော ကဒ်မရှိသေးပါ။</div>';
+                }
+            } catch(e) {
+                document.getElementById('publicCardHistory').innerHTML = '<div class="glass-card p-6 text-center text-slate-500 col-span-full">ချိတ်ဆက်မှု အခက်အခဲ ရှိနေပါသည်။</div>';
             }
         }
 
-        async function renderCards() {
-            const container = document.getElementById('cardContainer');
-            const loading = document.getElementById('loadingCards');
-            const empty = document.getElementById('emptyCards');
-            const count = document.getElementById('cardCount');
-
-            try {
-                const cards = await getCards();
-                if (loading) loading.style.display = 'none';
-                
-                count.textContent = `${cards.length} ကဒ်`;
-
-                if (cards.length === 0) {
-                    container.innerHTML = '';
-                    empty.style.display = 'block';
-                    return;
-                }
-                empty.style.display = 'none';
-
-                container.innerHTML = cards.map(card => `
-                    <div class="card-item snap-start">
-                        <div class="bg-slate-800/40 dark:bg-slate-800/40 rounded-2xl overflow-hidden border border-slate-700/30 hover:border-amber-500/30 transition-all duration-300 h-full">
-                            <div class="relative">
-                                <img src="${card.image}" alt="Stock Card" 
-                                     class="w-full h-auto object-contain bg-slate-900"
-                                     onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22600%22 height=%22338%22%3E%3Crect fill=%22%231e293b%22 width=%22600%22 height=%22338%22/%3E%3Ctext x=%22300%22 y=%22169%22 text-anchor=%22middle%22 fill=%22%2364748b%22 font-size=%2220%22 font-family=%22sans-serif%22%3ENo Image%3C/text%3E%3C/svg%3E'">
-                                <div class="absolute top-2 right-2 bg-black/60 backdrop-blur-sm px-2.5 py-1 rounded-lg text-[9px] text-amber-400 border border-amber-500/20">
-                                    <i class="fa-solid fa-qrcode mr-1"></i> SCAN ME
-                                </div>
-                            </div>
-                            <div class="p-3">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-[10px] text-slate-400">
-                                        <i class="fa-regular fa-calendar mr-1"></i> ${new Date(card.createdAt).toLocaleDateString('my-MM')}
-                                    </span>
-                                    <span class="text-[9px] text-slate-500">
-                                        <i class="fa-regular fa-clock mr-1"></i> ${new Date(card.createdAt).toLocaleTimeString('my-MM', { hour: '2-digit', minute: '2-digit' })}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
+        function renderPublicCards(cards) {
+            const container = document.getElementById('publicCardHistory');
+            if(cards.length === 0) {
+                container.innerHTML = '<div class="glass-card p-6 text-center text-slate-500 col-span-full">ယခုလောလောဆယ် တင်ထားသော ကဒ်မရှိသေးပါ။</div>';
+                return;
+            }
+            container.innerHTML = cards.map(c => `
+                <div class="glass-card p-4 space-y-3">
+                    <div class="card-image-container">
+                        <img src="${c.image}" alt="Stock Prediction Card" loading="lazy">
                     </div>
-                `).join('');
-
-            } catch (error) {
-                if (loading) loading.innerHTML = `<span class="text-rose-400 text-sm">❌ ကဒ်များကို ယူ၍မရပါ။ Error: ${error.message}</span>`;
-            }
+                    <div class="flex items-center justify-between text-xs text-slate-400 px-1">
+                        <span><i class="fa-regular fa-calendar mr-1"></i>${new Date(c.createdAt).toLocaleDateString()}</span>
+                        <span class="text-amber-400 font-medium">Manjomjai Official</span>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        function scrollCards(direction) {
-            const container = document.getElementById('cardContainer');
-            const firstCard = container.querySelector('.card-item');
-            if (!firstCard) return;
-            const scrollAmount = firstCard.offsetWidth + 16;
-            if (direction === 'left') {
-                container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-            } else {
-                container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-            }
-        }
-
-        window.onload = function() {
-            const savedLang = localStorage.getItem('manjomjai_lang') || 'mm';
-            document.getElementById('langSwitch').value = savedLang;
-            changeLanguage();
-
-            const savedTheme = localStorage.getItem('manjomjai_theme') || 'dark';
-            if (savedTheme === 'light') {
-                document.getElementById('bodyTheme').classList.remove('dark');
-                document.getElementById('bodyTheme').classList.add('light');
-                document.getElementById('themeIcon').classList.remove('fa-sun');
-                document.getElementById('themeIcon').classList.add('fa-moon');
-            }
-
-            renderCards();
-            // ၁၅ စက္ကန့်တစ်ကြိမ် Cloud ထဲက ပုံအသစ်တွေကို အလိုအလျောက် ဆွဲယူပြသပေးပါမည်
-            setInterval(renderCards, 15000);
-        };
+        // Initialize
+        loadMarketTicker();
+        loadPublicCards();
     </script>
 </body>
 </html>
