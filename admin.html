@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="my" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Manjomjai - Admin Panel</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', 'Padauk', sans-serif; }
+        
+        @keyframes shimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #f59e0b, #ef4444, #8b5cf6, #3b82f6);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmer 4s ease-in-out infinite;
+        }
+        
+        .card-gradient {
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.92));
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        
+        .glow-border {
+            position: relative;
+        }
+        .glow-border::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: 20px;
+            padding: 1.5px;
+            background: linear-gradient(135deg, #f59e0b, #ef4444, #8b5cf6, #3b82f6);
+            background-size: 300% 300%;
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0.25;
+            transition: opacity 0.5s;
+            animation: shimmer 4s ease-in-out infinite;
+        }
+        .glow-border:hover::before { opacity: 0.7; }
+        
+        .nav-blur {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        
+        .vip-btn {
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            box-shadow: 0 4px 25px rgba(239, 68, 68, 0.3);
+            transition: all 0.4s;
+        }
+        .vip-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 40px rgba(239, 68, 68, 0.45);
+        }
+        
+        .admin-btn {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            box-shadow: 0 4px 25px rgba(59, 130, 246, 0.3);
+            transition: all 0.4s;
+        }
+        .admin-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 40px rgba(59, 130, 246, 0.45);
+        }
+        
+        .insight-card {
+            transition: all 0.4s;
+            border-left: 3px solid transparent;
+        }
+        .insight-card:hover {
+            transform: translateX(6px);
+            border-left-color: #f59e0b;
+        }
+        .insight-card .icon-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 1.1rem;
+        }
+        
+        .login-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 999;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(16px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        .login-overlay .login-box {
+            max-width: 400px;
+            width: 100%;
+        }
+        
+        .back-link {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 50;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 0.55rem;
+            font-weight: 600;
+            background: rgba(59, 130, 246, 0.12);
+            color: #3b82f6;
+            border: 1px solid rgba(59, 130, 246, 0.15);
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(8px);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .back-link:hover {
+            background: rgba(59, 130, 246, 0.25);
+            transform: scale(1.05);
+        }
+        
+        .hidden { display: none !important; }
+        
+        /* Light theme */
+        body.light {
+            background: #f0f4f8;
+            color: #0f172a;
+        }
+        body.light .card-gradient {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(241, 245, 249, 0.96));
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        body.light .nav-blur { background: rgba(255, 255, 255, 0.88) !important; border-bottom: 1px solid rgba(0,0,0,0.06) !important; }
+        body.light .login-overlay { background: rgba(255, 255, 255, 0.95); }
+        body.light .back-link { background: rgba(59, 130, 246, 0.08); color: #2563eb; border-color: rgba(59, 130, 246, 0.15); }
+        body.light .back-link:hover { background: rgba(59, 130, 246, 0.2); }
+        
+        @media (max-width: 640px) {
+            .vip-btn { padding: 0.4rem 0.8rem !important; font-size: 0.65rem !important; }
+            .back-link { padding: 4px 10px; font-size: 0.45rem; bottom: 12px; right: 12px; }
+        }
+    </style>
+</head>
+<body class="dark bg-slate-950 text-slate-100 min-h-screen transition-colors duration-300" id="bodyTheme">
+
+    <!-- ============================================================ -->
+    <!-- LOGIN OVERLAY -->
+    <!-- ============================================================ -->
+    <div id="loginOverlay" class="login-overlay">
+        <div class="login-box card-gradient rounded-3xl p-8 shadow-2xl glow-border">
+            <div class="text-center space-y-4">
+                <div class="w-20 h-20 mx-auto rounded-full bg-gradient-to-r from-amber-500 to-rose-500 flex items-center justify-center text-3xl shadow-lg shadow-amber-500/20">
+                    <i class="fa-solid fa-lock text-white"></i>
+                </div>
+                <h2 class="text-2xl font-bold gradient-text">Admin Panel</h2>
+                <p class="text-xs text-slate-400">အက်ဒမင်အကောင့်ဖြင့် ဝင်ရောက်ပါ</p>
+                
+                <div class="space-y-3 text-left mt-4">
+                    <div>
+                        <label class="text-xs text-slate-400 block mb-1">Username</label>
+                        <input type="text" id="adminUsername" placeholder="Enter username" 
+                               class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-amber-500 transition">
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400 block mb-1">Password</label>
+                        <input type="password" id="adminPassword" placeholder="Enter password" 
+                               class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-amber-500 transition">
+                    </div>
+                </div>
+                
+                <button onclick="adminLogin()" class="w-full admin-btn text-white font-bold py-3 rounded-xl text-sm transition-all">
+                    <i class="fa-solid fa-arrow-right-to-bracket mr-2"></i> ဝင်ရောက်မည်
+                </button>
+                
+                <div id="loginError" class="text-xs text-rose-400 hidden">❌ Username သို့မဟုတ် Password မှားနေပါသည်။</div>
+                
+                <div class="text-[10px] text-slate-500 pt-2 border-t border-slate-700/50">
+                    <span class="text-amber-400">Demo:</span> admin / admin123
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- NAVIGATION BAR -->
+    <!-- ============================================================ -->
+    <header class="sticky top-0 z-40 nav-blur bg-slate-900/80 border-b border-slate-800/50 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <div class="bg-gradient-to-r from-amber-500 to-rose-500 p-2 sm:p-2.5 rounded-xl shadow-lg shadow-amber-500/20">
+                    <i class="fa-solid fa-chart-line text-white text-sm sm:text-xl"></i>
+                </div>
+                <div>
+                    <span class="text-lg sm:text-2xl font-black tracking-wider gradient-text">MANJOMJAI</span>
+                    <span class="block text-[8px] sm:text-[10px] text-slate-400 tracking-widest uppercase">Admin Panel</span>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <span class="text-[10px] text-emerald-400 hidden sm:inline-block" id="adminStatusBadge">
+                    <i class="fa-solid fa-circle text-[6px] mr-1"></i> Admin
+                </span>
+                <button onclick="adminLogout()" class="text-xs text-slate-400 hover:text-rose-400 transition px-2 py-1 rounded-lg border border-slate-700/50 hover:border-rose-500/30" id="logoutBtn">
+                    <i class="fa-solid fa-right-from-bracket mr-1"></i> <span class="hidden sm:inline">ထွက်မည်</span>
+                </button>
+                <button onclick="toggleTheme()" class="bg-slate-800 hover:bg-slate-700 text-amber-400 p-2 sm:p-2.5 rounded-xl border border-slate-700 transition-all duration-300 text-xs sm:text-sm">
+                    <i id="themeIcon" class="fa-solid fa-sun"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ============================================================ -->
+    <!-- MAIN CONTENT -->
+    <!-- ============================================================ -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-8" id="mainContent">
+
+        <!-- Stats -->
+        <section class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="card-gradient rounded-2xl p-5 text-center glow-border">
+                <div class="text-3xl font-bold text-amber-400" id="insightCount">0</div>
+                <div class="text-xs text-slate-400 mt-1">📝 အကြံပြုချက်များ</div>
+            </div>
+            <div class="card-gradient rounded-2xl p-5 text-center glow-border">
+                <div class="text-3xl font-bold text-blue-400" id="numberCount">0</div>
+                <div class="text-xs text-slate-400 mt-1">🔢 နံပါတ်များ</div>
+            </div>
+            <div class="card-gradient rounded-2xl p-5 text-center glow-border">
+                <div class="text-3xl font-bold text-emerald-400" id="lastUpdateDisplay">--:--</div>
+                <div class="text-xs text-slate-400 mt-1">🕐 နောက်ဆုံးအပ်ဒိတ်</div>
+            </div>
+        </section>
+
+        <!-- Admin Actions -->
+        <section class="flex flex-wrap gap-3">
+            <button onclick="openAddInsightModal()" class="admin-btn text-white font-bold px-5 py-2.5 rounded-xl text-sm transition-all">
+                <i class="fa-solid fa-plus mr-2"></i> အကြံပြုချက်အသစ်ထည့်
+            </button>
+            <button onclick="openAddNumberModal()" class="vip-btn text-white font-bold px-5 py-2.5 rounded-xl text-sm transition-all">
+                <i class="fa-solid fa-plus mr-2"></i> နံပါတ်အသစ်ထည့်
+            </button>
+            <button onclick="refreshData()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-5 py-2.5 rounded-xl text-sm transition-all border border-slate-700">
+                <i class="fa-solid fa-refresh mr-2"></i> Refresh
+            </button>
+        </section>
+
+        <!-- Insights List -->
+        <section class="space-y-3">
+            <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                <i class="fa-solid fa-list text-amber-400"></i> အကြံပြုချက်များစာရင်း
+            </h3>
+            <div id="insightsList" class="space-y-3"></div>
+        </section>
+
+        <!-- Numbers List -->
+        <section class="space-y-3 mt-6">
+            <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                <i class="fa-solid fa-list text-blue-400"></i> နံပါတ်များစာရင်း
+            </h3>
+            <div id="numbersList" class="space-y-3"></div>
+        </section>
+
+    </main>
+
+    <!-- ============================================================ -->
+    <!-- FOOTER -->
+    <!-- ============================================================ -->
+    <footer class="border-t border-slate-800/50 mt-12 py-6 sm:py-8 text-center transition-colors duration-300">
+        <p class="text-xs text-slate-500">&copy; 2026 Manjomjai.site — Admin Panel</p>
+    </footer>
+
+    <!-- ============================================================ -->
+    <!-- BACK TO SITE LINK -->
+    <!-- ============================================================ -->
+    <a href="index.html" class="back-link">
+        <i class="fa-solid fa-arrow-left"></i> User Site
+    </a>
+
+    <!-- ============================================================ -->
+    <!-- ADD INSIGHT MODAL -->
+    <!-- ============================================================ -->
+    <div id="addInsightModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm hidden p-4">
+        <div class="card-gradient w-full max-w-2xl rounded-3xl p-6 sm:p-8 shadow-2xl relative space-y-6 glow-border max-h-[90vh] overflow-y-auto">
+            <button onclick="closeAddInsightModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl transition-colors">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h3 class="text-xl font-bold gradient-text">📝 အကြံပြုချက်အသစ်ထည့်ရန်</h3>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="text-xs text-slate-400 block mb-1">ခေါင်းစဉ် (Title) *</label>
+                    <input type="text" id="insightTitle" placeholder="ခေါင်းစဉ်ထည့်ပါ" 
+                           class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-amber-500 transition">
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 block mb-1">အကြောင်းအရာ (Content) *</label>
+                    <textarea id="insightContent" rows="6" placeholder="အကြောင်းအရာရေးပါ..." 
+                              class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-amber-500 transition resize-none"></textarea>
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 block mb-1">အိုင်ကွန် (Icon)</label>
+                    <select id="insightIcon" class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-amber-500 transition">
+                        <option value="fa-landmark">🏛️ fa-landmark</option>
+                        <option value="fa-globe-asia">🌏 fa-globe-asia</option>
+                        <option value="fa-oil-can">🛢️ fa-oil-can</option>
+                        <option value="fa-chart-line">📊 fa-chart-line</option>
+                        <option value="fa-robot">🤖 fa-robot</option>
+                        <option value="fa-hand-holding-usd">💰 fa-hand-holding-usd</option>
+                        <option value="fa-building">🏢 fa-building</option>
+                        <option value="fa-money-bill-trend-up">📈 fa-money-bill-trend-up</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 block mb-1">အရောင် (Color)</label>
+                    <select id="insightColor" class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-amber-500 transition">
+                        <option value="amber">🟡 Amber</option>
+                        <option value="blue">🔵 Blue</option>
+                        <option value="emerald">🟢 Emerald</option>
+                        <option value="rose">🔴 Rose</option>
+                        <option value="purple">🟣 Purple</option>
+                        <option value="indigo">🔷 Indigo</option>
+                    </select>
+                </div>
+            </div>
+            
+            <button onclick="saveInsight()" class="w-full admin-btn text-white font-bold py-3 rounded-xl text-sm transition-all">
+                <i class="fa-solid fa-save mr-2"></i> သိမ်းမည်
+            </button>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- ADD NUMBER MODAL -->
+    <!-- ============================================================ -->
+    <div id="addNumberModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm hidden p-4">
+        <div class="card-gradient w-full max-w-md rounded-3xl p-6 sm:p-8 shadow-2xl relative space-y-6 glow-border">
+            <button onclick="closeAddNumberModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl transition-colors">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h3 class="text-xl font-bold gradient-text">🔢 နံပါတ်အသစ်ထည့်ရန်</h3>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="text-xs text-slate-400 block mb-1">ဈေးကွက်အမည် *</label>
+                    <input type="text" id="numberMarket" placeholder="ဥပမာ - Dow Jones" 
+                           class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-amber-500 transition">
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 block mb-1">နံပါတ် ၃ လုံး *</label>
+                    <input type="text" id="numberValue" placeholder="ဥပမာ - 123 - 456 - 789" 
+                           class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-amber-500 transition">
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 block mb-1">သေချာမှုနှုန်း (Accuracy %)</label>
+                    <input type="number" id="numberAccuracy" placeholder="ဥပမာ - 94" value="94"
+                           class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-amber-500 transition">
+                </div>
+            </div>
+            
+            <button onclick="saveNumber()" class="w-full vip-btn text-white font-bold py-3 rounded-xl text-sm transition-all">
+                <i class="fa-solid fa-save mr-2"></i> သိမ်းမည်
+            </button>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- EDIT INSIGHT MODAL -->
+    <!-- ============================================================ -->
+    <div id="editInsightModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm hidden p-4">
+        <div class="card-gradient w-full max-w-2xl rounded-3xl p-6 sm:p-8 shadow-2xl relative space-y-6 glow-border max-h-[90vh] overflow-y-auto">
+            <button onclick="closeEditInsightModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl transition-colors">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h3 class="text-xl font-bold gradient-text">✏️ အကြံပြုချက်တည်းဖြတ်ရန်</h3>
+            <input type="hidden" id="editInsightId">
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="text-xs text-slate-400 block mb-1">ခေါင်းစဉ် (Title) *</label>
+                    <input type="text" id="editInsightTitle" placeholder="ခေါင်းစဉ်ထည့်ပါ" 
+                           class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-amber-500 transition">
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 block mb-1">အကြောင်းအရာ (Content) *</label>
+                    <textarea id="editInsightContent" rows="6" placeholder="အကြောင်းအရာရေးပါ..." 
+                              class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-amber-500 transition resize-none"></textarea>
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 block mb-1">အိုင်ကွန် (Icon)</label>
+                    <select id="editInsightIcon" class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-amber-500 transition">
+                        <option value="fa-landmark">🏛️ fa-landmark</option>
+                        <option value="fa-globe-asia">🌏 fa-globe-asia</option>
+                        <option value="fa-oil-can">🛢️ fa-oil-can</option>
+                        <option value="fa-chart-line">📊 fa-chart-line</option>
+                        <option value="fa-robot">🤖 fa-robot</option>
+                        <option value="fa-hand-holding-usd">💰 fa-hand-holding-usd</option>
+                        <option value="fa-building">🏢 fa-building</option>
+                        <option value="fa-money-bill-trend-up">📈 fa-money-bill-trend-up</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 block mb-1">အရောင် (Color)</label>
+                    <select id="editInsightColor" class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-amber-500 transition">
+                        <option value="amber">🟡 Amber</option>
+                        <option value="blue">🔵 Blue</option>
+                        <option value="emerald">🟢 Emerald</option>
+                        <option value="rose">🔴 Rose</option>
+                        <option value="purple">🟣 Purple</option>
+                        <option value="indigo">🔷 Indigo</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="flex gap-3">
+                <button onclick="updateInsight()" class="flex-1 admin-btn text-white font-bold py-3 rounded-xl text-sm transition-all">
+                    <i class="fa-solid fa-save mr-2"></i> သိမ်းမည်
+                </button>
+                <button onclick="deleteInsightFromEdit()" class="flex-1 bg-rose-500/20 hover:bg-rose-500/30 text-rose-400 font-bold py-3 rounded-xl text-sm transition-all border border-rose-500/20">
+                    <i class="fa-solid fa-trash mr-2"></i> ဖျက်မည်
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- JAVASCRIPT -->
+    <!-- ============================================================ -->
+    <script>
+        // ============================================================
+        // ADMIN CREDENTIALS
+        // ============================================================
+        const ADMIN_USERNAME = 'admin';
+        const ADMIN_PASSWORD = 'admin123';
+
+        // ============================================================
+        // STATE
+        // ============================================================
+        let isAdminLoggedIn = false;
+        let insights = [];
+        let numbers = [];
+        let editInsightId = null;
+
+        // ============================================================
+        // LOAD / SAVE
+        // ============================================================
+        function loadData() {
+            try {
+                const savedInsights = localStorage.getItem('manjomjai_insights');
+                insights = savedInsights ? JSON.parse(savedInsights) : [
+                    { id: 1, title: '🇹🇭 ထိုင်းစတော့ဈေးကွက် (SET) ၏ လက်ရှိအခြေအနေ', content: 'ထိုင်းနိုင်ငံ၏ စတော့ဈေးကွက်ဖြစ်သော SET သည် အရှေ့တောင်အာရှဒေသတွင် အကြီးဆုံးနှင့် အရည်အသွေးအမြင့်ဆုံး ဈေးကွက်များထဲမှ တစ်ခုဖြစ်ပါသည်။', icon: 'fa-landmark', color: 'amber' },
+                    { id: 2, title: '🌏 အာရှဒေသဆိုင်ရာ စတော့ဈေးကွက်များ', content: 'အာရှဒေသရှိ စတော့ဈေးကွက်များသည် ကမ္ဘာ့စီးပွားရေး၏ အရေးပါသော အစိတ်အပိုင်းတစ်ခုဖြစ်လာပြီး တရုတ်၊ ဂျပန်၊ တောင်ကိုရီးယား၊ အိန္ဒိယနှင့် အရှေ့တောင်အာရှနိုင်ငံများ၏ ဈေးကွက်များသည် ကမ္ဘာ့ရင်းနှီးမြှုပ်နှံသူများ၏ အာရုံစိုက်မှုကို ခံနေရပါသည်။', icon: 'fa-globe-asia', color: 'blue' }
+                ];
+                
+                const savedNumbers = localStorage.getItem('manjomjai_numbers');
+                numbers = savedNumbers ? JSON.parse(savedNumbers) : [
+                    { id: 1, market: 'Dow Jones', number: '532 - 847 - 215', accuracy: 94 },
+                    { id: 2, market: 'Hanoi Stock', number: '384 - 726 - 193', accuracy: 91 },
+                    { id: 3, market: 'Thailand SET', number: '492 - 937 - 766', accuracy: 96 }
+                ];
+            } catch (e) {
+                insights = [];
+                numbers = [];
+            }
+            saveData();
+        }
+
+        function saveData() {
+            localStorage.setItem('manjomjai_insights', JSON.stringify(insights));
+            localStorage.setItem('manjomjai_numbers', JSON.stringify(numbers));
+        }
+
+        // ============================================================
+        // ADMIN LOGIN / LOGOUT
+        // ============================================================
+        function adminLogin() {
+            const username = document.getElementById('adminUsername').value.trim();
+            const password = document.getElementById('adminPassword').value.trim();
+            const errorEl = document.getElementById('loginError');
+            
+            if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+                isAdminLoggedIn = true;
+                errorEl.classList.add('hidden');
+                document.getElementById('loginOverlay').classList.add('hidden');
+                document.getElementById('adminStatusBadge').classList.remove('hidden');
+                renderAll();
+                console.log('✅ Admin logged in!');
+            } else {
+                errorEl.classList.remove('hidden');
+            }
+        }
+
+        function adminLogout() {
+            if (confirm('အက်ဒမင်အကောင့်မှ ထွက်မည်။ သေချာပါသလား?')) {
+                isAdminLoggedIn = false;
+                document.getElementById('loginOverlay').classList.remove('hidden');
+                document.getElementById('adminStatusBadge').classList.add('hidden');
+                document.getElementById('adminUsername').value = '';
+                document.getElementById('adminPassword').value = '';
+            }
+        }
+
+        // ============================================================
+        // RENDER
+        // ============================================================
+        function renderAll() {
+            renderInsights();
+            renderNumbers();
+            updateStats();
+        }
+
+        function renderInsights() {
+            const container = document.getElementById('insightsList');
+            if (!container) return;
+            
+            if (insights.length === 0) {
+                container.innerHTML = `<div class="text-center text-slate-500 text-sm py-8">အကြံပြုချက်မရှိသေးပါ။</div>`;
+                return;
+            }
+            
+            container.innerHTML = insights.map(item => `
+                <div class="card-gradient rounded-xl p-4 flex items-center justify-between gap-4 glow-border hover:border-amber-500/30 transition">
+                    <div class="flex items-center gap-3 flex-1 min-w-0">
+                        <div class="icon-circle bg-${item.color || 'amber'}-500/10 text-${item.color || 'amber'}-400 flex-shrink-0">
+                            <i class="fa-solid ${item.icon || 'fa-file-lines'}"></i>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <div class="font-semibold text-sm truncate">${item.title}</div>
+                            <div class="text-xs text-slate-400 truncate">${item.content.substring(0, 80)}${item.content.length > 80 ? '...' : ''}</div>
+                        </div>
+                    </div>
+                    <div class="flex gap-2 flex-shrink-0">
+                        <button onclick="editInsight(${item.id})" class="text-blue-400 hover:text-blue-300 text-sm p-2 rounded-lg hover:bg-blue-500/10 transition">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button onclick="deleteInsight(${item.id})" class="text-rose-400 hover:text-rose-300 text-sm p-2 rounded-lg hover:bg-rose-500/10 transition">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderNumbers() {
+            const container = document.getElementById('numbersList');
+            if (!container) return;
+            
+            if (numbers.length === 0) {
+                container.innerHTML = `<div class="text-center text-slate-500 text-sm py-8">နံပါတ်မရှိသေးပါ။</div>`;
+                return;
+            }
+            
+            container.innerHTML = numbers.map(item => `
+                <div class="card-gradient rounded-xl p-4 flex items-center justify-between gap-4 glow-border hover:border-blue-500/30 transition">
+                    <div class="flex items-center gap-3 flex-1 min-w-0">
+                        <div class="w-10 h-10 rounded-full bg-blue-500/10 text-blue-400 flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-hashtag"></i>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <div class="font-semibold text-sm">${item.market}</div>
+                            <div class="text-lg font-mono font-bold text-amber-400">${item.number}</div>
+                            <div class="text-xs text-emerald-400">Accuracy: ${item.accuracy}%</div>
+                        </div>
+                    </div>
+                    <div class="flex gap-2 flex-shrink-0">
+                        <button onclick="editNumber(${item.id})" class="text-blue-400 hover:text-blue-300 text-sm p-2 rounded-lg hover:bg-blue-500/10 transition">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button onclick="deleteNumber(${item.id})" class="text-rose-400 hover:text-rose-300 text-sm p-2 rounded-lg hover:bg-rose-500/10 transition">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateStats() {
+            document.getElementById('insightCount').textContent = insights.length;
+            document.getElementById('numberCount').textContent = numbers.length;
+            document.getElementById('lastUpdateDisplay').textContent = new Date().toLocaleTimeString('en-US', { hour12: false });
+        }
+
+        // ============================================================
+        // INSIGHT CRUD
+        // ============================================================
+        function openAddInsightModal() {
+            if (!isAdminLoggedIn) { alert('ကျေးဇူးပြု၍ Admin အကောင့်ဖြင့် ဝင်ရောက်ပါ။'); return; }
+            document.getElementById('insightTitle').value = '';
+            document.getElementById('insightContent').value = '';
+            document.getElementById('addInsightModal').classList.remove('hidden');
+        }
+
+        function closeAddInsightModal() {
+            document.getElementById('addInsightModal').classList.add('hidden');
+        }
+
+        function saveInsight() {
+            const title = document.getElementById('insightTitle').value.trim();
+            const content = document.getElementById('insightContent').value.trim();
+            const icon = document.getElementById('insightIcon').value;
+            const color = document.getElementById('insightColor').value;
+            
+            if (!title || !content) {
+                alert('ခေါင်းစဉ်နှင့် အကြောင်းအရာကို ဖြည့်သွင်းပါ။');
+                return;
+            }
+            
+            const newId = insights.length > 0 ? Math.max(...insights.map(i => i.id)) + 1 : 1;
+            insights.push({ id: newId, title, content, icon, color });
+            saveData();
+            closeAddInsightModal();
+            renderAll();
+        }
+
+        function editInsight(id) {
+            if (!isAdminLoggedIn) { alert('ကျေးဇူးပြု၍ Admin အကောင့်ဖြင့် ဝင်ရောက်ပါ။'); return; }
+            const item = insights.find(i => i.id === id);
+            if (!item) return;
+            
+            editInsightId = id;
+            document.getElementById('editInsightId').value = id;
+            document.getElementById('editInsightTitle').value = item.title;
+            document.getElementById('editInsightContent').value = item.content;
+            document.getElementById('editInsightIcon').value = item.icon || 'fa-file-lines';
+            document.getElementById('editInsightColor').value = item.color || 'amber';
+            document.getElementById('editInsightModal').classList.remove('hidden');
+        }
+
+        function closeEditInsightModal() {
+            document.getElementById('editInsightModal').classList.add('hidden');
+            editInsightId = null;
+        }
+
+        function updateInsight() {
+            const id = parseInt(document.getElementById('editInsightId').value);
+            const title = document.getElementById('editInsightTitle').value.trim();
+            const content = document.getElementById('editInsightContent').value.trim();
+            const icon = document.getElementById('editInsightIcon').value;
+            const color = document.getElementById('editInsightColor').value;
+            
+            if (!title || !content) {
+                alert('ခေါင်းစဉ်နှင့် အကြောင်းအရာကို ဖြည့်သွင်းပါ။');
+                return;
+            }
+            
+            const index = insights.findIndex(i => i.id === id);
+            if (index === -1) return;
+            
+            insights[index] = { ...insights[index], title, content, icon, color };
+            saveData();
+            closeEditInsightModal();
+            renderAll();
+        }
+
+        function deleteInsight(id) {
+            if (!confirm('ဖျက်မည်။ သေချာပါသလား?')) return;
+            insights = insights.filter(i => i.id !== id);
+            saveData();
+            renderAll();
+        }
+
+        function deleteInsightFromEdit() {
+            const id = parseInt(document.getElementById('editInsightId').value);
+            closeEditInsightModal();
+            deleteInsight(id);
+        }
+
+        // ============================================================
+        // NUMBER CRUD
+        // ============================================================
+        function openAddNumberModal() {
+            if (!isAdminLoggedIn) { alert('ကျေးဇူးပြု၍ Admin အကောင့်ဖြင့် ဝင်ရောက်ပါ။'); return; }
+            document.getElementById('numberMarket').value = '';
+            document.getElementById('numberValue').value = '';
+            document.getElementById('numberAccuracy').value = '94';
+            document.getElementById('addNumberModal').classList.remove('hidden');
+        }
+
+        function closeAddNumberModal() {
+            document.getElementById('addNumberModal').classList.add('hidden');
+        }
+
+        function saveNumber() {
+            const market = document.getElementById('numberMarket').value.trim();
+            const number = document.getElementById('numberValue').value.trim();
+            const accuracy = parseInt(document.getElementById('numberAccuracy').value) || 94;
+            
+            if (!market || !number) {
+                alert('ဈေးကွက်အမည်နှင့် နံပါတ်ကို ဖြည့်သွင်းပါ။');
+                return;
+            }
+            
+            const newId = numbers.length > 0 ? Math.max(...numbers.map(n => n.id)) + 1 : 1;
+            numbers.push({ id: newId, market, number, accuracy });
+            saveData();
+            closeAddNumberModal();
+            renderAll();
+        }
+
+        function editNumber(id) {
+            if (!isAdminLoggedIn) { alert('ကျေးဇူးပြု၍ Admin အကောင့်ဖြင့် ဝင်ရောက်ပါ။'); return; }
+            const item = numbers.find(n => n.id === id);
+            if (!item) return;
+            
+            document.getElementById('numberMarket').value = item.market;
+            document.getElementById('numberValue').value = item.number;
+            document.getElementById('numberAccuracy').value = item.accuracy;
+            
+            numbers = numbers.filter(n => n.id !== id);
+            saveData();
+            document.getElementById('addNumberModal').classList.remove('hidden');
+        }
+
+        function deleteNumber(id) {
+            if (!confirm('ဖျက်မည်။ သေချာပါသလား?')) return;
+            numbers = numbers.filter(n => n.id !== id);
+            saveData();
+            renderAll();
+        }
+
+        // ============================================================
+        // REFRESH
+        // ============================================================
+        function refreshData() {
+            loadData();
+            renderAll();
+        }
+
+        // ============================================================
+        // THEME
+        // ============================================================
+        function toggleTheme() {
+            const body = document.getElementById('bodyTheme');
+            const icon = document.getElementById('themeIcon');
+            if (body.classList.contains('dark')) {
+                body.classList.remove('dark');
+                body.classList.add('light');
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+                localStorage.setItem('manjomjai_theme', 'light');
+            } else {
+                body.classList.remove('light');
+                body.classList.add('dark');
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+                localStorage.setItem('manjomjai_theme', 'dark');
+            }
+        }
+
+        // ============================================================
+        // INIT
+        // ============================================================
+        function init() {
+            loadData();
+            
+            const savedTheme = localStorage.getItem('manjomjai_theme') || 'dark';
+            if (savedTheme === 'light') {
+                document.getElementById('bodyTheme').classList.remove('dark');
+                document.getElementById('bodyTheme').classList.add('light');
+                document.getElementById('themeIcon').classList.remove('fa-sun');
+                document.getElementById('themeIcon').classList.add('fa-moon');
+            }
+            
+            document.getElementById('loginOverlay').classList.remove('hidden');
+            document.getElementById('adminStatusBadge').classList.add('hidden');
+            
+            document.getElementById('adminPassword').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') adminLogin();
+            });
+            document.getElementById('adminUsername').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') adminLogin();
+            });
+            
+            console.log('✅ Admin Panel loaded!');
+            console.log('🔑 Demo: admin / admin123');
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
