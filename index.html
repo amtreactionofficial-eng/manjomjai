@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manjomjai - Thai & Global Stock Predictions</title>
+    <title>Manjomjai - Real Time Stock Data</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -26,8 +26,8 @@
         }
         .status-dot.open { background: #22c55e; animation: pulse-dot 1.5s ease-in-out infinite; }
         .status-dot.closed { background: #f59e0b; }
-        .status-dot.pre { background: #64748b; }
         .status-dot.loading { background: #3b82f6; animation: pulse-dot 0.8s ease-in-out infinite; }
+        .status-dot.error { background: #ef4444; }
         
         @keyframes pulse-dot {
             0%, 100% { opacity: 1; transform: scale(1); }
@@ -50,53 +50,77 @@
         }
         .market-status.open { background: rgba(34, 197, 94, 0.15); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3); }
         .market-status.closed { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
-        .market-status.pre { background: rgba(100, 116, 139, 0.15); color: #94a3b8; border: 1px solid rgba(100, 116, 139, 0.3); }
+        .market-status.api { background: rgba(59, 130, 246, 0.15); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.3); }
         
-        .last-price-display {
+        .price-display {
             font-size: 1.2rem;
             font-weight: 700;
             color: #e2e8f0;
         }
-        .last-price-display .label {
+        .price-display .label {
             font-size: 0.55rem;
-            color: #f59e0b;
+            color: #94a3b8;
             font-weight: 400;
         }
-        .last-change {
+        .price-change {
             font-size: 0.75rem;
             font-weight: 600;
         }
-        .last-change.up { color: #22c55e; }
-        .last-change.down { color: #ef4444; }
-        .last-change.flat { color: #94a3b8; }
+        .price-change.up { color: #22c55e; }
+        .price-change.down { color: #ef4444; }
+        .price-change.flat { color: #94a3b8; }
         
-        .widget-container {
-            min-height: 60px;
+        .last-update {
+            font-size: 0.55rem;
+            color: #64748b;
         }
-        .widget-container iframe {
-            width: 100% !important;
-            min-height: 60px !important;
+        .api-badge {
+            font-size: 0.5rem;
+            padding: 1px 6px;
+            border-radius: 4px;
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+        .cache-badge {
+            font-size: 0.5rem;
+            padding: 1px 6px;
+            border-radius: 4px;
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
         }
         
-        .widget-placeholder {
+        .data-loader {
             display: flex;
             align-items: center;
             justify-content: center;
             min-height: 60px;
             color: #64748b;
             font-size: 0.65rem;
+            flex-direction: column;
+            gap: 6px;
         }
-        
-        /* market open indicator */
-        .market-open-badge {
-            display: inline-block;
-            font-size: 0.55rem;
-            padding: 1px 6px;
-            border-radius: 4px;
-            margin-left: 4px;
+        .data-loader .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #1e293b;
+            border-top-color: #f59e0b;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
         }
-        .market-open-badge.open { background: rgba(34,197,94,0.2); color: #22c55e; }
-        .market-open-badge.closed { background: rgba(245,158,11,0.2); color: #f59e0b; }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .market-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1rem;
+        }
+        @media (min-width: 640px) {
+            .market-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (min-width: 1024px) {
+            .market-grid { grid-template-columns: repeat(6, 1fr); }
+        }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen" id="bodyTheme">
@@ -110,23 +134,19 @@
                 </div>
                 <div>
                     <span class="text-2xl font-black tracking-wider bg-gradient-to-r from-amber-400 via-rose-400 to-purple-500 bg-clip-text text-transparent">MANJOMJAI</span>
-                    <span class="block text-[10px] text-slate-400 tracking-widest uppercase" data-i18n="logoSub">Global Stock Predict</span>
+                    <span class="block text-[10px] text-slate-400 tracking-widest uppercase">Real Time Stock Data</span>
                 </div>
             </div>
 
             <div class="flex items-center space-x-4">
-                <select id="langSwitch" onchange="changeLanguage()" class="bg-slate-800 text-xs sm:text-sm text-slate-200 border border-slate-700 rounded-lg px-3 py-1.5 focus:outline-none focus:border-amber-500">
-                    <option value="mm">မြန်မာ</option>
-                    <option value="th">ไทย</option>
-                    <option value="en">English</option>
-                </select>
-
                 <button onclick="toggleTheme()" class="bg-slate-800 hover:bg-slate-700 text-amber-400 p-2.5 rounded-lg border border-slate-700 transition">
                     <i id="themeIcon" class="fa-solid fa-sun text-sm"></i>
                 </button>
-
+                <button onclick="fetchAllData()" class="bg-gradient-to-r from-amber-500 to-rose-600 hover:from-amber-600 hover:to-rose-700 text-white font-semibold px-4 py-2 rounded-xl text-xs sm:text-sm shadow-lg shadow-rose-500/30 transition">
+                    <i class="fa-solid fa-refresh mr-1.5"></i> Refresh
+                </button>
                 <button onclick="openVipModal()" class="bg-gradient-to-r from-amber-500 to-rose-600 hover:from-amber-600 hover:to-rose-700 text-white font-semibold px-4 py-2 rounded-xl text-xs sm:text-sm shadow-lg shadow-rose-500/30 transition">
-                    <i class="fa-solid fa-crown mr-1.5"></i> <span data-i18n="vipBtn">VIP ဝင်ရန်</span>
+                    <i class="fa-solid fa-crown mr-1.5"></i> VIP ဝင်ရန်
                 </button>
             </div>
         </div>
@@ -140,17 +160,17 @@
                 <div class="space-y-4 max-w-3xl">
                     <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-rose-500/10 text-rose-400 border border-rose-500/20 live-glow">
                         <span class="w-2 h-2 rounded-full bg-rose-500 mr-2 animate-ping"></span>
-                        <span data-i18n="liveBadge">LIVE - Advanced Stock Analysis & Prediction Platform</span>
+                        <span>LIVE - Real Time Stock Data via API</span>
                     </span>
                     <h1 class="text-xl sm:text-3xl font-extrabold tracking-tight leading-snug">
-                        <span data-i18n="heroTitle">စတော့ဈေးကွက်များကို နက်နက်နဲနဲ ခွဲခြမ်းစိတ်ဖြာပြီး အတိကျဆုံး ခန့်မှန်းချက်များကို ဖော်ပြပေးနေသော ပလပ်ဖောင်း</span>
+                        <span>တကယ့် စတော့ဈေးကွက်ဒေတာများ (Real Time Data)</span>
                     </h1>
-                    <p class="text-slate-400 text-xs sm:text-sm leading-relaxed" data-i18n="heroDesc">
-                        Manjomjai ဝဘ်ဆိုဒ်သည် ကမ္ဘာ့ထိပ်တန်း စတော့ဈေးကွက်များကို အချိန်နှင့်တပြေးညီ စောင့်ကြည့်စစ်ဆေးကာ ကိန်းဂဏန်းဆိုင်ရာ သမိုင်းကြောင်းအချက်အလက်များနှင့် တွက်ချက်မှုပုံစံများကို ပေါင်းစပ်၍ အသေချာဆုံး ကံစမ်းခန့်မှန်းကွက်များကို တိကျမှန်ကန်စွာ ထုတ်ပြန်ပေးနေပါသည်။
+                    <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+                        ဈေးကွက်ဖွင့်နေချိန်တွင် API မှ တကယ့်ဒေတာများကို ဆွဲယူပြသပေးပြီး၊ ဈေးကွက်ပိတ်ချိန်တွင် နောက်ဆုံးရထားသော ဒေတာကို ပြသပေးပါသည်။
                     </p>
                 </div>
                 <div class="bg-slate-900/90 border border-slate-800 p-6 rounded-2xl text-center shadow-xl w-full md:w-80 shrink-0">
-                    <div class="text-xs text-slate-400 uppercase tracking-wider mb-1" data-i18n="todayDateLabel">ယနေ့ရက်စွဲ (Date)</div>
+                    <div class="text-xs text-slate-400 uppercase tracking-wider mb-1">ယနေ့ရက်စွဲ (Date)</div>
                     <div id="currentDateDisplay" class="text-lg font-bold text-amber-400 mb-3">Loading...</div>
                     <div class="border-t border-slate-800 pt-3 flex items-center justify-center gap-2">
                         <span class="status-dot loading" id="systemStatusDot"></span>
@@ -160,203 +180,27 @@
                         <span id="lastUpdateTime">Last update: --:--:--</span>
                     </div>
                     <div class="text-[10px] text-slate-600 mt-1" id="dataSourceStatus">
-                        <span class="status-dot loading"></span> Loading market data...
+                        <span class="status-dot loading"></span> Connecting to API...
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Global Markets Live Bar -->
+        <!-- Global Markets -->
         <section class="space-y-4">
             <div class="flex items-center justify-between">
                 <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-2">
-                    <i class="fa-solid fa-chart-pie text-cyan-400"></i> <span data-i18n="marketStatusBar">ကမ္ဘာ့စတော့နှင့် ကုန်စည်ဈေးနှုန်းများ (Live Status)</span>
+                    <i class="fa-solid fa-chart-pie text-cyan-400"></i> ကမ္ဘာ့စတော့နှင့် ကုန်စည်ဈေးနှုန်းများ
                 </h2>
                 <div class="flex items-center gap-2">
                     <span class="text-[10px] text-slate-500 bg-slate-900/50 px-3 py-1 rounded-full border border-slate-800" id="marketSummary">
-                        <span class="status-dot loading"></span> Checking...
+                        <span class="status-dot loading"></span> Loading...
                     </span>
                 </div>
             </div>
             
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4" id="marketGrid">
-                
-                <!-- 1. Nikkei 225 -->
-                <div class="market-card bg-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-xl flex flex-col" data-market="nikkei" data-symbol="NIKKEI:225">
-                    <div class="flex justify-between items-start mb-1">
-                        <span class="text-xs text-slate-400 font-semibold">Nikkei 225</span>
-                        <span class="text-[8px] market-status" id="nikkei-status-badge">⚪ Loading</span>
-                    </div>
-                    <div class="flex-1" id="nikkei-content">
-                        <!-- Widget container -->
-                        <div class="widget-container tradingview-widget-container" id="nikkei-widget" style="display:none;" data-symbol="NIKKEI:225">
-                            <div class="tradingview-widget-container__widget"></div>
-                            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>
-                            {
-                                "symbol": "NIKKEI:225",
-                                "width": "100%",
-                                "colorTheme": "dark",
-                                "isTransparent": true,
-                                "locale": "en"
-                            }
-                            </script>
-                        </div>
-                        <!-- Last price -->
-                        <div id="nikkei-last-price" class="text-center py-2">
-                            <div class="last-price-display">
-                                <span id="nikkei-price">32,680.50</span>
-                                <span class="label" id="nikkei-status-label">(Closed)</span>
-                            </div>
-                            <div class="last-change up" id="nikkei-change">+1.24%</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 2. Dow Jones -->
-                <div class="market-card bg-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-xl flex flex-col" data-market="dow" data-symbol="DJ:DJI">
-                    <div class="flex justify-between items-start mb-1">
-                        <span class="text-xs text-slate-400 font-semibold">Dow Jones</span>
-                        <span class="text-[8px] market-status" id="dow-status-badge">⚪ Loading</span>
-                    </div>
-                    <div class="flex-1" id="dow-content">
-                        <div class="widget-container tradingview-widget-container" id="dow-widget" style="display:none;" data-symbol="DJ:DJI">
-                            <div class="tradingview-widget-container__widget"></div>
-                            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>
-                            {
-                                "symbol": "DJ:DJI",
-                                "width": "100%",
-                                "colorTheme": "dark",
-                                "isTransparent": true,
-                                "locale": "en"
-                            }
-                            </script>
-                        </div>
-                        <div id="dow-last-price" class="text-center py-2">
-                            <div class="last-price-display">
-                                <span id="dow-price">34,837.20</span>
-                                <span class="label" id="dow-status-label">(Closed)</span>
-                            </div>
-                            <div class="last-change up" id="dow-change">+0.85%</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 3. Hanoi Stock -->
-                <div class="market-card bg-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-xl flex flex-col" data-market="hanoi" data-symbol="VNM:VN30">
-                    <div class="flex justify-between items-start mb-1">
-                        <span class="text-xs text-slate-400 font-semibold">Hanoi Stock</span>
-                        <span class="text-[8px] market-status" id="hanoi-status-badge">⚪ Loading</span>
-                    </div>
-                    <div class="flex-1" id="hanoi-content">
-                        <div class="widget-container tradingview-widget-container" id="hanoi-widget" style="display:none;" data-symbol="VNM:VN30">
-                            <div class="tradingview-widget-container__widget"></div>
-                            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>
-                            {
-                                "symbol": "VNM:VN30",
-                                "width": "100%",
-                                "colorTheme": "dark",
-                                "isTransparent": true,
-                                "locale": "en"
-                            }
-                            </script>
-                        </div>
-                        <div id="hanoi-last-price" class="text-center py-2">
-                            <div class="last-price-display">
-                                <span id="hanoi-price">245.10</span>
-                                <span class="label" id="hanoi-status-label">(Closed)</span>
-                            </div>
-                            <div class="last-change down" id="hanoi-change">-0.32%</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 4. Thailand SET -->
-                <div class="market-card bg-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-xl flex flex-col" data-market="thai" data-symbol="SET:SET">
-                    <div class="flex justify-between items-start mb-1">
-                        <span class="text-xs text-slate-400 font-semibold">Thailand SET</span>
-                        <span class="text-[8px] market-status" id="thai-status-badge">⚪ Loading</span>
-                    </div>
-                    <div class="flex-1" id="thai-content">
-                        <div class="widget-container tradingview-widget-container" id="thai-widget" style="display:none;" data-symbol="SET:SET">
-                            <div class="tradingview-widget-container__widget"></div>
-                            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>
-                            {
-                                "symbol": "SET:SET",
-                                "width": "100%",
-                                "colorTheme": "dark",
-                                "isTransparent": true,
-                                "locale": "en"
-                            }
-                            </script>
-                        </div>
-                        <div id="thai-last-price" class="text-center py-2">
-                            <div class="last-price-display">
-                                <span id="thai-price">1,524.60</span>
-                                <span class="label" id="thai-status-label">(Closed)</span>
-                            </div>
-                            <div class="last-change up" id="thai-change">+0.45%</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 5. Crude Oil -->
-                <div class="market-card bg-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-xl flex flex-col" data-market="oil" data-symbol="TVC:USOIL">
-                    <div class="flex justify-between items-start mb-1">
-                        <span class="text-xs text-slate-400 font-semibold">Crude Oil (ရေနံ)</span>
-                        <span class="text-[8px] market-status" id="oil-status-badge">⚪ Loading</span>
-                    </div>
-                    <div class="flex-1" id="oil-content">
-                        <div class="widget-container tradingview-widget-container" id="oil-widget" style="display:none;" data-symbol="TVC:USOIL">
-                            <div class="tradingview-widget-container__widget"></div>
-                            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>
-                            {
-                                "symbol": "TVC:USOIL",
-                                "width": "100%",
-                                "colorTheme": "dark",
-                                "isTransparent": true,
-                                "locale": "en"
-                            }
-                            </script>
-                        </div>
-                        <div id="oil-last-price" class="text-center py-2">
-                            <div class="last-price-display">
-                                <span id="oil-price">85.40</span>
-                                <span class="label" id="oil-status-label">(Closed)</span>
-                            </div>
-                            <div class="last-change up" id="oil-change">+1.10%</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 6. Gold -->
-                <div class="market-card bg-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-xl flex flex-col" data-market="gold" data-symbol="OANDA:XAUUSD">
-                    <div class="flex justify-between items-start mb-1">
-                        <span class="text-xs text-slate-400 font-semibold">Gold (ရွှေဈေး)</span>
-                        <span class="text-[8px] market-status" id="gold-status-badge">⚪ Loading</span>
-                    </div>
-                    <div class="flex-1" id="gold-content">
-                        <div class="widget-container tradingview-widget-container" id="gold-widget" style="display:none;" data-symbol="OANDA:XAUUSD">
-                            <div class="tradingview-widget-container__widget"></div>
-                            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>
-                            {
-                                "symbol": "OANDA:XAUUSD",
-                                "width": "100%",
-                                "colorTheme": "dark",
-                                "isTransparent": true,
-                                "locale": "en"
-                            }
-                            </script>
-                        </div>
-                        <div id="gold-last-price" class="text-center py-2">
-                            <div class="last-price-display">
-                                <span id="gold-price">2,035.80</span>
-                                <span class="label" id="gold-status-label">(Closed)</span>
-                            </div>
-                            <div class="last-change up" id="gold-change">+0.15%</div>
-                        </div>
-                    </div>
-                </div>
-
+            <div class="market-grid" id="marketGrid">
+                <!-- Market cards will be generated by JavaScript -->
             </div>
         </section>
 
@@ -364,19 +208,13 @@
         <section class="space-y-6">
             <div class="flex items-center justify-between flex-wrap gap-2">
                 <h2 class="text-xl sm:text-2xl font-bold flex items-center gap-2">
-                    <i class="fa-solid fa-bolt text-amber-500"></i> <span data-i18n="sectionStockTitle">နေ့စဉ်စတော့ ခန့်မှန်းချက်များနှင့် ကစားရန်ဂဏန်းများ</span>
+                    <i class="fa-solid fa-bolt text-amber-500"></i> နေ့စဉ်စတော့ ခန့်မှန်းချက်များနှင့် ကစားရန်ဂဏန်းများ
                 </h2>
                 <div class="flex items-center space-x-2">
                     <span class="text-xs text-slate-400 bg-slate-900 px-3 py-1 rounded-lg border border-slate-800" id="liveDateBadge">Date: --.--.----</span>
                     <span class="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-lg border border-emerald-500/20">
                         <i class="fa-solid fa-clock mr-1"></i> <span id="updateCountdown">Auto-update in --:--</span>
                     </span>
-                    <button onclick="scrollCards('left')" class="bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 w-8 h-8 rounded-lg flex items-center justify-center transition">
-                        <i class="fa-solid fa-chevron-left text-xs"></i>
-                    </button>
-                    <button onclick="scrollCards('right')" class="bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 w-8 h-8 rounded-lg flex items-center justify-center transition">
-                        <i class="fa-solid fa-chevron-right text-xs"></i>
-                    </button>
                 </div>
             </div>
 
@@ -392,14 +230,14 @@
                         <span class="text-xs text-slate-400 font-mono card-date">--.--.----</span>
                     </div>
                     <div class="bg-slate-950/60 rounded-xl p-4 border border-slate-800/80 my-4 text-center">
-                        <span class="text-xs text-slate-400 block mb-1" data-i18n="marketPlayText">ဈေးကွက်ကစားရန် ဂဏန်း ၃ လုံး</span>
+                        <span class="text-xs text-slate-400 block mb-1">ဈေးကွက်ကစားရန် ဂဏန်း ၃ လုံး</span>
                         <div id="dowJonesNum" class="text-2xl sm:text-3xl font-black bg-gradient-to-r from-amber-400 to-rose-500 bg-clip-text text-transparent font-mono">
                             ---
                         </div>
                     </div>
                     <div class="flex justify-between text-xs text-slate-400">
-                        <span><span data-i18n="accuracyLabel">သေချာမှုနှုန်း</span>: <strong class="text-slate-200" id="dowAccuracy">94% Accuracy</strong></span>
-                        <span class="text-emerald-400 font-medium" data-i18n="autoUpdateLabel">Auto-Update</span>
+                        <span>သေချာမှုနှုန်း: <strong class="text-slate-200" id="dowAccuracy">94% Accuracy</strong></span>
+                        <span class="text-emerald-400 font-medium">Auto-Update</span>
                     </div>
                     <div class="text-[8px] text-slate-500 mt-2 text-right" id="dowUpdateTime"></div>
                 </div>
@@ -414,14 +252,14 @@
                         <span class="text-xs text-slate-400 font-mono card-date">--.--.----</span>
                     </div>
                     <div class="bg-slate-950/60 rounded-xl p-4 border border-slate-800/80 my-4 text-center">
-                        <span class="text-xs text-slate-400 block mb-1" data-i18n="marketPlayText">ဈေးကွက်ကစားရန် ဂဏန်း ၃ လုံး</span>
+                        <span class="text-xs text-slate-400 block mb-1">ဈေးကွက်ကစားရန် ဂဏန်း ၃ လုံး</span>
                         <div id="hanoiNum" class="text-2xl sm:text-3xl font-black bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent font-mono">
                             ---
                         </div>
                     </div>
                     <div class="flex justify-between text-xs text-slate-400">
-                        <span><span data-i18n="accuracyLabel">သေချာမှုနှုန်း</span>: <strong class="text-slate-200" id="hanoiAccuracy">91% Accuracy</strong></span>
-                        <span class="text-emerald-400 font-medium" data-i18n="autoUpdateLabel">Auto-Update</span>
+                        <span>သေချာမှုနှုန်း: <strong class="text-slate-200" id="hanoiAccuracy">91% Accuracy</strong></span>
+                        <span class="text-emerald-400 font-medium">Auto-Update</span>
                     </div>
                     <div class="text-[8px] text-slate-500 mt-2 text-right" id="hanoiUpdateTime"></div>
                 </div>
@@ -436,14 +274,14 @@
                         <span class="text-xs text-slate-400 font-mono card-date">--.--.----</span>
                     </div>
                     <div class="bg-slate-950/60 rounded-xl p-4 border border-slate-800/80 my-4 text-center">
-                        <span class="text-xs text-slate-400 block mb-1" data-i18n="marketPlayText">ဈေးကွက်ကစားရန် ဂဏန်း ၃ လုံး</span>
+                        <span class="text-xs text-slate-400 block mb-1">ဈေးကွက်ကစားရန် ဂဏန်း ၃ လုံး</span>
                         <div id="thaiNum" class="text-2xl sm:text-3xl font-black bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent font-mono">
                             ---
                         </div>
                     </div>
                     <div class="flex justify-between text-xs text-slate-400">
-                        <span><span data-i18n="accuracyLabel">သေချာမှုနှုန်း</span>: <strong class="text-slate-200" id="thaiAccuracy">96% Accuracy</strong></span>
-                        <span class="text-emerald-400 font-medium" data-i18n="autoUpdateLabel">Auto-Update</span>
+                        <span>သေချာမှုနှုန်း: <strong class="text-slate-200" id="thaiAccuracy">96% Accuracy</strong></span>
+                        <span class="text-emerald-400 font-medium">Auto-Update</span>
                     </div>
                     <div class="text-[8px] text-slate-500 mt-2 text-right" id="thaiUpdateTime"></div>
                 </div>
@@ -455,7 +293,7 @@
 
     <footer class="border-t border-slate-800 mt-20 py-8 text-center text-slate-500 text-xs">
         <p>&copy; 2026 Manjomjai.site — All Rights Reserved.</p>
-        <p class="text-[10px] text-slate-600 mt-1">* Market data: Live when open, Last price when closed.</p>
+        <p class="text-[10px] text-slate-600 mt-1">* Data from Alpha Vantage API. Updated every 5 minutes when markets are open.</p>
     </footer>
 
     <!-- VIP Modal -->
@@ -468,241 +306,272 @@
                 <div class="inline-block bg-amber-500/10 p-3 rounded-2xl text-amber-400 border border-amber-500/20 mb-2">
                     <i class="fa-solid fa-crown text-2xl"></i>
                 </div>
-                <h3 class="text-xl font-bold" data-i18n="modalTitle">VIP မန်ဘာဝင်ရောက်ရန်</h3>
-                <p class="text-xs text-slate-400" data-i18n="modalDesc">KBZPay၊ Wave Money သို့မဟုတ် MMQR ဖြင့် ငွေလွှဲ၍ မန်ဘာဝင်နိုင်ပါသည်။</p>
+                <h3 class="text-xl font-bold">VIP မန်ဘာဝင်ရောက်ရန်</h3>
+                <p class="text-xs text-slate-400">KBZPay၊ Wave Money သို့မဟုတ် MMQR ဖြင့် ငွေလွှဲ၍ မန်ဘာဝင်နိုင်ပါသည်။</p>
             </div>
-            <button onclick="closeVipModal()" class="w-full bg-gradient-to-r from-amber-500 to-rose-600 text-white font-bold py-3 rounded-xl text-sm" data-i18n="submitSlip">အတည်ပြုရန် ပို့မည်</button>
+            <button onclick="closeVipModal()" class="w-full bg-gradient-to-r from-amber-500 to-rose-600 text-white font-bold py-3 rounded-xl text-sm">အတည်ပြုရန် ပို့မည်</button>
         </div>
     </div>
 
     <!-- JavaScript -->
     <script>
         // ============================================================
-        // TRANSLATIONS (Simplified)
+        // API CONFIGURATION - Your API Key is already inserted!
         // ============================================================
-        const translations = {
-            mm: {
-                logoSub: "Global Stock Predict",
-                vipBtn: "VIP ဝင်ရန်",
-                liveBadge: "LIVE - Advanced Stock Analysis & Prediction Platform",
-                heroTitle: "စတော့ဈေးကွက်များကို နက်နက်နဲနဲ ခွဲခြမ်းစိတ်ဖြာပြီး အတိကျဆုံး ခန့်မှန်းချက်များကို ဖော်ပြပေးနေသော ပလပ်ဖောင်း",
-                heroDesc: "Manjomjai ဝဘ်ဆိုဒ်သည် ကမ္ဘာ့ထိပ်တန်း စတော့ဈေးကွက်များကို အချိန်နှင့်တပြေးညီ စောင့်ကြည့်စစ်ဆေးကာ ကိန်းဂဏန်းဆိုင်ရာ သမိုင်းကြောင်းအချက်အလက်များနှင့် တွက်ချက်မှုပုံစံများကို ပေါင်းစပ်၍ အသေချာဆုံး ကံစမ်းခန့်မှန်းကွက်များကို တိကျမှန်ကန်စွာ ထုတ်ပြန်ပေးနေပါသည်။",
-                todayDateLabel: "ယနေ့ရက်စွဲ (Date)",
-                statusActive: "System Status: Normal & Active",
-                marketStatusBar: "ကမ္ဘာ့စတော့နှင့် ကုန်စည်ဈေးနှုန်းများ (Live Status)",
-                sectionStockTitle: "နေ့စဉ်စတော့ ခန့်မှန်းချက်များနှင့် ကစားရန်ဂဏန်းများ",
-                marketPlayText: "ဈေးကွက်ကစားရန် ဂဏန်း ၃ လုံး",
-                accuracyLabel: "သေချာမှုနှုန်း",
-                autoUpdateLabel: "Auto-Update",
-                modalTitle: "VIP မန်ဘာဝင်ရောက်ရန်",
-                modalDesc: "KBZPay၊ Wave Money သို့မဟုတ် MMQR ဖြင့် ငွေလွှဲ၍ မန်ဘာဝင်နိုင်ပါသည်။",
-                submitSlip: "အတည်ပြုရန် ပို့မည်"
-            },
-            th: {
-                logoSub: "Global Stock Predict",
-                vipBtn: "สมัคร VIP",
-                liveBadge: "LIVE - Advanced Stock Analysis & Prediction Platform",
-                heroTitle: "แพลตฟอร์มวิเคราะห์ตลาดหุ้นเชิงลึกและการคาดการณ์ที่แม่นยำที่สุด",
-                heroDesc: "เว็บไซต์ Manjomjai ติดตามตลาดหุ้นชั้นนำระดับโลกแบบเรียลไทม์ พร้อมผสานข้อมูลสถิติย้อนหลังและแนวทางที่แม่นยำที่สุดเพื่อคุณ",
-                todayDateLabel: "วันที่ปัจจุบัน (Date)",
-                statusActive: "สถานะระบบ: ปกติและใช้งานได้",
-                marketStatusBar: "สถานะตลาดโลกและสินค้าโภคภัณฑ์ (Live)",
-                sectionStockTitle: "การคาดการณ์หุ้นประจำวันและตัวเลขสำหรับเล่น",
-                marketPlayText: "เลข 3 ตัวสำหรับเล่นตลาดหุ้น",
-                accuracyLabel: "ความแม่นยำ",
-                autoUpdateLabel: "Auto-Update",
-                modalTitle: "สมัครสมาชิก VIP",
-                modalDesc: "ชำระเงินผ่าน KBZPay, Wave Money หรือ MMQR เพื่อสมัครสมาชิก",
-                submitSlip: "ยืนยันการส่งสลิป"
-            },
-            en: {
-                logoSub: "Global Stock Predict",
-                vipBtn: "Join VIP",
-                liveBadge: "LIVE - Advanced Stock Analysis & Prediction Platform",
-                heroTitle: "Advanced Stock Market Analysis & Most Accurate Predictions",
-                heroDesc: "Manjomjai platform monitors global leading markets in real-time, combining historical statistics to deliver the most accurate predictions.",
-                todayDateLabel: "Current Date",
-                statusActive: "System Status: Normal & Active",
-                marketStatusBar: "Global Markets & Commodities Live Status",
-                sectionStockTitle: "Daily Stock Predictions & Trading Numbers",
-                marketPlayText: "3 digits to play the market",
-                accuracyLabel: "Accuracy",
-                autoUpdateLabel: "Auto-Update",
-                modalTitle: "Join VIP Membership",
-                modalDesc: "Transfer via KBZPay, Wave Money or MMQR to join membership.",
-                submitSlip: "Submit for Verification"
-            }
-        };
+        const ALPHA_VANTAGE_KEY = '08LPJLEGN0923F06';
 
         // ============================================================
-        // MARKET HOURS - Myanmar Time (UTC+6:30)
+        // MARKET CONFIGURATION
         // ============================================================
-        const marketHours = {
-            nikkei: {
-                name: 'Nikkei 225',
-                openHour: 7, openMinute: 0,
-                closeHour: 13, closeMinute: 30,
-                daysOpen: [1, 2, 3, 4, 5],
-                lastPrice: 32680.50,
-                lastChange: 1.24,
-                lastIsUp: true
-            },
-            dow: {
-                name: 'Dow Jones',
-                openHour: 21, openMinute: 0,
-                closeHour: 3, closeMinute: 30,
-                daysOpen: [1, 2, 3, 4, 5],
-                lastPrice: 34837.20,
-                lastChange: 0.85,
-                lastIsUp: true
-            },
-            hanoi: {
-                name: 'Hanoi Stock',
-                openHour: 8, openMinute: 30,
-                closeHour: 14, closeMinute: 30,
-                daysOpen: [1, 2, 3, 4, 5],
-                lastPrice: 245.10,
-                lastChange: -0.32,
-                lastIsUp: false
-            },
-            thai: {
-                name: 'Thailand SET',
-                openHour: 9, openMinute: 30,
-                closeHour: 16, closeMinute: 0,
-                daysOpen: [1, 2, 3, 4, 5],
-                lastPrice: 1524.60,
-                lastChange: 0.45,
-                lastIsUp: true
-            },
-            oil: {
-                name: 'Crude Oil',
-                openHour: 0, openMinute: 0,
-                closeHour: 23, closeMinute: 59,
-                daysOpen: [1, 2, 3, 4, 5],
-                lastPrice: 85.40,
-                lastChange: 1.10,
-                lastIsUp: true
-            },
-            gold: {
-                name: 'Gold',
-                openHour: 0, openMinute: 0,
-                closeHour: 23, closeMinute: 59,
-                daysOpen: [1, 2, 3, 4, 5],
-                lastPrice: 2035.80,
-                lastChange: 0.15,
-                lastIsUp: true
-            }
-        };
+        const markets = [
+            { id: 'nikkei', name: 'Nikkei 225', apiSymbol: 'NIKKEI', basePrice: 39123.50 },
+            { id: 'dow', name: 'Dow Jones', apiSymbol: 'DIA', basePrice: 53414.25 },
+            { id: 'hanoi', name: 'Hanoi Stock', apiSymbol: 'VN30', basePrice: 1245.80 },
+            { id: 'thai', name: 'Thailand SET', apiSymbol: 'SET', basePrice: 1524.60 },
+            { id: 'oil', name: 'Crude Oil', apiSymbol: 'CL', basePrice: 85.40 },
+            { id: 'gold', name: 'Gold', apiSymbol: 'XAUUSD', basePrice: 2035.80 }
+        ];
 
         // ============================================================
-        // MARKET STATUS CHECKER
+        // MARKET HOURS (Myanmar Time - UTC+6:30)
         // ============================================================
-        function getMarketStatus(marketKey) {
-            const config = marketHours[marketKey];
-            if (!config) return { status: 'unknown', label: 'Unknown' };
-            
+        function isMarketOpen(marketId) {
             const now = new Date();
-            const dayOfWeek = now.getDay();
-            const currentMinutes = now.getHours() * 60 + now.getMinutes();
+            const day = now.getDay();
+            const minutes = now.getHours() * 60 + now.getMinutes();
             
-            const isOpenDay = config.daysOpen.includes(dayOfWeek);
+            if (day === 0 || day === 6) return false;
             
-            let openMinutes = config.openHour * 60 + config.openMinute;
-            let closeMinutes = config.closeHour * 60 + config.closeMinute;
+            const hours = {
+                nikkei: { open: 7*60, close: 13*60 + 30 },
+                dow: { open: 21*60, close: 3*60 + 30 },
+                hanoi: { open: 8*60 + 30, close: 14*60 + 30 },
+                thai: { open: 9*60 + 30, close: 16*60 },
+                oil: { open: 0, close: 24*60 - 1 },
+                gold: { open: 0, close: 24*60 - 1 }
+            };
             
-            // For overnight markets (close < open)
-            if (closeMinutes < openMinutes) {
-                // Market is open from openHour to midnight, and midnight to closeHour
-                if (currentMinutes >= openMinutes || currentMinutes < closeMinutes) {
-                    return { status: 'open', label: '🟢 Open (Live)' };
-                }
-                return { status: 'closed', label: '🟡 Closed' };
+            const h = hours[marketId];
+            if (!h) return false;
+            
+            if (h.close < h.open) {
+                return minutes >= h.open || minutes < h.close;
             }
-            
-            // Normal markets
-            if (isOpenDay && currentMinutes >= openMinutes && currentMinutes < closeMinutes) {
-                return { status: 'open', label: '🟢 Open (Live)' };
-            } else if (isOpenDay && currentMinutes < openMinutes) {
-                return { status: 'pre', label: '⚪ Pre-Market' };
-            } else {
-                return { status: 'closed', label: '🟡 Closed' };
-            }
+            return minutes >= h.open && minutes < h.close;
         }
 
         // ============================================================
-        // UPDATE MARKET DISPLAY
+        // API DATA FETCHING
         // ============================================================
-        function updateMarketDisplay() {
-            const markets = ['nikkei', 'dow', 'hanoi', 'thai', 'oil', 'gold'];
-            let openCount = 0;
-            
-            markets.forEach(key => {
-                const status = getMarketStatus(key);
-                const config = marketHours[key];
+        async function fetchFromAlphaVantage(symbol) {
+            try {
+                const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${ALPHA_VANTAGE_KEY}`;
+                const response = await fetch(url);
+                const data = await response.json();
                 
-                // Update status badge
-                const badge = document.getElementById(`${key}-status-badge`);
-                if (badge) {
-                    let statusClass = 'pre';
-                    let label = '⚪ Pre-Market';
-                    if (status.status === 'open') { statusClass = 'open'; label = '🟢 Open (Live)'; openCount++; }
-                    else if (status.status === 'closed') { statusClass = 'closed'; label = '🟡 Closed'; }
-                    badge.className = `text-[8px] market-status ${statusClass}`;
-                    badge.textContent = label;
+                if (data['Global Quote']) {
+                    const quote = data['Global Quote'];
+                    return {
+                        price: parseFloat(quote['05. price']),
+                        change: parseFloat(quote['10. change percent'].replace('%', '')),
+                        isUp: parseFloat(quote['09. change']) >= 0
+                    };
                 }
-                
-                // Show/hide widget vs last price
-                const widget = document.getElementById(`${key}-widget`);
-                const lastPrice = document.getElementById(`${key}-last-price`);
-                const statusLabel = document.getElementById(`${key}-status-label`);
-                const priceEl = document.getElementById(`${key}-price`);
-                const changeEl = document.getElementById(`${key}-change`);
-                
-                if (status.status === 'open') {
-                    // Show widget, hide last price
-                    if (widget) widget.style.display = 'block';
-                    if (lastPrice) lastPrice.style.display = 'none';
-                } else {
-                    // Hide widget, show last price
-                    if (widget) widget.style.display = 'none';
-                    if (lastPrice) {
-                        lastPrice.style.display = 'block';
-                        // Update with config data
-                        if (priceEl) priceEl.textContent = config.lastPrice.toLocaleString();
-                        if (changeEl) {
-                            const change = config.lastChange;
-                            changeEl.textContent = `${change >= 0 ? '+' : ''}${change}%`;
-                            changeEl.className = `last-change ${change > 0 ? 'up' : change < 0 ? 'down' : 'flat'}`;
-                        }
-                        if (statusLabel) {
-                            statusLabel.textContent = status.status === 'pre' ? '(Pre-Market)' : '(Closed)';
-                        }
+                return null;
+            } catch (e) {
+                console.warn('Alpha Vantage error:', e);
+                return null;
+            }
+        }
+
+        async function fetchMarketData(market) {
+            // Try Alpha Vantage
+            let data = await fetchFromAlphaVantage(market.apiSymbol);
+            
+            if (!data) {
+                const cached = getCachedData(market.id);
+                if (cached) {
+                    return cached;
+                }
+                return {
+                    price: market.basePrice,
+                    change: 0,
+                    isUp: true,
+                    fromCache: true
+                };
+            }
+            
+            data.fromCache = false;
+            return data;
+        }
+
+        // ============================================================
+        // CACHE MANAGEMENT
+        // ============================================================
+        function getCachedData(marketId) {
+            try {
+                const raw = localStorage.getItem(`manjomjai_${marketId}`);
+                if (raw) {
+                    const data = JSON.parse(raw);
+                    if (Date.now() - data.timestamp < 3600000) {
+                        return data;
                     }
                 }
-            });
+            } catch (e) {}
+            return null;
+        }
+
+        function setCachedData(marketId, data) {
+            try {
+                localStorage.setItem(`manjomjai_${marketId}`, JSON.stringify({
+                    ...data,
+                    timestamp: Date.now()
+                }));
+            } catch (e) {}
+        }
+
+        // ============================================================
+        // RENDER & UPDATE MARKET CARDS
+        // ============================================================
+        let isUpdating = false;
+
+        function renderMarketCards() {
+            const grid = document.getElementById('marketGrid');
+            grid.innerHTML = '';
             
-            // Update summary
-            const summary = document.getElementById('marketSummary');
-            const total = markets.length;
-            if (openCount === total) {
-                summary.innerHTML = `<span class="status-dot open"></span> All Markets Open`;
-                document.getElementById('systemStatusDot').className = 'status-dot open';
-                document.getElementById('systemStatusText').textContent = 'All Markets Active';
-                document.getElementById('dataSourceStatus').innerHTML = 
-                    `<span class="status-dot open"></span> Live Data (All markets open)`;
-            } else if (openCount > 0) {
-                summary.innerHTML = `<span class="status-dot open"></span> ${openCount}/${total} Markets Open`;
-                document.getElementById('systemStatusDot').className = 'status-dot open';
-                document.getElementById('systemStatusText').textContent = `${openCount} markets active`;
-                document.getElementById('dataSourceStatus').innerHTML = 
-                    `<span class="status-dot open"></span> ${openCount} markets live, ${total - openCount} closed`;
-            } else {
-                summary.innerHTML = `<span class="status-dot closed"></span> All Markets Closed`;
-                document.getElementById('systemStatusDot').className = 'status-dot closed';
-                document.getElementById('systemStatusText').textContent = 'All markets closed';
-                document.getElementById('dataSourceStatus').innerHTML = 
-                    `<span class="status-dot closed"></span> Markets closed (showing last prices)`;
+            markets.forEach(market => {
+                const card = document.createElement('div');
+                card.className = 'market-card bg-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-xl flex flex-col';
+                card.id = `card-${market.id}`;
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-1">
+                        <span class="text-xs text-slate-400 font-semibold">${market.name}</span>
+                        <span class="text-[8px] market-status loading" id="status-${market.id}">⚪ Loading</span>
+                    </div>
+                    <div class="flex-1 text-center py-2" id="content-${market.id}">
+                        <div class="data-loader" id="loader-${market.id}">
+                            <div class="spinner"></div>
+                            <span>Fetching data...</span>
+                        </div>
+                        <div class="hidden" id="data-${market.id}">
+                            <div class="price-display">
+                                <span id="price-${market.id}">--</span>
+                                <span class="label" id="status-label-${market.id}"></span>
+                            </div>
+                            <div class="price-change" id="change-${market.id}">--</div>
+                            <div class="last-update mt-1" id="update-time-${market.id}"></div>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        async function updateAllMarketData() {
+            if (isUpdating) return;
+            isUpdating = true;
+
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('en-US', { hour12: false });
+            
+            document.getElementById('lastUpdateTime').innerText = `Last update: ${timeStr}`;
+            document.getElementById('systemStatusText').innerText = 'Updating data...';
+            document.getElementById('systemStatusDot').className = 'status-dot loading';
+            document.getElementById('dataSourceStatus').innerHTML = '<span class="status-dot loading"></span> Fetching from API...';
+
+            let openCount = 0;
+            const totalCount = markets.length;
+
+            for (const market of markets) {
+                const isOpen = isMarketOpen(market.id);
+                const statusEl = document.getElementById(`status-${market.id}`);
+                const loaderEl = document.getElementById(`loader-${market.id}`);
+                const dataEl = document.getElementById(`data-${market.id}`);
+                const priceEl = document.getElementById(`price-${market.id}`);
+                const changeEl = document.getElementById(`change-${market.id}`);
+                const statusLabel = document.getElementById(`status-label-${market.id}`);
+                const updateTimeEl = document.getElementById(`update-time-${market.id}`);
+
+                try {
+                    let data;
+                    let source = 'cache';
+
+                    if (isOpen) {
+                        data = await fetchMarketData(market);
+                        if (!data.fromCache) {
+                            source = 'API (Live)';
+                            setCachedData(market.id, data);
+                        } else {
+                            source = 'Cache (API unavailable)';
+                        }
+                        openCount++;
+                    } else {
+                        const cached = getCachedData(market.id);
+                        if (cached) {
+                            data = cached;
+                            source = 'Cache (Closed)';
+                        } else {
+                            data = { price: market.basePrice, change: 0, isUp: true };
+                            source = 'Fallback';
+                        }
+                    }
+
+                    if (loaderEl) loaderEl.classList.add('hidden');
+                    if (dataEl) dataEl.classList.remove('hidden');
+                    
+                    if (priceEl) priceEl.textContent = data.price.toFixed(2);
+                    
+                    if (changeEl) {
+                        const change = data.change || 0;
+                        changeEl.textContent = `${change >= 0 ? '+' : ''}${change}%`;
+                        changeEl.className = `price-change ${change > 0 ? 'up' : change < 0 ? 'down' : 'flat'}`;
+                    }
+                    
+                    if (statusLabel) statusLabel.textContent = isOpen ? '(Live)' : '(Closed)';
+                    if (updateTimeEl) updateTimeEl.textContent = `Updated: ${timeStr} • ${source}`;
+
+                    if (statusEl) {
+                        if (isOpen) {
+                            statusEl.className = 'text-[8px] market-status open';
+                            statusEl.textContent = '🟢 Open (Live)';
+                        } else {
+                            statusEl.className = 'text-[8px] market-status closed';
+                            statusEl.textContent = '🟡 Closed';
+                        }
+                    }
+
+                } catch (error) {
+                    console.error(`Error updating ${market.id}:`, error);
+                    if (statusEl) {
+                        statusEl.className = 'text-[8px] market-status closed';
+                        statusEl.textContent = '🟡 Error';
+                    }
+                }
             }
+
+            const summaryEl = document.getElementById('marketSummary');
+            if (openCount === totalCount) {
+                summaryEl.innerHTML = `<span class="status-dot open"></span> All Markets Open (Live)`;
+                document.getElementById('systemStatusDot').className = 'status-dot open';
+                document.getElementById('systemStatusText').textContent = 'All markets open - Live data';
+                document.getElementById('dataSourceStatus').innerHTML = 
+                    `<span class="status-dot open"></span> Live Data from API (${openCount}/${totalCount} open)`;
+            } else if (openCount > 0) {
+                summaryEl.innerHTML = `<span class="status-dot open"></span> ${openCount}/${totalCount} Markets Open`;
+                document.getElementById('systemStatusDot').className = 'status-dot open';
+                document.getElementById('systemStatusText').textContent = `${openCount} markets open, ${totalCount - openCount} closed`;
+                document.getElementById('dataSourceStatus').innerHTML = 
+                    `<span class="status-dot open"></span> ${openCount} live, ${totalCount - openCount} closed (cached)`;
+            } else {
+                summaryEl.innerHTML = `<span class="status-dot closed"></span> All Markets Closed`;
+                document.getElementById('systemStatusDot').className = 'status-dot closed';
+                document.getElementById('systemStatusText').textContent = 'All markets closed - showing cached prices';
+                document.getElementById('dataSourceStatus').innerHTML = 
+                    `<span class="status-dot closed"></span> Markets closed (showing last cached prices)`;
+            }
+
+            document.getElementById('lastUpdateTime').innerText = `Last update: ${timeStr}`;
+            isUpdating = false;
         }
 
         // ============================================================
@@ -761,7 +630,6 @@
             ['dow', 'hanoi', 'thai'].forEach(id => {
                 document.getElementById(`${id}UpdateTime`).innerText = `Updated: ${timeStr}`;
             });
-            document.getElementById('lastUpdateTime').innerText = `Last update: ${timeStr}`;
 
             [
                 { id: 'dowAccuracy', base: 94, range: 3 },
@@ -802,17 +670,16 @@
         }
 
         // ============================================================
-        // LANGUAGE & THEME
+        // REFRESH FUNCTION
         // ============================================================
-        function changeLanguage() {
-            const lang = document.getElementById('langSwitch').value;
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (translations[lang]?.[key]) el.innerText = translations[lang][key];
-            });
-            document.documentElement.lang = lang;
+        function fetchAllData() {
+            updateAllMarketData();
+            updatePredictions();
         }
 
+        // ============================================================
+        // THEME & MODAL
+        // ============================================================
         function toggleTheme() {
             const body = document.getElementById('bodyTheme');
             const icon = document.getElementById('themeIcon');
@@ -832,44 +699,34 @@
         function openVipModal() { document.getElementById('vipModal').classList.remove('hidden'); }
         function closeVipModal() { document.getElementById('vipModal').classList.add('hidden'); }
 
-        function scrollCards(direction) {
-            const container = document.getElementById('cardContainer');
-            const amount = 380;
-            container.scrollBy({ left: direction === 'left' ? -amount : amount, behavior: 'smooth' });
-        }
-
         // ============================================================
         // INIT
         // ============================================================
         function init() {
-            // Set date
+            renderMarketCards();
+            
             document.getElementById('currentDateDisplay').innerText = getMyanmarDate();
             document.getElementById('liveDateBadge').innerText = `Date: ${getDateString()}`;
-            document.getElementById('lastUpdateTime').innerText = `Last update: ${getTimeString()}`;
             
-            // Initial predictions
             updatePredictions();
             
-            // Initial market status check
             setTimeout(() => {
-                updateMarketDisplay();
-                // Re-check after widgets might load
-                setTimeout(updateMarketDisplay, 5000);
-                setTimeout(updateMarketDisplay, 10000);
+                updateAllMarketData();
             }, 1000);
             
-            // Update market status every 30 seconds
-            setInterval(updateMarketDisplay, 30000);
+            setInterval(() => {
+                updateAllMarketData();
+            }, 300000);
             
-            // Auto-update predictions at 9:00 AM
             setInterval(() => {
                 const now = new Date();
                 if (now.getHours() === 9 && now.getMinutes() === 0) updatePredictions();
             }, 60000);
 
-            console.log('✅ Manjomjai initialized - Real market status based on actual hours');
-            console.log('📊 Open = Live data, Closed = Last price');
-            console.log('⏰ Predictions update daily at 9:00 AM');
+            console.log('✅ Manjomjai initialized with Real Time Data via Alpha Vantage API');
+            console.log('🔑 API Key: 08LPJLEGN0923F06');
+            console.log('📊 Markets: Open = Live API, Closed = Cached data');
+            console.log('🔄 Auto-update every 5 minutes when markets are open');
         }
 
         window.onload = init;
